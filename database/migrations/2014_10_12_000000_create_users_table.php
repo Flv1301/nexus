@@ -42,6 +42,7 @@ class CreateUsersTable extends Migration
             $table->string('user_update');
             $table->string('code_controller');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

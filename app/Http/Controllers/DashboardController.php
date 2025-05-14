@@ -8,9 +8,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cases\CaseProcedure;
-use App\Models\Cases\Cases;
-use App\Services\CaseService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -24,11 +21,10 @@ class DashboardController extends Controller
     public function index(): Factory|View|Application
     {
         $user = Auth::user();
-        $casesIds = CaseService::getCaseUserIds($user);
-        $cases = Cases::whereIn('id', $casesIds)->where('status', '!=', 'CONCLUIDO')->count();
-        $procedures = CaseProcedure::where('user_id', $user->id)->where('status', '!=', 'CONCLUIDO')->count();
-        $notifications = $user->notifications->where('read_at', '=', null)->count();
+//        $casesIds = CaseService::getCaseUserIds($user);
+//        $cases = Cases::whereIn('id', $casesIds)->where('status', '!=', 'CONCLUIDO')->count();
+//        $procedures = CaseProcedure::where('user_id', $user->id)->where('status', '!=', 'CONCLUIDO')->count();
 
-        return view('dashboard', compact('user', 'cases', 'procedures', 'notifications'));
+        return view('dashboard', compact('user'));
     }
 }

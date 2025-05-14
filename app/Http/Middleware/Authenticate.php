@@ -2,11 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use App\Enums\TypeDocumentEnum;
 use Closure;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
 
 class Authenticate extends Middleware
@@ -39,20 +37,6 @@ class Authenticate extends Middleware
             return back()->with('info', 'Conta bloqueada!')->withInput();
         }
 
-        if (!$this->checkContract($user) && env('TERM_RESPONSIBILITY')) {
-            return redirect()->route('user.access.contract.show');
-        }
-
         return $next($request);
-    }
-
-    /**
-     * @param Authenticatable $user
-     * @return bool
-     */
-    private function checkContract(Authenticatable $user): bool
-    {
-        $contracts = $user->documents;
-        return $contracts->where('agree', true)->where('type', TypeDocumentEnum::TDR->value)->count();
     }
 }

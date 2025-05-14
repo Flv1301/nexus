@@ -41,6 +41,7 @@ class LoginController extends Controller
 
         if (env('APP_ENV') === 'production' && $location) {
             toast('Por favor, habilitar a localização no navegador', 'info');
+
             return back()->withInput();
         }
 
