@@ -1,10 +1,4 @@
 <?php
-/**
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 17/07/2023
- * @copyright NIP CIBER-LAB @2023
- */
 
 use App\Http\Controllers\Search\TelephoneSearchController;
 use Illuminate\Support\Facades\Route;

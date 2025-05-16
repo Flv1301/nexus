@@ -1,9 +1,3 @@
-{{--
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 17/01/2023
- * @copyright NIP CIBER-LAB @2023
---}}
 <form action="{{route('case.file.upload', ['id' => $case->id])}}" method="post" enctype="multipart/form-data">
     @csrf
     <x-adminlte-modal id="modalCaseAttachment"

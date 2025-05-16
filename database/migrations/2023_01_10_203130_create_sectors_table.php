@@ -18,9 +18,9 @@ class CreateSectorsTable extends Migration
             $table->string('name')->nullable(false);
             $table->unsignedBigInteger('unity_id');
             $table->timestamps();
+            $table->softDeletes();
 
-            $table->foreign('unity_id')->references('id')
-                ->on('unitys')->cascadeOnDelete();
+            $table->foreign('unity_id')->references('id')->on('unitys')->cascadeOnDelete();
         });
     }
 

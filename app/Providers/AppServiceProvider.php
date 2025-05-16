@@ -2,13 +2,9 @@
 
 namespace App\Providers;
 
-use App\Repositories\Eloquent\CadCivilProdepaRepositoryEloquenteORM;
-use App\Repositories\Eloquent\Contracts\CadCivilProdepaRepositoryInterface;
 use App\Repositories\Eloquent\Contracts\PersonRepositoryInterface;
-use App\Repositories\Eloquent\Contracts\SispRepositoryInterface;
 use App\Repositories\Eloquent\Contracts\UserRepositoryInterface;
 use App\Repositories\Eloquent\PersonRepositoryEloquenteORM;
-use App\Repositories\Eloquent\SispRepositoryEloquenteORM;
 use App\Repositories\Eloquent\UserRepositoryEloquenteORM;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
@@ -45,7 +41,5 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(UserRepositoryInterface::class, UserRepositoryEloquenteORM::class);
         $this->app->bind(PersonRepositoryInterface::class, PersonRepositoryEloquenteORM::class);
-        $this->app->bind(CadCivilProdepaRepositoryInterface::class, CadCivilProdepaRepositoryEloquenteORM::class);
-        $this->app->bind(SispRepositoryInterface::class, SispRepositoryEloquenteORM::class);
     }
 }

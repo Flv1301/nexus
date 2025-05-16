@@ -1,9 +1,3 @@
-{{--
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 24/07/2023
- * @copyright NIP CIBER-LAB @2023
---}}
 @extends('adminlte::page')
 @section('plugins.TempusDominusBs4', true)
 @section('plugins.Sweetalert2', true)
@@ -32,62 +26,11 @@
                             <div class="form-row">
                                 <div class="d-flex flex-wrap">
                                     <div class="custom-control custom-checkbox">
-                                        <input class="custom-control-input" type="checkbox" id="hydra-checked"
+                                        <input class="custom-control-input" type="checkbox" id="nexus-checked"
                                                value="person" name="options[]"
-                                               @if(in_array('person', $request->options) || empty($request->options)) checked @endif />
-                                        <label for="hydra-checked" class="custom-control-label">Hydra</label>
+                                               @if(in_array('nexus', $request->options) || empty($request->options)) checked @endif />
+                                        <label for="nexus-checked" class="custom-control-label">Nexus</label>
                                     </div>
-                                    @can('sisp')
-                                        <div class="custom-control custom-checkbox ml-1">
-                                            <input class="custom-control-input" type="checkbox"
-                                                   id="sisp-checked"
-                                                   value="sisp" name="options[]"
-                                                   @if(in_array('sisp', $request->options) || empty($request->options)) checked @endif />
-                                            <label for="sisp-checked" class="custom-control-label">Sisp</label>
-                                        </div>
-                                    @endcan
-                                    @can('seap')
-                                        <div class="custom-control custom-checkbox ml-1">
-                                            <input class="custom-control-input" type="checkbox"
-                                                   id="seap-checked"
-                                                   value="seap" name="options[]"
-                                                   @if(in_array('seap', $request->options) || empty($request->options)) checked @endif />
-                                            <label for="seap-checked" class="custom-control-label">Seap</label>
-                                        </div>
-                                    @endcan
-                                    @can('seap_visitante')
-                                        <div class="custom-control custom-checkbox ml-1">
-                                            <input class="custom-control-input" type="checkbox"
-                                                   id="seap-visitante-checked"
-                                                   value="seap_visitante" name="options[]"
-                                                   @if(in_array('seap_visitante', $request->options) || empty($request->options)) checked @endif />
-                                            <label for="seap-visitante-checked" class="custom-control-label">Seap Visitante</label>
-                                        </div>
-                                    @endcan
-                                    @can('dpa')
-                                        <div class="custom-control custom-checkbox ml-1">
-                                            <input class="custom-control-input" type="checkbox" id="dpa-checked"
-                                                   value="dpa" name="options[]"
-                                                   @if(in_array('dpa', $request->options) || empty($request->options)) checked @endif />
-                                            <label for="dpa-checked" class="custom-control-label">Dpa</label>
-                                        </div>
-                                    @endcan
-                                    @can('srh')
-                                        <div class="custom-control custom-checkbox ml-1">
-                                            <input class="custom-control-input" type="checkbox" id="srh-checked"
-                                                   value="srh" name="options[]"
-                                                   @if(in_array('srh', $request->options) || empty($request->options)) checked @endif />
-                                            <label for="srh-checked" class="custom-control-label">Srh</label>
-                                        </div>
-                                    @endcan
-                                    @can('equatorial')
-                                        <div class="custom-control custom-checkbox ml-1">
-                                            <input class="custom-control-input" type="checkbox" id="equatorial-checked"
-                                                   value="equatorial" name="options[]"
-                                                   @if(in_array('equatorial', $request->options) || empty($request->options)) checked @endif />
-                                            <label for="equatorial-checked" class="custom-control-label">Equatorial</label>
-                                        </div>
-                                    @endcan
                                 </div>
                             </div>
                             <div class="d-flex justify-content-end">

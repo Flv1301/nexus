@@ -13,7 +13,7 @@ class CreateCaseFilesTable extends Migration
     {
         Schema::create('case_files', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->unsignedBigInteger('case_id')->nullable(false);
             $table->unsignedBigInteger('user_id')->nullable(false);
             $table->unsignedBigInteger('unity_id')->nullable(false);
@@ -23,6 +23,7 @@ class CreateCaseFilesTable extends Migration
             $table->string('file_alias')->nullable(false);
             $table->unsignedBigInteger('file_id')->nullable(false);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('case_id')->references('id')
                 ->on('cases')->cascadeOnDelete();

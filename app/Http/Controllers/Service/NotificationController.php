@@ -1,10 +1,5 @@
 <?php
-/**
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 10/08/2023
- * @copyright NIP CIBER-LAB @2023
- */
+
 namespace App\Http\Controllers\Service;
 
 use App\Http\Controllers\Controller;

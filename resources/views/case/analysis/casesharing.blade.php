@@ -1,9 +1,3 @@
-{{--
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 16/01/2023
- * @copyright NIP CIBER-LAB @2023
---}}
 <div class="card">
     <div class="card-header">
         <span class="text-black text-lg">Lista de Usuários</span>
@@ -63,22 +57,22 @@
         </x-adminlte-datatable>
     </div>
 </div>
-<div class="card">
-    <div class="card-header">
-        <span class="text-black text-lg">Lista de Unidades</span>
-    </div>
-    <div class="card-body">
-        @php
-            $heads = ['ID','Unidade'];
-            $config = ['order' => [[0, 'asc']],'columns' => [null, null]];
-        @endphp
-        <x-adminlte-datatable id="tab_case_unitys" :heads="$heads" striped hoverable>
-            @foreach($case->unitys as $unity)
-                <tr>
-                    <td>{{ $unity->id }}</td>
-                    <td>{{ $unity->name }}</td>
-                </tr>
-            @endforeach
-        </x-adminlte-datatable>
-    </div>
-</div>
+{{--<div class="card">--}}
+{{--    <div class="card-header">--}}
+{{--        <span class="text-black text-lg">Lista de Unidades</span>--}}
+{{--    </div>--}}
+{{--    <div class="card-body">--}}
+{{--        @php--}}
+{{--            $heads = ['ID','Unidade'];--}}
+{{--            $config = ['order' => [[0, 'asc']],'columns' => [null, null]];--}}
+{{--        @endphp--}}
+{{--        <x-adminlte-datatable id="tab_case_unitys" :heads="$heads" striped hoverable>--}}
+{{--            @foreach($case->unitys as $unity)--}}
+{{--                <tr>--}}
+{{--                    <td>{{ $unity->id }}</td>--}}
+{{--                    <td>{{ $unity->name }}</td>--}}
+{{--                </tr>--}}
+{{--            @endforeach--}}
+{{--        </x-adminlte-datatable>--}}
+{{--    </div>--}}
+{{--</div>--}}

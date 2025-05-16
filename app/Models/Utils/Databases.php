@@ -14,9 +14,7 @@ class Databases extends Model
      * @var array|array[]
      */
     private static array $bases = [
-        'hydra' => ['base' => 'pgsql', 'table' => 'persons'],
-        'sisp' => ['base' => 'sisp', 'table' => 'sisp_pesquisa_avancada_view'],
-        'seap' => ['base' => 'seap', 'table' => 'seap_preso_view'],
+        'nexus' => ['base' => 'pgsql', 'table' => 'persons'],
     ];
 
     /**

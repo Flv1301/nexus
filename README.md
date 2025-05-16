@@ -5,7 +5,7 @@
 <a href=""><img src="https://img.shields.io/badge/Licen%C3%A7a-Propriet%C3%A1ria-orange" alt="Versão"></a>
 </p>
 
-## Sobre o Hydra
+## Sobre o Nexus
 
 O Nexus é um projeto do Ministério Público do Estado do Pará para servir de suporte as investigações.
 

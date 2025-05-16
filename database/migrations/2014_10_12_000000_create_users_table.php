@@ -38,9 +38,8 @@ class CreateUsersTable extends Migration
             $table->string('reference_point')->nullable();
             $table->unsignedBigInteger('unity_id')->nullable(false);
             $table->unsignedBigInteger('sector_id')->nullable(false);
-            $table->string('user_creator')->default('false');
+            $table->string('user_creator');
             $table->string('user_update');
-            $table->string('code_controller');
             $table->timestamps();
             $table->softDeletes();
         });

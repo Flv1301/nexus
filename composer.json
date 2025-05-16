@@ -1,9 +1,9 @@
 {
-    "name": "policiacivilpa/hydra",
+    "name": "mppa/nexus",
     "type": "project",
-    "description": "Hydra",
+    "description": "Nexus",
     "keywords": [
-        "Policia Civil"
+        "Ministerio Publico PA"
     ],
     "license": "EULA",
     "require": {

@@ -16,6 +16,7 @@ class CreateSocialNetworksTable extends Migration
             $table->string('social')->nullable(false);
             $table->string('type')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('person_social_networks', function (Blueprint $table) {

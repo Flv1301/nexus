@@ -1,9 +1,3 @@
-{{--
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 14/02/2023
- * @copyright NIP CIBER-LAB @2023
---}}
 <div class="form-row">
     <div class="form-group col-md-7">
         <x-adminlte-input

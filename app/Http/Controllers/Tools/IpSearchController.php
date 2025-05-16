@@ -1,10 +1,4 @@
 <?php
-/**
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 31/10/2023
- * @copyright NIP CIBER-LAB @2022
- */
 
 namespace App\Http\Controllers\Tools;
 

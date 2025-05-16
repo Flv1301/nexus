@@ -24,6 +24,7 @@ class CreateCaseProceduresTable extends Migration
             $table->longText('request')->nullable(false);
             $table->string('status')->nullable(false)->default('PENDENTE');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -25,6 +25,7 @@ class CreateTelephonesTable extends Migration
             $table->string('imsi')->nullable();
             $table->string('device')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

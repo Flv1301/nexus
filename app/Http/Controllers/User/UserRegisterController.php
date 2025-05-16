@@ -1,14 +1,7 @@
 <?php
-/**
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 06/02/2023
- * @copyright NIP CIBER-LAB @2023
- */
 
 namespace App\Http\Controllers\User;
 
-use App\Enums\CodeControllerUserEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Data\Address;
@@ -41,8 +34,9 @@ class UserRegisterController extends Controller
             toast('Sem permissão!', 'info');
             return back();
         }
-        $users = User::with(['unity', 'sector', 'documents'])->get();
-        $users = $users->except(1);
+
+        $users = User::with(['unity', 'sector'])->get();
+
         return view('auth.index', compact('users'));
     }
 
@@ -101,13 +95,16 @@ class UserRegisterController extends Controller
             $userData = $request->all();
             $userData['password'] = bcrypt($userData['password']);
             $userData['user_creator'] = Auth::user()->name;
-            $userData['code_controller'] = CodeControllerUserEnum::CONCLUIDO->name;
+
             $user = User::create($userData);
             $user->assignRole($request->input('role'));
+
             if ($request->has('permissions')) {
                 $user->syncPermissions($request->input('permissions'));
             }
+
             toast('Usuário cadastrado com sucesso!', 'success');
+
             return redirect()->route('users');
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
@@ -181,11 +178,12 @@ class UserRegisterController extends Controller
             $user->coordinator = $request->boolean('coordinator', false);
             $user->status = $request->boolean('status', false);
             $user->user_update = Auth::user()->name;
-            $user->code_controller = 'CONCLUIDO';
             $user->update();
             $user->syncRoles([$request->input('role')]);
             $user->syncPermissions($request->input('permissions'));
+
             toast('Usuário atualizado com sucesso', 'success');
+
             return back()->withInput();
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
@@ -210,7 +208,9 @@ class UserRegisterController extends Controller
         try {
             $user = User::findOrFail($id);
             $user->delete();
+
             toast('Usuário deletado com sucesso!', 'success');
+
             return back();
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());

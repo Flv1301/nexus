@@ -19,11 +19,6 @@ class CreateCasesTable extends Migration
             $table->string('name')->nullable(false)->index();
             $table->string('subject')->nullable();
             $table->string('process')->nullable();
-            $table->string('bop_number')->nullable();
-            $table->string('cooperation_rif')->nullable();
-            $table->string('year')->nullable();
-            $table->string('phase')->nullable();
-            $table->string('case_link')->nullable();
             $table->string('status')->nullable(false)->default('INICIADO');
             $table->longText('resume')->nullable();
             $table->unsignedBigInteger('type_id')->nullable(false);
@@ -31,6 +26,7 @@ class CreateCasesTable extends Migration
             $table->unsignedBigInteger('unity_id')->nullable(false);
             $table->unsignedBigInteger('sector_id')->nullable(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

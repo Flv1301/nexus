@@ -27,13 +27,11 @@
                     'Função',
                     'Coordenador',
                     'Status',
-                    'Termo Resp.',
-                    'Novo Cad.',
                     ['label' => 'Actions', 'no-export' => true, 'width' => 5],
                 ];
                 $config = [
                     'order' => [[0, 'asc']],
-                    'columns' => [null, null, null, null, null, null, null, null, null, null, ['orderable' => false]],
+                    'columns' => [null, null, null, null, null, null, null, null, ['orderable' => false]],
                     'language' => [
                         'paginate' => [
                             'first' => 'Primeiro',
@@ -66,12 +64,6 @@
                         </td>
                         <td>{!! $user->status ? '<span class="badge badge-success">Ativo</span>'
                              : '<span class="badge badge-danger">Inativo</span>' !!}
-                        </td>
-                        <td>{!! $user->documents->where('agree', false)->count() ? '<span class="badge badge-danger">Pendente</span>'
-                             : ($user->documents->where('agree', true)->count() ? '<span class="badge badge-success">Ok</span>' : '') !!}
-                        </td>
-                        <td>{!! $user->code_controller == 'CADASTRADO' ? '<span class="badge badge-success">SIM</span>'
-                             : '<span class="badge badge-danger">NAO</span>' !!}
                         </td>
                         <td>
                             <div class="d-flex">

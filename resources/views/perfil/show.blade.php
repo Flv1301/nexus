@@ -1,9 +1,3 @@
-{{--
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 09/03/2023
- * @copyright NIP CIBER-LAB @2023
---}}
 @extends('adminlte::page')
 @section('title',"Usuário {$user->nickname}")
 <x-page-header title="Usuário {{$user->nickname}}"/>
@@ -137,62 +131,6 @@
         </div>
         <div class="card-body">
             @include('address.show')
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header">
-            <span>Documentos</span>
-        </div>
-        <div class="card-body">
-            @include('perfil.documents')
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header">
-            <span>Assinatura</span>
-        </div>
-        <div class="card-body text-center">
-            <div
-                style="display: inline-block; width: 150px; height: 100px; border: 1px solid #ccc; margin-bottom: 10px;">
-                @if ($user->signature)
-                    @php
-                        $type = \Illuminate\Support\Facades\Storage::mimeType($user->signature);
-                        $content = \Illuminate\Support\Facades\Storage::get($user->signature);
-                        $content = base64_encode($content);
-                    @endphp
-                    <img src="data:{{$type}};base64,{{$content}}" alt="Assinatura"
-                         style="width: 100%; height: auto; object-fit: cover;"/>
-                @else
-                    <Typography variant="body2">Sem Assinatura</Typography>
-                @endif
-            </div>
-            <button class="btn bg-light" data-toggle="modal" data-target="#signatureModal">Upload Assinatura</button>
-        </div>
-    </div>
-
-    <div class="modal fade" id="signatureModal" tabindex="-1" role="dialog" aria-labelledby="signatureModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="signatureModalLabel">Modificar Assinatura</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="{{ route('perfil.ass', ['id' => $user->id]) }}" method="POST"
-                      enctype="multipart/form-data">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-body">
-                        <input type="file" name="signature" accept="image/*" required/>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Salvar</button>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
 @endsection

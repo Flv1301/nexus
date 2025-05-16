@@ -20,9 +20,9 @@ class CreateUnitysTable extends Migration
             $table->string('telephone')->nullable();
             $table->unsignedBigInteger('address_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
-            $table->foreign('address_id')->references('id')
-                ->on('address')->cascadeOnDelete();
+            $table->foreign('address_id')->references('id')->on('address')->cascadeOnDelete();
         });
     }
 

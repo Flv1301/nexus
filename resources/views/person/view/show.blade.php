@@ -1,9 +1,3 @@
-{{--
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 03/03/2023
- * @copyright NIP CIBER-LAB @2023
---}}
 @extends('adminlte::page')
 @section('title','Cadastro de Pessoa')
 @section('content_header')
@@ -14,17 +8,11 @@
                     <h1 class="h1 text-light">Cadastro de Pessoa</h1>
                 </div>
                 <div>
-                    @if($person->warrant == 1 && !$person->active_orcrim)
+                    @if($person->warrant == 1)
                         <span class="text-danger text-lg p-1 pr-4 pl-4 rounded" style="background-color: #FFC720">
                         Atenção: Pessoa com mandado de prisão - Consultar na base nacional.
                     </span>
                     @endif
-{{--                    @if($person->active_orcrim && !auth()->user()->can('sisfac'))--}}
-{{--                        <span class="text-danger text-lg p-1 pr-4 pl-4 rounded">--}}
-{{--                        Algumas informações são restritas ao perfil SISFAC. Para mais informações, entrar em contato com GTF (NIP).--}}
-{{--                    </span>--}}
-{{--                        @include('sisfac_block')--}}
-{{--                    @endif--}}
                 </div>
                 <div>
                     <a href="{{ url()->previous() }}" id="history" class="btn btn-info"

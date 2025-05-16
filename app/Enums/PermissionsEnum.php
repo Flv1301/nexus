@@ -1,10 +1,4 @@
 <?php
-/**
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 13/02/2023
- * @copyright NIP CIBER-LAB @2023
- */
 
 namespace App\Enums;
 
@@ -15,7 +9,6 @@ enum PermissionsEnum: string
      */
     case MENU_REGISTER = 'cadastro';
     case MENU_SEARCH = 'pesquisa';
-    case MENU_SEARCH_ADVANCED = 'pesquisa_avancada';
     case MENU_SEARCH_PERSON_COMPLET = 'pesquisa_pessoa_completa';
     case MENU_SEARCH_VEHICLE = 'pesquisa_veiculo';
     case MENU_SEARCH_PIX = 'pesquisa_pix';
@@ -23,12 +16,9 @@ enum PermissionsEnum: string
     case MENU_LOGS = 'log';
     case MENU_SYSTEM = 'sistema';
     case MENU_NOTIFICATION = 'notificacao';
-    case MENU_GI2 = 'gi2';
-    case MENU_IMEI = 'imei';
     case MENU_VCARD = 'vcard';
     case MENU_TELEPHONE = 'telefone';
     case MENU_VEHICLE = 'veiculo';
-    case MENU_TICKET = 'bilhetagem';
     case MENU_LETTER = 'oficio';
 
 
@@ -45,7 +35,6 @@ enum PermissionsEnum: string
     case PERSON_DELETE = 'pessoa.excluir';
     case PERSON_UPDATE = 'pessoa.atualizar';
     case PERSON_SEARCH = 'pessoa.pesquisar';
-    case SISFAC = 'sisfac';
 
     case CASE = 'caso';
     case CASE_READ = 'caso.ler';
@@ -83,24 +72,7 @@ enum PermissionsEnum: string
     case PROCEDURE = 'tramitacao';
 
     /** BANCOS DE CONSULTAS */
-    case SEAP = 'seap';
-    case SEAP_VISITANTE = 'seap_visitante';
-    case SEAP_MONITOR_STUCK = 'seap_monitoramento';
-    case SISP = 'sisp';
-    case SISP_CONFIDENTIAL = 'sisp_sigiloso';
-    case SRH = 'srh';
-    case CORTEX = 'cortex';
-    case GALTON = 'galton';
-    case DPA = 'dpa';
-    case POLINTER = 'polinter';
-    case PRODEPA = 'prodepa';
-    case SEDUC = 'seduc';
-    case EQUATORIAL = 'equatorial';
-    case CACADOR = 'cacador';
-    case HYDRA = 'hydra';
-
-    /** SUPORTE */
-    case SUPPORT_RESPONSE = 'suporte resposta';
-    case SUPPORT = 'suporte';
+   case CORTEX = 'cortex';
+    case NEXUS = 'nexus';
 
 }

@@ -65,7 +65,7 @@ return [
 
     'logo' => '',
     'logo_img' => '/images/logo_mppa_transparente.png',
-    'logo_img_class' => 'brand-image img-circle elevation-3',
+    'logo_img_class' => 'brand-image',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
     'logo_img_alt' => 'Logo do Ministário Público do Estado do Pará',
@@ -89,8 +89,8 @@ return [
             'path' => '/images/logo_mppa_transparente.png',
             'alt' => 'Logo do Ministário Público do Estado do Pará',
             'class' => '',
-            'width' => 50,
-            'height' => 50,
+            'width' => 80,
+            'height' => 80,
         ],
     ],
 
@@ -109,7 +109,7 @@ return [
     'preloader' => [
         'enabled' => true,
         'img' => [
-            'path' => '/images/logo_mppa_transparente.png',
+            'path' => '/images/logo_mppa.png',
             'alt' => 'Logo do Ministário Público do Estado do Pará',
             'effect' => 'animation__shake',
             'width' => 60,
@@ -290,8 +290,7 @@ return [
     */
 
     'menu' => [
-        // Navbar items:
-        [
+         [
             'type' => 'navbar-search',
             'text' => 'search',
             'topnav_right' => false,
@@ -310,12 +309,6 @@ return [
                     'icon' => 'fas fa-list-ol',
                     'url' => '/controle/oficios',
                 ],
-//                [
-//                    'text' => 'Gerar Ofício',
-//                    'icon' => 'fas fa-file',
-//                    'url' => '/oficios',
-//                    'can' => 'oficio.cadastrar',
-//                ],
             ],
         ],
         [
@@ -336,18 +329,6 @@ return [
             'icon' => 'fas fa-binoculars',
             'can' => 'pesquisa',
             'submenu' => [
-                [
-                    'text' => 'Avançada',
-                    'url' => '/pesquisa/avancada',
-                    'icon' => 'fas fa-fw fa-search',
-                    'can' => 'pesquisa_avancada'
-                ],
-//                [
-//                    'text' => 'Relato',
-//                    'url' => '/pesquisa/relato',
-//                    'icon' => 'fas fa-fw fa-search',
-//                    'can' => 'pesquisa_avancada'
-//                ],
                 [
                     'text' => 'Pessoas',
                     'icon' => 'fa fa-user-secret',
@@ -380,39 +361,11 @@ return [
                             'can' => 'telefone.pesquisar'
                         ],
                         [
-                            'text' => 'Bilhetagem',
-                            'url' => '/bilhetagem',
-                            'icon' => 'fas fa-comment',
-                            'label_color' => 'success',
-                            'can' => 'bilhetagem'
-                        ],
-                        [
                             'text' => 'VCard',
                             'url' => '/vcard',
                             'icon' => 'fas fa-address-book',
                             'label_color' => 'success',
                             'can' => 'vcard'
-                        ],
-                        [
-                            'text' => 'Gi2',
-                            'url' => '/gi2',
-                            'icon' => 'fas fa-signal',
-                            'label_color' => 'success',
-                            'can' => 'gi2'
-                        ],
-                        [
-                            'text' => 'Imei',
-                            'url' => '/imei',
-                            'icon' => 'fas fa-mobile-alt',
-                            'label_color' => 'success',
-                            'can' => 'imei'
-                        ],
-                        [
-                            'text' => 'Mapas',
-                            'url' => '/erb',
-                            'icon' => 'fas fa-map',
-                            'label_color' => 'success',
-                            'can' => 'imei'
                         ],
                     ],
                 ],
@@ -432,11 +385,6 @@ return [
             'icon' => 'fa fa-book',
             'url' => '/casos',
             'can' => 'caso'
-        ], [
-            'text' => 'INSIGHT',
-            'icon' => 'fa fa-book',
-            'url' => 'http://10.77.11.10:8501/',
-            'can' => 'oficio'
         ],
         [
             'text' => 'FERRAMENTAS',
@@ -448,63 +396,13 @@ return [
                     'url' => '/ferramentas/pesquisa/ip',
                     'icon' => '	fas fa-network-wired',
                     'label_color' => 'success',
-                ], [
-                    'text' => 'Reverse Location',
-                    'url' => '/ferramentas/reverse-location',
-                    'icon' => '	fas fa-map-marker',
-                    'label_color' => 'success',
-                ], [
-                    'text' => 'Location History Google',
-                    'url' => '/ferramentas/location-history',
-                    'icon' => '	fas fa-map-marker',
-                    'label_color' => 'success',
                 ],
-                [
-                    'text' => 'Insight',
-                    'url' => 'http://10.77.11.10:8501',
-                    'icon' => ' fas fa-info-circle',
-                    'label_color' => 'success',
-                ],
-//                [
-//                    'text' => 'SIME',
-//                    'url' => '/sime',
-//                    'icon' => 'fas fa-rss',
-//                    'label_color' => 'success',
-//                ],
-//                [
-//                    'text' => 'Fluxo de Gestão',
-//                    'url' => 'fluxo',
-//                    'icon' => 'fas fa-chalkboard-teacher',
-//                    'label_color' => 'success',
-//                ],
-//
-//                [
-//                    'text' => 'Reconhecimento Facial',
-//                    'url' => '/reconhecimento',
-//                    'icon' => 'far fa-frown',
-//                    'label_color' => 'success',
-//                ],
-//
-//                [
-//                    'text' => 'T3mius',
-//                    'url' => '/t3mius',
-//                    'icon' => 'fas fa-meh',
-//                    'label_color' => 'success',
-//                ],
-//
-//                [
-//                    'text' => 'Provocador Erb',
-//                    'url' => '/erb',
-//                    'icon' => 'fas fa-broadcast-tower',
-//                    'label_color' => 'success',
-//                ],
-
             ],
         ],
         [
             'text' => ' CADASTRO',
             'icon' => 'fas fa-id-card',
-            'can' => 'cadastro',
+            //'can' => 'cadastro',
             'submenu' => [
                 [
                     'text' => 'Pessoa',
@@ -547,7 +445,7 @@ return [
                     'text' => 'Usuário',
                     'icon' => 'fa fa-user-circle',
                     'url' => '/usuarios',
-                    'can' => 'usuario'
+                   // 'can' => 'usuario'
                 ],
             ],
         ],
@@ -563,29 +461,6 @@ return [
             'text' => 'PERFIL',
             'url' => '/perfil',
             'icon' => 'fas fa-user'
-        ],
-
-        [
-            'text' => 'SUPORTE',
-            'icon' => 'fas fa-question'
-        ],
-
-        [
-            'text' => 'SUPORTE',
-            'icon' => 'fas fa-question',
-            'can' => 'suporte',
-            'submenu' => [
-                [
-                    'text' => 'Suporte',
-                    'icon' => 'fa fa-circle',
-                    'url' => '/suportes',
-                ],
-                [
-                    'text' => 'Videos',
-                    'icon' => 'fa fa-circle',
-                    'url' => '/suporte/categorias/videos',
-                ],
-            ],
         ],
     ],
 

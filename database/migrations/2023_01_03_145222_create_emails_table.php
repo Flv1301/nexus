@@ -15,6 +15,7 @@ class CreateEmailsTable extends Migration
             $table->id();
             $table->string('email');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

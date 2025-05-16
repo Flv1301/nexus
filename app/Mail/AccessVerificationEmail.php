@@ -1,10 +1,4 @@
 <?php
-/**
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 09/09/2023
- * @copyright NIP CIBER-LAB @2023
- */
 
 namespace App\Mail;
 
@@ -36,6 +30,6 @@ class AccessVerificationEmail extends Mailable
      */
     public function build(): AccessVerificationEmail
     {
-        return $this->view('mail.access_mail_verification')->subject('Código de verificação do sistema Hydra.');
+        return $this->view('mail.access_mail_verification')->subject('Código de verificação do sistema Nexus.');
     }
 }

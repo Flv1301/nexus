@@ -1,10 +1,4 @@
 <?php
-/**
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 27/12/2022
- * @copyright NIP CIBER-LAB @2022
- */
 
 namespace App\Http\Controllers\Case;
 
@@ -88,6 +82,7 @@ class CaseAnalysisController extends Controller
                 $read = Storage::get($file->path);
                 $mime = Storage::mimeType($file->path);
                 $href = encrypt($file->path);
+
                 return view('case.analysis_files.' . $file->view, compact('read', 'mime', 'href'));
             }
 

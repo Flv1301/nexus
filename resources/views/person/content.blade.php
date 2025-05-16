@@ -1,13 +1,6 @@
-{{--
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 05/01/2023
- * @copyright NIP CIBER-LAB @2023
---}}
 <div class="tab-pane active" id="tab_data" role="tabpanel">
     @include('person.data')
 </div>
-@if(!$person->active_orcrim || auth()->user()->can('sisfac'))
 <div class="tab-pane" id="tab_legal" role="tabpanel">
     @include('person.legal')
 </div>
@@ -29,4 +22,3 @@
 <div class="tab-pane" id="tab_vcard" role="tabpanel">
     @include('person.vcard')
 </div>
-@endif

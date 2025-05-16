@@ -18,6 +18,7 @@ class CreateImagesTable extends Migration
             $table->string('description')->nullable();
             $table->text('path')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

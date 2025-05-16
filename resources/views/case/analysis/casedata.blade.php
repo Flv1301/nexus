@@ -1,9 +1,3 @@
-{{--
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 16/01/2023
- * @copyright NIP CIBER-LAB @2023
---}}
 <div class="card">
     <div class="card-body">
         <div class="form-row">
@@ -28,32 +22,6 @@
                     name="name"
                     label="Nome"
                     value="{{ $case->name }}"
-                    disabled
-                />
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-4">
-                <x-adminlte-input
-                    name="type_id"
-                    label="Tipo"
-                    value="{{ $case->type->name }}"
-                    disabled
-                />
-            </div>
-            <div class="form-group col-md-2">
-                <x-adminlte-input
-                    name="phase"
-                    label="Fase"
-                    value="{{ $case->phase }}"
-                    disabled
-                />
-            </div>
-            <div class="form-group col-md-6">
-                <x-adminlte-input
-                    name="case_link"
-                    label="Vinculo"
-                    value=""
                     disabled
                 />
             </div>

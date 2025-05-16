@@ -1,17 +1,10 @@
 <?php
-/**
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 19/12/2022
- * @copyright NIP CIBER-LAB @2022
- */
 
 namespace App\Http\Controllers\Case;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CaseRequest;
 use App\Models\Cases\Cases;
-use App\Models\Cases\CaseType;
 use App\Models\Departament\Sector;
 use App\Models\Departament\Unity;
 use App\Models\Person\Person;
@@ -50,8 +43,8 @@ class CaseController extends Controller
 
         $user = Auth::user();
         $caseUserIds = CaseService::getCaseUserIds($user);
-        $cases = $user->sector->cases()->with(['user', 'type', 'unity', 'sector'])->get()->merge(
-            Cases::with(['user', 'type', 'unity', 'sector'])->whereIn('id', $caseUserIds)->get()
+        $cases = $user->sector->cases()->with(['user', 'unity', 'sector'])->get()->merge(
+            Cases::with(['user', 'unity', 'sector'])->whereIn('id', $caseUserIds)->get()
         );
 
         return view('case.index', compact('cases', 'user', 'caseUserIds'));
@@ -70,18 +63,17 @@ class CaseController extends Controller
         $this->exceptIds[] = $user->id;
         $users = User::all()->except($this->exceptIds)->sort();
         $persons = Person::all();
-        $types = CaseType::all();
         $unitys = Unity::all();
         $sectors = Sector::all();
         $cases = Cases::all();
         $case = new Cases();
+
         return view(
             'case.create',
             compact(
                 'case',
                 'users',
                 'persons',
-                'types',
                 'unitys',
                 'sectors',
                 'cases'
@@ -117,6 +109,7 @@ class CaseController extends Controller
             $case->unitys()->sync($unitys);
             $case->users()->sync($users);
             $case->persons()->sync($persons);
+
             toast("Caso {$request->input('name')} gravado com sucesso!", 'success');
 
             return redirect()->route('cases');
@@ -152,7 +145,6 @@ class CaseController extends Controller
             $this->exceptIds[] = $user->id;
             $users = User::all()->except($this->exceptIds)->sort();
             $persons = Person::all();
-            $types = CaseType::all();
             $unitys = Unity::all();
             $sectors = Sector::all();
             $caseUsers = $case->users->modelKeys();
@@ -172,7 +164,6 @@ class CaseController extends Controller
                     'unitys',
                     'sectors',
                     'cases',
-                    'types'
                 )
             );
         } catch (\Exception $exception) {

@@ -1,10 +1,4 @@
 <?php
-/**
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 19/12/2022
- * @copyright NIP CIBER-LAB @2022
- */
 
 namespace App\Models\Cases;
 
@@ -47,13 +41,8 @@ class Cases extends Model
         'name',
         'subject',
         'process',
-        'bop_number',
-        'cooperation_rif',
-        'year',
-        'phase',
         'status',
         'resume',
-        'type_id',
         'user_id',
         'unity_id',
         'sector_id',
@@ -129,14 +118,6 @@ class Cases extends Model
             'case_id',
             'person_id'
         );
-    }
-
-    /**
-     * @return HasOne
-     */
-    public function type(): HasOne
-    {
-        return $this->hasOne(CaseType::class, 'id', 'type_id');
     }
 
     /**

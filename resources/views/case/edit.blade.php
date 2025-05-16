@@ -1,9 +1,3 @@
-{{--
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 22/12/2022
- * @copyright NIP CIBER-LAB @2022
---}}
 @extends('adminlte::page')
 @section('title',"Caso " . $case->name)
 @section('plugins.Select2', true)

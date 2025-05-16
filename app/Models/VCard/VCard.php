@@ -1,10 +1,4 @@
 <?php
-/**
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 23/03/2023
- * @copyright NIP CIBER-LAB @2023
- */
 
 namespace App\Models\VCard;
 
@@ -13,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -21,7 +14,6 @@ class VCard extends Model
 {
     use HasFactory;
     use LogsActivity;
-    use SoftDeletes;
 
     /**
      * @var bool

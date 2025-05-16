@@ -1,10 +1,4 @@
 <?php
-/**
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 27/09/2023
- * @copyright NIP CIBER-LAB @2023
- */
 
 namespace App\Notifications;
 
@@ -38,7 +32,7 @@ class UserNewRegistertNotification extends Notification
     {
         return (new MailMessage())
             ->line("Cadastro de novo usuário realizado: {$notifiable->name}")
-            ->line('Verificar no sistema Hydra as informações para liberação do acesso.');
+            ->line('Verificar no sistema Nexus as informações para liberação do acesso.');
     }
 
     /**

@@ -1,12 +1,5 @@
 <?php
 
-/**
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 27/12/2022
- * @copyright NIP CIBER-LAB @2022
- */
-
 namespace App\Enums;
 
 enum StatusUserEnum

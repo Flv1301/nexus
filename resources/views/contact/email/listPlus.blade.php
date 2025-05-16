@@ -1,9 +1,3 @@
-{{--
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 15/05/2023
- * @copyright NIP CIBER-LAB @2023
---}}
 <div class="card col-md-12">
     <div class="card-body">
         <table class="table table-responsive col-md-12">

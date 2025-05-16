@@ -1,18 +1,8 @@
 <?php
-/**
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 24/07/2023
- * @copyright NIP CIBER-LAB @2023
- */
 
 namespace App\Http\Controllers\Search;
 
 use App\Models\Data\Telephone;
-use App\Models\Dpa\Dpa;
-use App\Models\Equatorial;
-use App\Models\Sisp\BopEnv;
-use App\Models\Srh\Srh;
 use App\Services\PersonSearchService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;

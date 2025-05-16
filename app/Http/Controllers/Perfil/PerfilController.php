@@ -65,29 +65,4 @@ class PerfilController extends Controller
         toast('Senha atualizada com sucesso!', 'success');
         return back();
     }
-
-    /**
-     * @param Request $request
-     * @param $id
-     * @return Application|Factory|View|RedirectResponse
-     */
-    public function signature(Request $request, $id): Factory|View|Application|RedirectResponse
-    {
-        $request->validate([
-            'signature' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-
-        if ($request->hasFile('signature')) {
-            $user = User::find($id);
-            $path = $request->file('signature')->store('assinaturas');
-            $user->signature = $path;
-            $user->save();
-
-            toast('Assinatura cadastrada!', 'success');
-            return redirect()->route('perfil');
-        }
-
-        toast('Não foi possível atualizar a assinatura!', 'error');
-        return back();
-    }
 }

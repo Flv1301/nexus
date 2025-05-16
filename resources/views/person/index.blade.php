@@ -1,9 +1,3 @@
-{{--
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 05/01/2023
- * @copyright NIP CIBER-LAB @2023
---}}
 @extends('adminlte::page')
 @section('title','Pessoas')
 @section('plugins.Sweetalert2', true)
@@ -85,12 +79,6 @@
                         <td>{{$person->nickname}}</td>
                         <td>{{$person->birth_date}}</td>
                         <td>{{$person->cpf}}</td>
-{{--                        <td>{!! $person->active_orcrim === false ? '<span class="badge badge-light">NÂO</span>'--}}
-{{--                                    : '<span class="badge badge-success">SIM</span>' !!}--}}
-{{--                        </td>--}}
-{{--                        <td>{!! $person->dead === false ? '<span class="badge badge-light">NÂO</span>'--}}
-{{--                                    : '<span class="badge badge-danger">SIM</span>' !!}--}}
-{{--                        </td>--}}
                         <td>
                             @can('pessoa.ler')
                             <nobr/>

@@ -23,6 +23,7 @@ class CreateAddressTable extends Migration
             $table->string('complement')->nullable();
             $table->string('reference_point')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

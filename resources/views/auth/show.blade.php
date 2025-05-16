@@ -156,12 +156,4 @@
             @include('address.show')
         </div>
     </div>
-    <div class="card">
-        <div class="card-header">
-            <span>Documentos</span>
-        </div>
-        <div class="card-body">
-            @include('auth.documents')
-        </div>
-    </div>
 @endsection

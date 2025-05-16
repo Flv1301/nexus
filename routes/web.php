@@ -6,7 +6,6 @@ use App\Http\Controllers\LetterControlController;
 use App\Http\Controllers\Perfil\PerfilController;
 use App\Http\Controllers\Pix\PixController;
 use App\Http\Controllers\Service\NotificationController;
-use App\Http\Controllers\Tools\ErbMapsController;
 use App\Http\Controllers\Tools\IpSearchController;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
@@ -23,8 +22,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/reset-senha', function () {
     return view('auth.passwords.email');
-})
-    ->middleware('guest')->name('password.request');
+})->middleware('guest')->name('password.request');
 
 Route::post('/reset-senha', function (Request $request) {
     $request->validate(['email' => 'required|email']);
@@ -46,11 +44,8 @@ Route::post('/reset-password', function (Request $request) {
     $status = Password::reset(
         $request->only('email', 'password', 'password_confirmation', 'token'),
         function (User $user, string $password) {
-            $user->forceFill(['password' => Hash::make($password)])
-                ->setRememberToken(Str::random(60));
-
+            $user->forceFill(['password' => Hash::make($password)])->setRememberToken(Str::random(60));
             $user->save();
-
             event(new PasswordReset($user));
         }
     );
@@ -63,14 +58,13 @@ Route::post('/reset-password', function (Request $request) {
 Route::middleware(['auth'])->controller(DashboardController::class)->group(function () {
     Route::get('/', 'index');
     Route::get('/dashboard', 'index')->name('dashboard');
-//    Route::get('/chat-gpt/{m?}', fn($message) => ChatGPTService::sendMessage($message))->name('chat.send');
 });
+
 /** PERFIL */
 Route::middleware('auth')->controller(PerfilController::class)->group(function () {
     Route::get('/perfil', 'show')->name('perfil');
     Route::get('/perfil/password', 'password')->name('perfil.password');
     Route::post('/perfil/reset', 'reset')->name('perfil.reset');
-    Route::put('/perfil/assinatura/{id}', 'signature')->name('perfil.ass');
 });
 
 /** DOWNLOADS */
@@ -85,8 +79,6 @@ require_once 'routes/person.php';
 require_once 'routes/case.php';
 /** SISTEMA */
 require_once 'routes/system.php';
-/** SUPPORTS */
-require_once 'routes/support.php';
 /** HTTP API */
 require_once 'routes/apis.php';
 /** FUNÇÕES */
@@ -104,7 +96,6 @@ require_once 'routes/search.php';
 /** NOTIFICACAO */
 require_once 'routes/notification.php';
 
-Route::middleware(['auth'])->get('/estacaoerb', [ErbMapsController::class, 'index'])->name('erb.maps');
 Route::middleware(['auth'])->get('/ferramentas/pesquisa/ip', [IpSearchController::class, 'index'])->name('tools.search.ip');
 
 Route::middleware(['auth', 'permission:oficio'])->controller(LetterControlController::class)->group(function () {

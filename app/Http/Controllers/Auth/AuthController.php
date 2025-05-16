@@ -12,7 +12,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class AuthController
@@ -20,55 +19,7 @@ class AuthController
     public function __construct(protected AccessDataService $accessService, protected UserService $userService)
     {
     }
-    /**
-     * @OA\Post(
-     *     path="/login",
-     *     summary="Autenticação de usuário",
-     *     tags={"Autenticação"},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"email", "password"},
-     *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
-     *             @OA\Property(property="password", type="string", format="password", example="password123"),
-     *             @OA\Property(property="remember", type="boolean", example=true)
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Usuário autenticado com sucesso.",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="user", ref="#/components/schemas/AuthApiResource"),
-     *             @OA\Property(property="token", type="string", example="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Credenciais inválidas ou usuário inativo.",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="error", type="string", example="Credenciais inválidas!")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Usuário não encontrado.",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="error", type="string", example="Usuário não encontrado!")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Erro interno do servidor.",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="error", type="string", example="Erro interno do sistema.")
-     *         )
-     *     )
-     * )
-     */
+
     public function login(AuthRequest $request): JsonResponse
     {
         try {
@@ -117,25 +68,6 @@ class AuthController
         }
     }
 
-    /**
-     * @OA\Post(
-     *     path="/logout",
-     *     summary="Logout do usuário autenticado",
-     *     tags={"Autenticação"},
-     *     @OA\Response(
-     *         response=204,
-     *         description="Logout realizado com sucesso. Nenhum conteúdo retornado."
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Não autenticado.",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="error", type="string", example="Não autenticado.")
-     *         )
-     *     )
-     * )
-     */
     public function logout(Request $request): JsonResponse
     {
         Auth::user()->tokens()->delete();
@@ -146,29 +78,6 @@ class AuthController
         return response()->json('', ResponseAlias::HTTP_NO_CONTENT);
     }
 
-    /**
-     * @OA\Post(
-     *     path="/refresh-token",
-     *     summary="Renovar o token de acesso",
-     *     tags={"Autenticação"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Token renovado com sucesso.",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="token", type="string", example="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Não autenticado.",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="error", type="string", example="Não autenticado.")
-     *         )
-     *     )
-     * )
-     */
     public function refreshToken(Request $request): JsonResponse
     {
         $user = $request->user();

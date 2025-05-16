@@ -1,9 +1,3 @@
-{{--
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 29/01/2023
- * @copyright NIP CIBER-LAB @2023
---}}
 <x-adminlte-modal id="modalProcedureView"
                   title="Tramitação"
                   size='lg'

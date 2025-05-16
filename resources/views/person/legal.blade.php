@@ -1,9 +1,3 @@
-{{--
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 28/02/2023
- * @copyright NIP CIBER-LAB @2023
---}}
 <div class="d-flex align-items-center p-2" >
     <div class="mr-2">
         <label>Mandado de Prisão:</label>

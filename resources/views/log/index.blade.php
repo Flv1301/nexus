@@ -1,9 +1,4 @@
-{{--
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 28/03/2023
- * @copyright NIP CIBER-LAB @2023
---}}
+
 @extends('adminlte::page')
 @section('title','Logs de atividades')
 @section('plugins.Datatables', true)

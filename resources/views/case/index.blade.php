@@ -1,9 +1,3 @@
-{{--
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 19/12/2022
- * @copyright NIP CIBER-LAB @2022
---}}
 @extends('adminlte::page')
 @section('plugins.Datatables', true)
 @section('plugins.Sweetalert2', true)
@@ -20,7 +14,6 @@
                     'Data',
                     'Número',
                     'Nome',
-                    'Tipo',
                     'Unidade',
                     'Setor',
                     'Usuário',
@@ -29,7 +22,7 @@
                 ];
                 $config = [
                     'order' => [[1, 'desc']],
-                    'columns' => [null, null, null, null, null, null, null, null, ['orderable' => false]],
+                    'columns' => [null, null, null, null, null, null, null, ['orderable' => false]],
                     'language' => [
                         'paginate' => [
                             'first' => 'Primeiro',
@@ -54,7 +47,6 @@
                         <td>{{$case->created_at->format('d/m/Y')}}</td>
                         <td>{{$case->identifier}}</td>
                         <td>{{$case->name}}</td>
-                        <td>{{$case->type->name}}</td>
                         <td>{{$case->unity->name}}</td>
                         <td>{{$case->sector->name}}</td>
                         <td>{{$case->user->nickname}}</td>

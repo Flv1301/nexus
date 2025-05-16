@@ -31,8 +31,6 @@ class CaseRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100|unique:cases,name,' . ($this->id ?? 0),
-            'phase' => 'required',
-            'type_id' => 'required'
         ];
     }
 }

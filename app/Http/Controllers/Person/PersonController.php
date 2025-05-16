@@ -1,10 +1,4 @@
 <?php
-/**
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 06/02/2023
- * @copyright NIP CIBER-LAB @2023
- */
 
 namespace App\Http\Controllers\Person;
 
@@ -27,11 +21,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class PersonController extends Controller
@@ -380,7 +372,7 @@ class PersonController extends Controller
             return false;
         }
 
-        foreach ($vcardFile as $file){
+        foreach ($vcardFile as $file) {
             $path = $file->store('vcard', 'tmp');
             (new VCardService($person, $file, $path))->store();
         }
