@@ -79,7 +79,7 @@ class UserRegisterController extends Controller
         $address = new Address();
         $unitys = Unity::all();
         $sectors = [];
-        $roles = Role::all()->except(1);
+        $roles = Role::all();
         $permissions = Permission::all();
         return view('auth.create', compact(['unitys', 'sectors', 'roles', 'permissions', 'user', 'address']));
     }

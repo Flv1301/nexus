@@ -83,7 +83,7 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <x-adminlte-input
-                        name="sector_id"
+                        name="unity_id"
                         label="Unidade"
                         disabled
                         value="{{$user->unity->name}}"
@@ -91,7 +91,7 @@
                 </div>
                 <div class="form-group col-md-5">
                     <x-adminlte-input
-                        name="unity_id"
+                        name="sector_id"
                         label="Setor"
                         disabled
                         value="{{$user->sector->name}}"

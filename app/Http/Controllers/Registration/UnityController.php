@@ -27,7 +27,9 @@ class UnityController extends Controller
             toast('Sem permissão!', 'info');
             return redirect()->route('dashboard');
         }
+
         $unitys = Unity::all();
+
         return view('unity.index', compact('unitys'));
     }
 
@@ -38,9 +40,12 @@ class UnityController extends Controller
     {
         if (!Gate::allows('unidade.cadastrar')) {
             toast('Sem permissão!', 'info');
+
             return redirect()->route('dashboard');
         }
+
         $address = new Address();
+
         return view('unity.create', compact('address'));
     }
 
@@ -54,7 +59,9 @@ class UnityController extends Controller
             $address = Address::create($resquest->except('name', 'contact'));
             $resquest->request->add(['address_id' => $address->id]);
             Unity::create($resquest->only(['name', 'contact', 'address_id']));
+
             toast('Unidade cadastrada com sucesso!', 'success');
+
             return redirect()->route('unitys');
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
@@ -77,6 +84,7 @@ class UnityController extends Controller
         try {
             $unity = Unity::findOrFail($id);
             $address = $unity->address()->first() ?? new Address();
+
             return view('unity.edit', ['unity' => $unity, 'address' => $address]);
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
