@@ -417,12 +417,6 @@ return [
                     'can' => 'permissao'
                 ],
                 [
-                    'text' => 'Notificados',
-                    'icon' => 'fa fa-user-plus',
-                    'url' => '/email/notificados',
-                    'can' => 'notificacao'
-                ],
-                [
                     'text' => 'Funções',
                     'icon' => 'fa fa-user-tie',
                     'url' => '/funcoes',
