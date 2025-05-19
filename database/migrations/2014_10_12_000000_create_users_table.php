@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->date('birth_date')->nullable();
             $table->rememberToken()->nullable();
-            $table->tinyInteger('status')->default(0);
+            $table->boolean('status')->default(false);
             $table->string('ddd')->nullable();
             $table->string('telephone')->nullable();
             $table->string('address')->nullable();
@@ -39,7 +39,7 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('unity_id')->nullable(false);
             $table->unsignedBigInteger('sector_id')->nullable(false);
             $table->string('user_creator');
-            $table->string('user_update');
+            $table->string('user_update')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
