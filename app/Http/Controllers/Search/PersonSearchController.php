@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Search;
 
 use App\APIs\CortexApi;
-use App\APIs\SeducAPI;
 use App\Helpers\Str as StrHerlper;
 use App\Http\Controllers\Controller;
 use App\Models\Person\Person;
@@ -180,63 +179,6 @@ class PersonSearchController extends Controller
      * @param Request $request
      * @return Collection
      */
-    public function seduc(Request $request): Collection
-    {
-        $excludedFields = $request->except('rg', 'cpf', 'birth_date', 'lastname', 'options', '_token');
-
-        if (!Arr::whereNotNull($excludedFields)) {
-            return collect([]);
-        }
-
-        $seduc = new SeducAPI();
-        $data = collect([]);
-
-        $response = null;
-
-        if ($request->name && $request->mother && $request->father) {
-            $response = $seduc->searchStudents($request->name, $request->mother, $request->father);
-        }
-
-        if ($response === null && $request->name && $request->mother) {
-            $response = $seduc->searchStudentsWithMother($request->name, $request->mother);
-        }
-
-        if ($response === null && $request->name && $request->father) {
-            $response = $seduc->searchStudentsWithFather($request->name, $request->father);
-        }
-
-        if ($response === null && $request->name) {
-            $response = $seduc->searchStudents($request->name);
-        }
-
-        if ($response === null && $request->father) {
-            $response = $seduc->searchStudentsForFather($request->father);
-        }
-
-        if ($response === null && $request->mother) {
-            $response = $seduc->searchStudentsForMother($request->mother);
-        }
-
-        if ($response && !array_key_exists('error', $response) && !array_key_exists('msg', $response)) {
-            $response = collect($response)->except('status');
-            $response->each(function ($value) use ($data) {
-                $person = new \stdClass();
-                $person->id = $value['nome_aluno'] . '|' . $value['nome_mae'];
-                $person->name = $value['nome_aluno'];
-                $person->mother = $value['nome_mae'];
-                $person->father = $value['nome_pai'];
-                $person->cpf = $value['cpf'];
-                $data->push($person);
-            });
-        }
-
-        return $data->unique();
-    }
-
-    /**
-     * @param Request $request
-     * @return Collection
-     */
     public function cortex(Request $request): Collection
     {
         $excludedFields = $request->except('father', 'rg', 'lastname', 'options', '_token');
@@ -325,11 +267,6 @@ class PersonSearchController extends Controller
     {
         $request = $this->getRequestSession();
         $service = new PersonSearchService();
-
-        if ($base !== 'sisp') {
-            $person = $service->$base($id);
-            return view('search.person.index', compact('base', 'person', 'request'));
-        }
 
         $bops = $service->$base($id);
         return view('search.person.index', compact('base', 'bops', 'request'));
