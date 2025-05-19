@@ -20,8 +20,9 @@ class RoleController extends Controller
      */
     public function index(): View|Factory|Application
     {
-        $roles = Role::all()->except(1);
+        $roles = Role::all();
         $permissions = Permission::all();
+
         return view('role.index', compact('roles', 'permissions'));
     }
 
@@ -33,6 +34,7 @@ class RoleController extends Controller
     {
         $role = Role::findById($id);
         $permissions = $role->getAllPermissions();
+
         return view('role.show', compact('role', 'permissions'));
     }
 

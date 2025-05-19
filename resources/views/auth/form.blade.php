@@ -52,30 +52,18 @@
                     >
                         Administrativo
                     </option>
-                    <option value="Delegado"
-                        {{old('office') == 'Delegado'
-                        ? 'selected' : ($user->office == 'Delegado'
+                    <option value="Promotor"
+                        {{old('office') == 'Promotor'
+                        ? 'selected' : ($user->office == 'Promotor'
                         ? 'selected' : '')}}
                     >
                         Delegado
                     </option>
-                    <option value="Escrivao"
-                        {{old('office') == 'Escrivao'
-                        ? 'selected' : ($user->office == 'Escrivao'
+                    <option value="Agente"
+                        {{old('office') == 'Agente'
+                        ? 'selected' : ($user->office == 'Agente'
                         ? 'selected' : '')}}>
                         Escrivão
-                    </option>
-                    <option value="Investigador"
-                        {{old('office') == 'Investigador'
-                        ? 'selected' : ($user->office == 'Investigador'
-                        ? 'selected' : '')}}>
-                        Investigador
-                    </option>
-                    <option value="Papiloscopista"
-                        {{old('office') == 'Papiloscopista'
-                        ? 'selected' : ($user->office == 'Papiloscopista'
-                        ? 'selected' : '')}}>
-                        Papiloscopista
                     </option>
                 </x-adminlte-select>
             </div>
