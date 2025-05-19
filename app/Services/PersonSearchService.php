@@ -12,7 +12,7 @@ class PersonSearchService
      * @param $id
      * @return mixed
      */
-    public function person($id): mixed
+    public function nexus($id): mixed
     {
         return Person::find($id);
     }
