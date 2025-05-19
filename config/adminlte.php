@@ -290,7 +290,7 @@ return [
     */
 
     'menu' => [
-         [
+        [
             'type' => 'navbar-search',
             'text' => 'search',
             'topnav_right' => false,
@@ -402,7 +402,7 @@ return [
         [
             'text' => ' CADASTRO',
             'icon' => 'fas fa-id-card',
-            //'can' => 'cadastro',
+            'can' => 'cadastro',
             'submenu' => [
                 [
                     'text' => 'Pessoa',
@@ -445,7 +445,7 @@ return [
                     'text' => 'Usuário',
                     'icon' => 'fa fa-user-circle',
                     'url' => '/usuarios',
-                   // 'can' => 'usuario'
+                    'can' => 'usuario'
                 ],
             ],
         ],
