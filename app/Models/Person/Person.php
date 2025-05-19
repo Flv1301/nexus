@@ -10,13 +10,10 @@ use App\Models\Data\Image;
 use App\Models\Data\Telephone;
 use App\Models\SocialNetwork;
 use App\Models\VCard\VCard;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -66,9 +63,6 @@ class Person extends Model
         'birth_date' => DateCast::class,
         'name' => UpCaseTextCast::class,
         'nickname' => UpCaseTextCast::class,
-        'orcrim' => UpCaseTextCast::class,
-        'orcrimOffice' => UpCaseTextCast::class,
-        'orcrimOccupationArea' => UpCaseTextCast::class,
         'father' => UpCaseTextCast::class,
         'mother' => UpCaseTextCast::class,
         'occupation' => UpCaseTextCast::class,
