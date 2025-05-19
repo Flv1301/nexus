@@ -28,7 +28,7 @@
                                     @can('nexus')
                                     <div class="custom-control custom-checkbox">
                                         <input class="custom-control-input" type="checkbox" id="nexus-checked"
-                                               value="person" name="options[]"
+                                               value="nexus" name="options[]"
                                                @if(in_array('nexus', $request->options) || empty($request->options)) checked @endif />
                                         <label for="nexus-checked" class="custom-control-label">Nexus</label>
                                     </div>

@@ -141,7 +141,7 @@ class PersonSearchController extends Controller
      * @param Request $request
      * @return Collection
      */
-    public function person(Request $request): Collection
+    public function nexus(Request $request): Collection
     {
         $excludedFields = $request->except('lastname', 'options', '_token');
 
