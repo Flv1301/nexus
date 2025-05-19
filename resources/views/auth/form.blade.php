@@ -57,13 +57,13 @@
                         ? 'selected' : ($user->office == 'Promotor'
                         ? 'selected' : '')}}
                     >
-                        Delegado
+                        Promotor
                     </option>
                     <option value="Agente"
                         {{old('office') == 'Agente'
                         ? 'selected' : ($user->office == 'Agente'
                         ? 'selected' : '')}}>
-                        Escrivão
+                        Agente
                     </option>
                 </x-adminlte-select>
             </div>
