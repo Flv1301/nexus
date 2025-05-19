@@ -1,9 +1,3 @@
-{{--
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 17/12/2022
- * @copyright NIP CIBER-LAB @2022
---}}
 @if ($message = Session::get('success'))
     <div class="alert alert-success alert-block alert-dismissible">
         <button type="button" class="close" data-dismiss="alert">×</button>

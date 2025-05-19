@@ -1,9 +1,3 @@
-{{--
- * @author Herbety Thiago Maciel
- * @version 1.0
- * @since 18/01/2023
- * @copyright NIP CIBER-LAB @2023
---}}
 @section('plugins.TempusDominusBs4', true)
 <div class="overlay-wrapper">
     <x-loading/>
