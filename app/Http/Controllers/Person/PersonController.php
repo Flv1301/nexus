@@ -38,7 +38,7 @@ class PersonController extends Controller
             return back();
         }
 
-        $persons = Person::select('id', 'name', 'nickname', 'birth_date', 'cpf', 'created_at', 'dead', 'active_orcrim')
+        $persons = Person::select('id', 'name', 'nickname', 'birth_date', 'cpf', 'created_at', 'dead')
             ->orderBy('name', 'asc')->paginate(15);
 
         return view('person.index', compact('persons'));
@@ -59,7 +59,7 @@ class PersonController extends Controller
             ->orWhere('rg', 'like', '%' . $search . '%')
             ->orWhere('tatto', 'like', '%' . $search . '%')
             ->orderBy('name')
-            ->select('id', 'name', 'nickname', 'dead', 'birth_date', 'cpf', 'active_orcrim')
+            ->select('id', 'name', 'nickname', 'dead', 'birth_date', 'cpf')
             ->paginate(15);
 
         return view('person.index', compact('persons'))->with(['search' => $request->search]);
@@ -165,7 +165,6 @@ class PersonController extends Controller
             $person = Person::findOrFail($id);
             $person->fill($request->except(['addresses', 'contacts', 'images']));
             $person->dead = $request->boolean('dead', false);
-            $person->active_orcrim = $request->boolean('active_orcrim', false);
             $person->warrant = $request->boolean('warrant', false);
             $person->update();
             $person->address()->forceDelete();
