@@ -46,7 +46,8 @@ class LoginController extends Controller
             return back()->withInput();
         }
 
-        $credentials = $request->only('email', 'password', 'g-recaptcha-response');
+        //$credentials = $request->only('email', 'password', 'g-recaptcha-response');
+        $credentials = $request->only('email', 'password');
         $validator = $this->validator($credentials);
         $remember = $request->input('remember', false);
 
@@ -93,10 +94,10 @@ class LoginController extends Controller
         return Validator::make($data, [
             'email' => 'required|string|email|max:100',
             'password' => 'required|string|min:6',
-            'g-recaptcha-response' => [
-                'required' => Rule::requiredIf(env('APP_ENV') === 'production'),
-                'captcha'
-            ],
+//            'g-recaptcha-response' => [
+//                'required' => Rule::requiredIf(env('APP_ENV') === 'production'),
+//                'captcha'
+//            ],
         ]);
     }
 }
