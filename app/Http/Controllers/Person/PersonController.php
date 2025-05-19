@@ -53,11 +53,11 @@ class PersonController extends Controller
         $request->validate(['search' => 'required|string|min:3'], ['search.required' => 'Campo de Pesquisa é obrigatório']);
         $search = Str::upper($request->search);
         $search = Str::ascii($search);
-        $persons = Person::where('name', 'like', '%' . $search . '%')
-            ->orWhere('nickname', 'like', '%' . $search . '%')
+        $persons = Person::where('name', 'ilike', '%' . $search . '%')
+            ->orWhere('nickname', 'ilike', '%' . $search . '%')
             ->orWhere('cpf', 'like', '%' . $search . '%')
             ->orWhere('rg', 'like', '%' . $search . '%')
-            ->orWhere('tatto', 'like', '%' . $search . '%')
+            ->orWhere('tatto', 'ilike', '%' . $search . '%')
             ->orderBy('name')
             ->select('id', 'name', 'nickname', 'dead', 'birth_date', 'cpf')
             ->paginate(15);

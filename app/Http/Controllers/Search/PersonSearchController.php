@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers\Search;
 
-use App\APIs\CacadorRoraimaApi;
 use App\APIs\CortexApi;
-use App\APIs\ProdepaApi;
 use App\APIs\SeducAPI;
 use App\Helpers\Str as StrHerlper;
 use App\Http\Controllers\Controller;
 use App\Models\Person\Person;
 use App\Services\PersonSearchService;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -145,7 +142,7 @@ class PersonSearchController extends Controller
      * @param Request $request
      * @return Collection
      */
-    public function person(Request $request): Collection
+    public function nexus(Request $request): Collection
     {
         $excludedFields = $request->except('lastname', 'options', '_token');
 
@@ -154,7 +151,7 @@ class PersonSearchController extends Controller
         }
 
         return DB::table('persons')->when($request->name, function ($query, $name) {
-            return $query->where('name', 'like', '%' . Str::upper($name) . '%')->orWhere(
+            return $query->where('name', 'ilike', '%' . Str::upper($name) . '%')->orWhere(
                 'nickname',
                 'like',
                 '%' . Str::upper($name) . '%'
@@ -164,9 +161,9 @@ class PersonSearchController extends Controller
         })->when($request->rg, function ($query, $rg) {
             return $query->where('rg', 'like', '%' . Str::upper($rg) . '%');
         })->when($request->father, function ($query, $father) {
-            return $query->where('father', 'like', '%' . Str::upper($father) . '%');
+            return $query->where('father', 'ilike', '%' . Str::upper($father) . '%');
         })->when($request->mother, function ($query, $mother) {
-            return $query->where('mother', 'like', '%' . Str::upper($mother) . '%');
+            return $query->where('mother', 'ilike', '%' . Str::upper($mother) . '%');
         })->when($request->birth_date, function ($query, $birthDate) {
             return $query->where('birth_date', StrHerlper::convertDateToEnUs($birthDate));
         })->limit(50)->select([
@@ -318,343 +315,6 @@ class PersonSearchController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @return Collection
-     */
-    public function sisp(Request $request): Collection
-    {
-        $excludedFields = $request->except('lastname', 'rg', 'options', '_token');
-
-        if (!$this->inputFilterRequestEmpty($excludedFields)) {
-            return collect([]);
-        }
-
-        return DB::connection('sisp')->table('sisp_full.bopenv')->when($request->name, function ($query, $name) {
-            return $query->where('nm_envolvido', 'like', '%' . Str::upper($name) . '%');
-        })->when($request->cpf, function ($query, $cpf) {
-            return $query->where('cpf', 'like', '%' . Str::upper($cpf) . '%');
-        })->when($request->father, function ($query, $father) {
-            return $query->where('mae', 'like', '%' . Str::upper($father) . '%');
-        })->when($request->mother, function ($query, $mother) {
-            return $query->where('pai', 'like', '%' . Str::upper($mother) . '%');
-        })->when($request->birth_date, function ($query, $birthDate) {
-            return $query->where('nascimento', StrHerlper::convertDateToEnUs($birthDate));
-        })->select(
-            [
-                'bopenv_bop_key as id',
-                'cpf',
-                'nm_envolvido as name',
-                'mae as mother',
-                'pai as father',
-                DB::raw("to_char(nascimento::date, 'dd/mm/yyyy') as birth_date")
-            ]
-        )->distinct()->limit(50)->get();
-    }
-
-    /**
-     * @param Request $request
-     * @return Collection
-     */
-    public function seap(Request $request): Collection
-    {
-        $excludedFields = $request->except('lastname', 'options', '_token');
-
-        if (!$this->inputFilterRequestEmpty($excludedFields)) {
-            return collect([]);
-        }
-
-        return DB::connection('seap')->table('seap.preso as pr')
-            ->leftJoin('seap.preso_documento as doc', 'pr.id_preso', '=', 'doc.id_preso')
-            ->when($request->name, function ($query, $name) {
-                return $query->where('pr.preso_nome', 'like', '%' . Str::upper($name) . '%');
-            })->when($request->cpf, function ($query, $cpf) {
-                return $query->where('doc.cpf_numero', 'like', '%' . Str::upper($cpf) . '%');
-            })->when($request->rg, function ($query, $rg) {
-                return $query->where('doc.rg_numero', 'like', '%' . Str::upper($rg) . '%');
-            })->when($request->father, function ($query, $father) {
-                return $query->where('pr.presofiliacao_pai', 'like', '%' . Str::upper($father) . '%');
-            })->when($request->mother, function ($query, $mother) {
-                return $query->where('pr.presofiliacao_mae', 'like', '%' . Str::upper($mother) . '%');
-            })->when($request->birth_date, function ($query, $birthDate) {
-                return $query->where('pr.preso_datanascimento', StrHerlper::convertDateToEnUs($birthDate));
-            })->selectRaw(
-                'pr.id_preso as id,
-                doc.cpf_numero as cpf,
-                doc.rg_numero as rg,
-                pr.preso_nome as name,
-                pr.presofiliacao_mae as mother,
-                pr.presofiliacao_pai as father,
-                to_char(pr.preso_datanascimento, \'dd/mm/yyyy\') as birth_date'
-            )->distinct()->limit(50)->get();
-    }
-
-    /**
-     * @param Request $request
-     * @return Collection
-     */
-    public function seap_visitante(Request $request): Collection
-    {
-        $excludedFields = $request->except('options', '_token');
-
-        if (!$this->inputFilterRequestEmpty($excludedFields)) {
-            return collect([]);
-        }
-
-        return (
-        DB::connection('seap')->table('seap.visitante as vt')
-            ->leftJoin('seap.visitante_documento as doc', 'vt.id_visitante', '=', 'doc.id_visitante')
-            ->when($request->name, function ($query, $name) {
-                return $query->where('vt.visitante_nome', 'like', '%' . Str::upper($name) . '%');
-            })->when($request->cpf, function ($query, $cpf) {
-                return $query->where('doc.visitantedocumento_numero', 'like', '%' . Str::upper($cpf) . '%');
-            })->when($request->rg, function ($query, $rg) {
-                return $query->where('doc.visitantedocumento_numero', 'like', '%' . Str::upper($rg) . '%');
-            })->when($request->father, function ($query, $father) {
-                return $query->where('vt.visitante_pai', 'like', '%' . Str::upper($father) . '%');
-            })->when($request->mother, function ($query, $mother) {
-                return $query->where('vt.visitante_mae', 'like', '%' . Str::upper($mother) . '%');
-            })->when($request->birth_date, function ($query, $birthDate) {
-                return $query->where('vt.visitante_datanascimento', StrHerlper::convertDateToEnUs($birthDate));
-            })->selectRaw(
-                'vt.id_visitante as id,
-                doc.visitantedocumento_numero as cpf,
-                vt.visitante_nome as name,
-                vt.visitante_mae as mother,
-                vt.visitante_pai as father,
-                to_char(vt.visitante_datanascimento, \'dd/mm/yyyy\') as birth_date'
-            )->distinct()->limit(50)->get()
-        )->unique();
-    }
-
-    /**
-     * @param Request $request
-     * @return Collection
-     */
-    public function galton(Request $request): Collection
-    {
-        $excludedFields = $request->except('lastname', 'options', '_token');
-
-        if (!$this->inputFilterRequestEmpty($excludedFields)) {
-            return collect([]);
-        }
-
-        return DB::connection('galton')->table('prontuario')->when($request->name, function ($query, $name) {
-            return $query->where('nome', 'like', '%' . Str::upper($name) . '%');
-        })->when($request->cpf, function ($query, $cpf) {
-            return $query->where('cpf', 'like', '%' . Str::upper($cpf) . '%');
-        })->when($request->rg, function ($query, $rg) {
-            return $query->where('rg', 'like', '%' . Str::upper($rg) . '%');
-        })->when($request->father, function ($query, $father) {
-            return $query->where('mae', 'like', '%' . Str::upper($father) . '%');
-        })->when($request->mother, function ($query, $mother) {
-            return $query->where('pai', 'like', '%' . Str::upper($mother) . '%');
-        })->when($request->birth_date, function ($query, $birthDate) {
-            return $query->where('data_nascimento', StrHerlper::convertDateToEnUs($birthDate));
-        })->selectRaw(
-            'prontuario as id,
-                    cpf,
-                    rg,
-                    nome as name,
-                    mae as mother,
-                    pai as father,
-                    to_char(data_nascimento,\'dd/mm/yyyy\') as birth_date'
-        )->distinct()->limit(50)->get();
-    }
-
-    public function equatorial(Request $request): Collection
-    {
-        $excludedFields = $request->except('lastname', 'mother', 'rg', 'father', 'birth_date', 'birth_date', 'options', '_token');
-
-        if (!$this->inputFilterRequestEmpty($excludedFields)) {
-            return collect([]);
-        }
-
-        $teste = DB::table('equatorial')->when($request->name, function ($query, $name) {
-            return $query->where('nome', 'like', '%' . Str::upper($name) . '%');
-        })->when($request->cpf, function ($query, $cpf) {
-            return $query->where('cpf', 'like', '%' . Str::upper($cpf) . '%');
-        })->selectRaw(
-            '
-                     id,
-                    cpf,
-                    nome as name
-                    '
-        )->distinct()->limit(50)->get();
-
-        return $teste;
-    }
-
-    /**
-     * @param Request $request
-     * @return Collection
-     */
-    public function dpa(Request $request): Collection
-    {
-        $excludedFields = $request->except('lastname', 'mother', 'father', 'birth_date', 'options', '_token');
-
-        if (!$this->inputFilterRequestEmpty($excludedFields)) {
-            return collect([]);
-        }
-
-        return DB::connection('dpa')->table('dpa_proprietario')->when($request->name, function ($query, $name) {
-            return $query->where('nm_proprietario', 'like', '%' . Str::upper($name) . '%');
-        })->when($request->cpf, function ($query, $cpf) {
-            return $query->where('cpf_propr', 'like', '%' . Str::upper($cpf) . '%');
-        })->when($request->cpf, function ($query, $cpf) {
-            return $query->where('cnpj_prop', 'like', '%' . Str::upper($cpf) . '%');
-        })->when($request->rg, function ($query, $rg) {
-            return $query->where('rg_propr', 'like', '%' . Str::upper($rg) . '%');
-        })->select(
-            [
-                'id_proprietario as id',
-                'cpf_propr as cpf',
-                'cnpj_prop as cnpj',
-                'rg_propr as rg',
-                'nm_proprietario as name'
-            ]
-        )
-            ->addSelect(DB::raw("'' as mother"))->addSelect(DB::raw("'' as father"))
-            ->addSelect(DB::raw("'' as birth_date"))->distinct()->limit(50)->get();
-    }
-
-
-    public function polinter(Request $request): Collection
-    {
-
-        $excludedFields = $request->except('lastname', 'cpf', 'rg', 'mother', 'father', 'birth_date', 'options', '_token');
-
-        if (!$this->inputFilterRequestEmpty($excludedFields)) {
-            return collect([]);
-        }
-
-        if (!$request->filled('name')) {
-            return collect([]);
-        }
-
-        $teste = DB::connection('polinter')->table('mandados')->when($request->name, function ($query, $name) {
-            return $query->where('nome', 'like', '%' . Str::upper($name) . '%');
-        })->select(
-            [
-                'id as id',
-                'nome as name'
-            ]
-        )->addSelect(DB::raw("id as id"))->addSelect(DB::raw("'' as birth_date"))->addSelect(DB::raw("'' as mother"))->addSelect(DB::raw("'' as father"))->addSelect(DB::raw("'' as cpf"))->addSelect(DB::raw("'' as rg"))->get();
-
-        return $teste;
-    }
-
-    /**
-     * @param Request $request
-     * @return Collection
-     */
-    public function srh(Request $request): Collection
-    {
-        $excludedFields = $request->except('lastname', 'mother', 'father', 'options', '_token');
-
-        if (!$this->inputFilterRequestEmpty($excludedFields)) {
-            return collect([]);
-        }
-
-        return DB::connection('srh')->table('srh')->when($request->name, function ($query, $name) {
-            return $query->where('nome_servidor', 'like', '%' . Str::upper($name) . '%');
-        })->when($request->cpf, function ($query, $cpf) {
-            return $query->where('cpf', 'like', '%' . Str::upper($cpf) . '%');
-        })->when($request->rg, function ($query, $rg) {
-            return $query->where('rg', 'like', '%' . Str::upper($rg) . '%');
-        })->when($request->birth_date, function ($query, $birthDate) {
-            return $query->where('nascimento', StrHerlper::convertDateToEnUs($birthDate));
-        })->select(
-            [
-                'id_servidor as id',
-                'cpf',
-                'rg',
-                'nome_servidor as name',
-                DB::raw("to_char(nascimento::date, 'dd/mm/yyyy') as birth_date")
-            ]
-        )->addSelect(DB::raw("'' as mother"))->addSelect(DB::raw("'' as father"))->get();
-    }
-
-    /**
-     * @param Request $request
-     * @return Collection
-     */
-    public function prodepa(Request $request): Collection
-    {
-        $data = collect();
-
-        if ($request->filled('rg')) {
-            $response = (new ProdepaApi())->documentSearch($request->rg, $request->cpf);
-            if ($response && !array_key_exists('error', $response)) {
-                $data->push($this->prodepaPersonReturn($response[0]));
-            }
-        }
-
-        if ($data->isEmpty() && $request->filled('name', 'lastname', 'birth_date')) {
-            $response = (new ProdepaApi())->civilIdentification(
-                $request->name,
-                $request->lastname,
-                Carbon::createFromFormat('d/m/Y', $request->birth_date)->toDateString(),
-                $request->input('father', ''),
-                $request->input('mother', ''),
-                $request->input('rg', '')
-            );
-
-            if ($response && !array_key_exists('error', $response)) {
-                $data->push($this->prodepaPersonReturn($response[0]));
-            }
-        }
-
-        if ($data->isEmpty() && $request->filled('name', 'lastname')) {
-            $response = (new ProdepaApi())->nameSearch(
-                $request->name,
-                $request->lastname,
-                $request->input('father', ''),
-                $request->input('mother', '')
-            );
-
-            if ($response && !array_key_exists('error', $response)) {
-                foreach ($response as $value) {
-                    $data->push($this->prodepaPersonReturn($value));
-                }
-            }
-        }
-        return $data->unique();
-    }
-
-    /**
-     * @param Request $request
-     * @return Collection
-     */
-    public function cacador(Request $request): Collection
-    {
-        try {
-            $api = new CacadorRoraimaApi();
-            $response = $api->personSearch($request);
-
-            if ($response->isOk()) {
-                $data = collect($response->getData(true));
-
-                return $data->map(function ($item) {
-                    $person = new Person();
-                    $person->id = $item['codigo'] ?? '';
-                    $person->name = $item['nome'] ?? '';
-                    $person->birth_date = $item['nascimento'] ?? '';
-                    $person->cpf = $item['cpf'] ?? '';
-                    $person->mother = $item['mae'] ?? '';
-
-                    return $person;
-                });
-            }
-
-            return collect();
-        } catch (Exception $exception) {
-            Log::error($exception->getMessage());
-            return collect();
-        }
-
-    }
-
-    /**
      * @param $base
      * @param $id
      * @return Factory|View|Application
@@ -675,26 +335,6 @@ class PersonSearchController extends Controller
         return view('search.person.index', compact('base', 'bops', 'request'));
     }
 
-    /**
-     * @param $response
-     * @return Person
-     */
-    private function prodepaPersonReturn($response): Person
-    {
-        $person = new Person();
-        $person->id = $response['registroGeral'] ?? '';
-        $person->name = ($response['nome'] ?? '') . '  ' . ($response['sobrenome'] ?? '');
-        $person->cpf = '';
-        $person->mother = $response['mae'] ?? '';
-        $person->father = $response['pai'] ?? '';
-        $person->naturalness = $response['naturalidade'] ?? '';
-        $person->birth_date = isset($response['dataNascimento']) ? Carbon::createFromFormat(
-            'dmY',
-            $response['dataNascimento']
-        )->toDateString() : '';
-
-        return $person;
-    }
 
     /**
      * @param Request $request
