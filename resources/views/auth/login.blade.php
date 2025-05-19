@@ -80,12 +80,12 @@
                     </label>
                 </div>
             </div>
-            <div class="mb-2">
-                @if(env('APP_ENV') === 'production')
-                    {!! NoCaptcha::renderJs() !!}
-                    {!! NoCaptcha::display() !!}
-                @endif
-            </div>
+{{--            <div class="mb-2">--}}
+{{--                @if(env('APP_ENV') === 'production')--}}
+{{--                    {!! NoCaptcha::renderJs() !!}--}}
+{{--                    {!! NoCaptcha::display() !!}--}}
+{{--                @endif--}}
+{{--            </div>--}}
             <div class="col-5">
                 <button type=submit
                         class="btn btn-block {{ config('adminlte.classes_auth_btn', 'btn-flat btn-primary') }}">
