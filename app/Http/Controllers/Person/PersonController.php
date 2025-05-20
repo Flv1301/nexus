@@ -121,6 +121,7 @@ class PersonController extends Controller
             toast('Sem permissão!', 'info');
             return back();
         }
+
         $person = Person::with('vcards')->find($id);
 
         return view('person.view.show', compact('person'));

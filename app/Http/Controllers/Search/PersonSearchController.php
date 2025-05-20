@@ -152,7 +152,7 @@ class PersonSearchController extends Controller
         return DB::table('persons')->when($request->name, function ($query, $name) {
             return $query->where('name', 'ilike', '%' . Str::upper($name) . '%')->orWhere(
                 'nickname',
-                'like',
+                'ilike',
                 '%' . Str::upper($name) . '%'
             );
         })->when($request->cpf, function ($query, $cpf) {
@@ -267,8 +267,10 @@ class PersonSearchController extends Controller
     {
         $request = $this->getRequestSession();
         $service = new PersonSearchService();
+        Log::debug($base);
 
         $bops = $service->$base($id);
+        Log::debug($bops);
         return view('search.person.index', compact('base', 'bops', 'request'));
     }
 

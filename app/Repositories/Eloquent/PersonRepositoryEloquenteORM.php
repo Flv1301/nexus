@@ -37,8 +37,8 @@ class PersonRepositoryEloquenteORM implements PersonRepositoryInterface
     {
         return Person::when(isset($filter['name']), function ($query) use ($filter) {
             $name = $filter['name'];
-            return $query->where('name', 'like', '%' . $name . '%')
-                ->orWhere('nickname', 'like', '%' . $name . '%');
+            return $query->where('name', 'ilike', '%' . $name . '%')
+                ->orWhere('nickname', 'ilike', '%' . $name . '%');
         })
             ->when(isset($filter['document']), function ($query) use ($filter) {
                 $document = $filter['document'];
@@ -49,17 +49,17 @@ class PersonRepositoryEloquenteORM implements PersonRepositoryInterface
                     ->orWhere('voter_registration', 'like', '%' . $document . '%');
             })
             ->when(isset($filter['father']), function ($query) use ($filter) {
-                return $query->where('father', 'like', '%' . $filter['father'] . '%');
+                return $query->where('father', 'ilike', '%' . $filter['father'] . '%');
             })
             ->when(isset($filter['mother']), function ($query) use ($filter) {
-                return $query->where('mother', 'like', '%' . $filter['mother'] . '%');
+                return $query->where('mother', 'ilike', '%' . $filter['mother'] . '%');
             })
             ->when(isset($filter['birthDate']), function ($query) use ($filter) {
                 $birthDate = Carbon::createFromFormat('d/m/Y', $filter['birthDate'])->toDateString();
                 return $query->where('birth_date', $birthDate);
             })
             ->when(isset($filter['tattoo']), function ($query) use ($filter) {
-                return $query->where('tattoo', 'like', '%' . $filter['tattoo'] . '%');
+                return $query->where('tattoo', 'ilike', '%' . $filter['tattoo'] . '%');
             })
             ->paginate($perPage);
     }
