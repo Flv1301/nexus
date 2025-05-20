@@ -267,11 +267,9 @@ class PersonSearchController extends Controller
     {
         $request = $this->getRequestSession();
         $service = new PersonSearchService();
-        Log::debug($base);
+        $person = $service->$base($id);
 
-        $bops = $service->$base($id);
-        Log::debug($bops);
-        return view('search.person.index', compact('base', 'bops', 'request'));
+        return view('search.person.index', compact('base', 'person', 'request'));
     }
 
 
