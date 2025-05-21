@@ -8,6 +8,11 @@
 @section('plugins.Sweetalert2', true)
 @section('title','Atualização de Pessoa')
 <x-page-header title="Atualização de Pessoa">
+    @if($person->active_orcrim && !auth()->user()->can('sisfac'))
+        <span class="text-danger text-lg rounded mr-xl-5">
+                Algumas informações são restritas. Para mais informações, entrar em contato com o suporte.
+            </span>
+    @endif
     <div class="ms-3 ml-xl-5">
         <a href="{{ url()->previous() }}" id="history" class="btn btn-info" type="button">
             <i class="fas fa-sm fa-backward p-1"></i>Voltar
@@ -33,6 +38,7 @@
             <x-adminlte-button type="submit" label="Atualizar"
                                theme="success"
                                icon="fas fa-lg fa-save"
+                               :disabled="$person->active_orcrim && !auth()->user()->can('sisfac')"
             />
         </div>
     </form>

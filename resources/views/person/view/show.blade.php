@@ -8,7 +8,7 @@
                     <h1 class="h1 text-light">Cadastro de Pessoa</h1>
                 </div>
                 <div>
-                    @if($person->warrant == 1)
+                    @if($person->warrant == 1 && !$person->active_orcrim)
                         <span class="text-danger text-lg p-1 pr-4 pl-4 rounded" style="background-color: #FFC720">
                         Atenção: Pessoa com mandado de prisão - Consultar na base nacional.
                     </span>
@@ -25,4 +25,3 @@
 @section('content')
     @include('person.view.content')
 @endsection
-
