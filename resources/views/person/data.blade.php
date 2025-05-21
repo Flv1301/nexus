@@ -1,3 +1,7 @@
+@php
+    $isDisabled = $person->active_orcrim && !auth()->user()->can('sisfac');
+@endphp
+
 <div class="card">
     <x-loading/>
     <div class="card-body">
@@ -11,18 +15,20 @@
                     maxlength="11"
                     class="mask-cpf-number"
                     value="{{ old('cpf') ?? $person->cpf ?? '' }}"
+                    :disabled="$isDisabled"
                 />
             </div>
-{{--            <div class="form-group d-flex align-items-center mt-3 mr-3">--}}
-{{--                <x-adminlte-button--}}
-{{--                    type="button"--}}
-{{--                    icon="fas fa-search"--}}
-{{--                    theme="info"--}}
-{{--                    id="cpf-button"--}}
-{{--                    label="Consultar"--}}
-{{--                    onclick="searchCPF()"--}}
-{{--                />--}}
-{{--            </div>--}}
+            <div class="form-group d-flex align-items-center mt-3 mr-3">
+                <x-adminlte-button
+                    type="button"
+                    icon="fas fa-search"
+                    theme="info"
+                    id="cpf-button"
+                    label="Consultar"
+                    onclick="searchCPF()"
+                    :disabled="$isDisabled"
+                />
+            </div>
             <div class="form-group col-md-5">
                 <x-adminlte-input
                     name="name"
@@ -31,6 +37,7 @@
                     placeholder="Nome completo"
                     style="text-transform:uppercase"
                     value="{{ old('name') ?? $person->name ?? ''}}"
+                    :disabled="$isDisabled"
                 />
             </div>
             <div class="form-group col-md-3">
@@ -41,6 +48,7 @@
                     placeholder="Alcunha"
                     style="text-transform:uppercase"
                     value="{{ old('nickname') ?? $person->nickname ?? ''}}"
+                    :disabled="$isDisabled"
                 />
             </div>
             <div class="form-group col-md-1">
@@ -51,6 +59,8 @@
                     name="dead"
                     data-on-color="success"
                     data-off-color="danger"
+                    :checked="old('dead') ?? $person->dead ?? false"
+                    :disabled="$isDisabled"
                 />
             </div>
         </div>
@@ -61,6 +71,7 @@
                     id="sex"
                     label="Sexo"
                     placeholder="Sexo"
+                    :disabled="$isDisabled"
                 >
                     <option/>
                     <option value="MASCULINO"
@@ -81,6 +92,7 @@
                                        placeholder="Data Nascimento"
                                        label="Data Nascimento"
                                        value="{{old('birth_date') ?? $person->birth_date ?? ''}}"
+                                       :disabled="$isDisabled"
                 >
                     <x-slot name="appendSlot">
                         <div class="input-group-text bg-gradient-warning">
@@ -96,6 +108,7 @@
                     label="RG"
                     placeholder="RG"
                     value="{{ old('rg') ?? $person->rg ?? ''}}"
+                    :disabled="$isDisabled"
                 />
             </div>
             <div class="form-group col-md-3">
@@ -105,6 +118,7 @@
                     label="Titulo Eleitor"
                     placeholder="Titulo Eleitor"
                     value="{{ old('voter_registration') ?? $person->voter_registration ?? ''}}"
+                    :disabled="$isDisabled"
                 />
             </div>
         </div>
@@ -117,6 +131,7 @@
                     placeholder="Município Nascimento"
                     style="text-transform:uppercase"
                     value="{{ old('birth_city') ?? $person->birth_city ?? ''}}"
+                    :disabled="$isDisabled"
                 />
             </div>
             <div class="form-group col-md-1">
@@ -125,6 +140,7 @@
                     id="uf_birth_city"
                     label="UF"
                     placeholder="UF"
+                    :disabled="$isDisabled"
                 >
                     <option/>
                     @foreach(\App\Enums\UFBrEnum::cases() as $uf)
@@ -144,6 +160,7 @@
                     placeholder="Nome do pai"
                     style="text-transform:uppercase"
                     value="{{ old('father') ?? $person->father ?? ''}}"
+                    :disabled="$isDisabled"
                 />
             </div>
             <div class="form-group col-md-4">
@@ -154,6 +171,7 @@
                     placeholder="Nome da mãe"
                     style="text-transform:uppercase"
                     value="{{ old('mother') ?? $person->mother ?? ''}}"
+                    :disabled="$isDisabled"
                 />
             </div>
             <div class="form-group col-md-12">
@@ -164,30 +182,83 @@
                     placeholder="Tatuagem"
                     style="text-transform:uppercase"
                     value="{{ old('tatto') ?? $person->tatto ?? ''}}"
+                    :disabled="$isDisabled"
                 />
             </div>
         </div>
-        <div class="form-group col-md-12">
-            @php
-                $config = [
-                    "height" => "100",
-                    "toolbar" => [
-                        ['style', ['bold', 'italic', 'underline', 'clear']],
-                        ['font', ['strikethrough', 'superscript', 'subscript']],
-                        ['fontsize', ['fontsize']],
-                        ['color', ['color']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['height', ['height']]
-                    ],
-                ]
-            @endphp
-            <x-adminlte-text-editor name="observation" label="Observações"
-                                    label-class="text-dark"
-                                    placeholder="Observações"
-                                    :config="$config">
-                {{ old('observation') ?? $person->observation }}
-            </x-adminlte-text-editor>
-        </div>
+        @can('sisfac')
+            <div class="card">
+                <div class="card-header text-info">Faccionado</div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-1">
+                            <x-adminlte-input-switch
+                                label="Ativo"
+                                data-on-text="SIM"
+                                data-off-text="NÃO"
+                                name="active_orcrim"
+                                data-on-color="success"
+                                data-off-color="danger"
+                                :checked="old('active_orcrim') ?? $person->active_orcrim ?? false">
+                            </x-adminlte-input-switch>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <x-adminlte-input
+                                name="orcrim"
+                                id="orcrim"
+                                label="ORCRIM"
+                                placeholder="Organização Criminosa"
+                                style="text-transform:uppercase"
+                                value="{{ old('orcrim') ?? $person->orcrim ?? ''}}"
+                            />
+                        </div>
+                        <div class="form-group col-md-3">
+                            <x-adminlte-input
+                                name="orcrim_office"
+                                id="orcrim_office"
+                                label="Cargo"
+                                placeholder="Cargo na Organização"
+                                style="text-transform:uppercase"
+                                value="{{ old('orcrim_office') ?? $person->orcrim_office ?? ''}}"
+                            />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <x-adminlte-input
+                                name="orcrim_occupation_area"
+                                id="orcrim_occupation_area"
+                                label="Área de Atuação"
+                                placeholder="Área de Atuação"
+                                style="text-transform:uppercase"
+                                value="{{ old('orcrim_occupation_area') ?? $person->orcrim_occupation_area ?? ''}}"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endcan
+        @if(!$person->active_orcrim || auth()->user()->can('sisfac'))
+            <div class="form-group col-md-12">
+                @php
+                    $config = [
+                        "height" => "100",
+                        "toolbar" => [
+                            ['style', ['bold', 'italic', 'underline', 'clear']],
+                            ['font', ['strikethrough', 'superscript', 'subscript']],
+                            ['fontsize', ['fontsize']],
+                            ['color', ['color']],
+                            ['para', ['ul', 'ol', 'paragraph']],
+                            ['height', ['height']]
+                        ],
+                    ]
+                @endphp
+                <x-adminlte-text-editor name="observation" label="Observações"
+                                        label-class="text-dark"
+                                        placeholder="Observações"
+                                        :config="$config">
+                    {{ old('observation') ?? $person->observation }}
+                </x-adminlte-text-editor>
+            </div>
+        @endif
     </div>
 </div>
 @push('js')
@@ -210,8 +281,6 @@
                     document.getElementById('mother').value = data.nomeMae;
                     document.getElementById('birth_date').value = formatDate(data.dataNascimento);
                     document.getElementById('voter_registration').value = data.tituloEleitor;
-                    // document.getElementById('occupation').value = data.ocupacaoPrincipal;
-                    // document.getElementById('occupation_year').value = data.anoExercicioOcupacao;
                     document.getElementById('birth_city').value = data.municipioNaturalidade;
                     document.getElementById('uf_birth_city').value = data.ufNaturalidade;
                     document.getElementById('sex').value = data.sexo;

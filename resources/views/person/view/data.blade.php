@@ -141,6 +141,53 @@
                 </div>
             </div>
         </div>
+        @can('sisfac')
+            <div class="card bg-gradient-light">
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-1">
+                            <x-adminlte-input-switch
+                                data-on-text="SIM"
+                                data-off-text="NÃO"
+                                label="Ativo"
+                                name="active_orcrim"
+                                data-on-color="success"
+                                data-off-color="danger"
+                                disabled
+                                :checked="$person->active_orcrim ?? false">
+                            </x-adminlte-input-switch>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <x-adminlte-input
+                                name="orcrim"
+                                id="orcrim"
+                                label="ORCRIM"
+                                value="{{ $person->orcrim}}"
+                                disabled
+                            />
+                        </div>
+                        <div class="form-group col-md-3">
+                            <x-adminlte-input
+                                name="orcrim_office"
+                                id="orcrim_office"
+                                label="Cargo"
+                                value="{{ $person->orcrim_office}}"
+                                disabled
+                            />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <x-adminlte-input
+                                name="orcrim_occupation_area"
+                                id="orcrim_occupation_area"
+                                label="Área de Atuação"
+                                value="{{ $person->orcrim_occupation_area}}"
+                                disabled
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endcan
         <div class="form-group col-md-12">
             <x-adminlte-text-editor name="observation" label="Observações" label-class="text-dark"
                                     placeholder="Observações"
