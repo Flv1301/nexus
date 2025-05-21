@@ -37,6 +37,10 @@ class CreatePersonsTable extends Migration
             $table->boolean('dead')->default(false);
             $table->Text('observation')->nullable();
             $table->boolean('warrant')->default(false);
+            $table->boolean('active_orcrim')->default(false);
+            $table->string('orcrim')->nullable();
+            $table->string('orcrim_office')->nullable();
+            $table->string('orcrim_occupation_area')->nullable();
             $table->unsignedBigInteger('user_id')->nullable(false);
             $table->timestamps();
 
