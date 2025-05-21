@@ -188,12 +188,14 @@
                 </div>
             </div>
         @endcan
-        <div class="form-group col-md-12">
-            <x-adminlte-text-editor name="observation" label="Observações" label-class="text-dark"
-                                    placeholder="Observações"
-                                    :config="$config" disabled>
-                {!! $person->observation  !!}
-            </x-adminlte-text-editor>
-        </div>
+        @if(!$person->active_orcrim || auth()->user()->can('sisfac'))
+            <div class="form-group col-md-12">
+                <x-adminlte-text-editor name="observation" label="Observações" label-class="text-dark"
+                                        placeholder="Observações"
+                                        :config="$config" disabled>
+                    {!! $person->observation  !!}
+                </x-adminlte-text-editor>
+            </div>
+        @endif
     </div>
 </div>
