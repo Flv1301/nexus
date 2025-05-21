@@ -35,6 +35,7 @@ enum PermissionsEnum: string
     case PERSON_DELETE = 'pessoa.excluir';
     case PERSON_UPDATE = 'pessoa.atualizar';
     case PERSON_SEARCH = 'pessoa.pesquisar';
+    case SISFAC = 'sisfac';
 
     case CASE = 'caso';
     case CASE_READ = 'caso.ler';
