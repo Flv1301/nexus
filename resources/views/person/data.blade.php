@@ -1,7 +1,6 @@
 @php
     $isDisabled = $person->active_orcrim && !auth()->user()->can('sisfac');
 @endphp
-
 <div class="card">
     <x-loading/>
     <div class="card-body">

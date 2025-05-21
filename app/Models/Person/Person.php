@@ -71,6 +71,9 @@ class Person extends Model
         'mother' => UpCaseTextCast::class,
         'occupation' => UpCaseTextCast::class,
         'detaineeDate' => DateCast::class,
+        'orcrim' => UpCaseTextCast::class,
+        'orcrimOffice' => UpCaseTextCast::class,
+        'orcrimOccupationArea' => UpCaseTextCast::class,
 
     ];
 
