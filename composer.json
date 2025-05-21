@@ -14,7 +14,6 @@
         "barryvdh/laravel-dompdf": "^2.0",
         "barryvdh/laravel-ide-helper": "^2.13",
         "canducci/zipcode": "^3.0",
-        "darkaonline/l5-swagger": "*",
         "elasticsearch/elasticsearch": "*",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "*",
