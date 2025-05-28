@@ -129,12 +129,53 @@
                             disabled
                         />
                     </div>
+                    <div class="form-group col-md-6">
+                        <x-adminlte-input
+                            name="spouse_name"
+                            id="spouse_name"
+                            label="Cônjuge"
+                            value="{{$person->spouse_name}}"
+                            disabled
+                        />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <x-adminlte-input
+                            name="spouse_cpf"
+                            id="spouse_cpf"
+                            label="CPF do Cônjuge"
+                            class="mask-cpf-number"
+                            value="{{$person->spouse_cpf}}"
+                            disabled
+                        />
+                    </div>
                     <div class="form-group col-md-12">
                         <x-adminlte-input
                             name="tatto"
                             id="tatto"
                             label="Tatuagem"
                             value="{{$person->tatto}}"
+                            disabled
+                        />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <x-adminlte-input
+                            name="occupation"
+                            id="occupation"
+                            label="Ocupação/Profissão"
+                            value="{{$person->occupation}}"
+                            disabled
+                        />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <x-adminlte-input
+                            name="conselho_de_classe"
+                            id="conselho_de_classe"
+                            label="Conselho de Classe"
+                            value="{{ $person->conselho_de_classe ?? ''}}"
                             disabled
                         />
                     </div>

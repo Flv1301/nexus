@@ -121,6 +121,7 @@
     </div>
 @endsection
 @push('js')
+    <script src="{{ asset('js/cpf-mask.js') }}"></script>
     <script>
         const form = document.getElementById('form-search');
         const button = document.getElementById('icon-bars-hidden');

@@ -26,10 +26,20 @@ class PersonResquest extends FormRequest
      */
     public function rules(): array
     {
+        $personId = $this->route('id'); // Para updates, pega o ID da rota
+        
         return [
             'name' => 'required|min:3',
-            'cpf' => Rule::unique('persons')->whereNotNull('cpf'),
-            'voter_registration' => Rule::unique('persons')->whereNotNull('voter_registration'),
+            'cpf' => [
+                Rule::unique('persons', 'cpf')
+                    ->whereNotNull('cpf')
+                    ->ignore($personId)
+            ],
+            'voter_registration' => [
+                Rule::unique('persons', 'voter_registration')
+                    ->whereNotNull('voter_registration')
+                    ->ignore($personId)
+            ],
             'vcard' => 'mimetypes:text/vcard'
         ];
     }

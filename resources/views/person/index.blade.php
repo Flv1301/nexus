@@ -45,7 +45,7 @@
     <div class="card">
         <div class="card-body">
             @php
-                $heads = ['Código','Nome','Alcunha', 'Nascimento', 'CPF',['label' => 'Opções', 'no-export' => true, 'width' => 5]];
+                $heads = ['Código','Nome','Alcunha', 'Nascimento', 'CPF',['label' => 'Opções', 'no-export' => true, 'width' => 8]];
                 $config = [
                     'order' => [[0, 'desc']],
                     'columns' => [null, null, null, null, null],
@@ -79,28 +79,30 @@
                         <td>{{$person->nickname}}</td>
                         <td>{{$person->birth_date}}</td>
                         <td>{{$person->cpf}}</td>
-                        <td>
+                        <td class="text-nowrap">
                             @can('pessoa.ler')
-                            <nobr/>
-                            <a href="{{route('person.show', $person)}}" class='btn btn-sm mx-1' title='Detalhe'>
-                                <i class='fa fa-lg fa-fw fa-eye'></i>
+                            <a href="{{route('person.show', $person)}}" class='btn btn-sm mx-1' title='Visualizar Detalhes'>
+                                <i class='fa fa-lg fa-fw fa-eye text-primary'></i>
+                            </a>
+                            @endcan
+                            @can('pessoa.ler')
+                            <a href="{{route('person.search.report', ['id' => $person->id])}}" class='btn btn-sm mx-1' title='Gerar Relatório PDF' target="_blank">
+                                <i class='fa fa-lg fa-fw fa-file-pdf text-danger'></i>
                             </a>
                             @endcan
                             @can('pessoa.editar')
-                                <nobr/>
-                                <a href="{{route('person.edit', $person->id)}}" class='btn btn-sm mx-1 text-primary' title='Edição'>
-                                    <i class='fa fa-lg fa-fw fa-edit'></i>
-                                </a>
+                            <a href="{{route('person.edit', $person->id)}}" class='btn btn-sm mx-1 text-warning' title='Editar'>
+                                <i class='fa fa-lg fa-fw fa-edit'></i>
+                            </a>
                             @endcan
-                            <nobr/>
                             @can('pessoa.excluir')
-                                <form class="d-inline" action="{{route('person.destroy', ['id' => $person->id])}}" method="post">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm text-danger mx-1 delete-alert" title="Delete">
-                                        <i class="fa fa-lg fa-fw fa-trash"></i>
-                                    </button>
-                                </form>
+                            <form class="d-inline" action="{{route('person.destroy', ['id' => $person->id])}}" method="post">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm text-danger mx-1 delete-alert" title="Excluir">
+                                    <i class="fa fa-lg fa-fw fa-trash"></i>
+                                </button>
+                            </form>
                             @endcan
                         </td>
                     </tr>

@@ -12,6 +12,15 @@ use App\Models\Data\Email;
 use App\Models\Data\Image;
 use App\Models\Data\Telephone;
 use App\Models\Person\Person;
+use App\Models\Person\PersonCompany;
+use App\Models\Person\Vehicle;
+use App\Models\Person\VinculoOrcrim;
+use App\Models\Person\Pcpa;
+use App\Models\Person\Tj;
+use App\Models\Person\Arma;
+use App\Models\Person\Rais;
+use App\Models\Person\Bancario;
+use App\Models\Person\Doc;
 use App\Models\SocialNetwork;
 use App\Services\VCardService;
 use Illuminate\Contracts\Foundation\Application;
@@ -52,15 +61,21 @@ class PersonController extends Controller
     {
         $request->validate(['search' => 'required|string|min:3'], ['search.required' => 'Campo de Pesquisa é obrigatório']);
         $search = Str::upper($request->search);
-        $search = Str::ascii($search);
-        $persons = Person::where('name', 'ilike', '%' . $search . '%')
-            ->orWhere('nickname', 'ilike', '%' . $search . '%')
-            ->orWhere('cpf', 'like', '%' . $search . '%')
-            ->orWhere('rg', 'like', '%' . $search . '%')
-            ->orWhere('tatto', 'ilike', '%' . $search . '%')
-            ->orderBy('name')
-            ->select('id', 'name', 'nickname', 'dead', 'birth_date', 'cpf')
-            ->paginate(15);
+        $searchAscii = Str::ascii($search);
+        
+        $persons = Person::where(function($query) use ($search, $searchAscii) {
+            $query->where('name', 'ilike', '%' . $search . '%')
+                  ->orWhere('name', 'ilike', '%' . $searchAscii . '%')
+                  ->orWhere('nickname', 'ilike', '%' . $search . '%')
+                  ->orWhere('nickname', 'ilike', '%' . $searchAscii . '%')
+                  ->orWhere('cpf', 'like', '%' . $search . '%')
+                  ->orWhere('rg', 'like', '%' . $search . '%')
+                  ->orWhere('tatto', 'ilike', '%' . $search . '%')
+                  ->orWhere('tatto', 'ilike', '%' . $searchAscii . '%');
+        })
+        ->orderBy('name')
+        ->select('id', 'name', 'nickname', 'dead', 'birth_date', 'cpf')
+        ->paginate(15);
 
         return view('person.index', compact('persons'))->with(['search' => $request->search]);
     }
@@ -88,24 +103,174 @@ class PersonController extends Controller
         try {
             StrHerlper::asciiRequest($request);
             StrHerlper::upperRequest($request);
-            $personData = $request->except(['addresses', 'contacts', 'images']);
+            $personData = $request->except(['addresses', 'contacts', 'images', 'emails', 'socials', 'companies', 'vehicles', 'vinculo_orcrims', 'pcpas', 'tjs', 'armas', 'rais', 'bancarios', 'docs', 'vcard']);
             $filledFields = array_filter($personData, fn($value) => !empty($value));
             $filledFields['user_id'] = Auth::id();
             $person = Person::create($filledFields);
 
-            $this->attachAddresses($person, $request->input('addresses'));
-            $this->attachContacts($person, $request->input('contacts'));
-            $this->attachEmails($person, $request->input('emails'));
-            $this->attachSocialNetworks($person, $request->input('socials'));
-            $this->attachImages($person, $request->file('images'));
-            $this->storeWithVCard($person, $request->file('vcard'));
+            // Attach addresses
+            try {
+                $this->attachAddresses($person, $request->input('addresses'));
+            } catch (\Exception $e) {
+                Log::error('Error attaching addresses:', ['error' => $e->getMessage()]);
+                throw new \Exception('Erro ao processar endereços: ' . $e->getMessage());
+            }
+
+            // Attach contacts
+            try {
+                $this->attachContacts($person, $request->input('contacts'));
+            } catch (\Exception $e) {
+                Log::error('Error attaching contacts:', ['error' => $e->getMessage()]);
+                throw new \Exception('Erro ao processar contatos: ' . $e->getMessage());
+            }
+
+            // Attach emails
+            try {
+                $this->attachEmails($person, $request->input('emails'));
+            } catch (\Exception $e) {
+                Log::error('Error attaching emails:', ['error' => $e->getMessage()]);
+                throw new \Exception('Erro ao processar emails: ' . $e->getMessage());
+            }
+
+            // Attach social networks
+            try {
+                $this->attachSocialNetworks($person, $request->input('socials'));
+            } catch (\Exception $e) {
+                Log::error('Error attaching socials:', ['error' => $e->getMessage()]);
+                throw new \Exception('Erro ao processar redes sociais: ' . $e->getMessage());
+            }
+
+            // Attach images
+            try {
+                $this->attachImages($person, $request->file('images'));
+            } catch (\Exception $e) {
+                Log::error('Error attaching images:', ['error' => $e->getMessage()]);
+                throw new \Exception('Erro ao processar imagens: ' . $e->getMessage());
+            }
+
+            // Store VCard
+            try {
+                $this->storeWithVCard($person, $request->file('vcard'));
+            } catch (\Exception $e) {
+                Log::error('Error storing vcard:', ['error' => $e->getMessage()]);
+                throw new \Exception('Erro ao processar VCard: ' . $e->getMessage());
+            }
+
+            // Lógica para salvar as empresas
+            if ($request->has('companies')) {
+                try {
+                    $this->attachCompanies($person, $request->input('companies'));
+                } catch (\Exception $e) {
+                    Log::error('Error attaching companies:', ['error' => $e->getMessage()]);
+                    throw new \Exception('Erro ao processar empresas: ' . $e->getMessage());
+                }
+            }
+
+            // Lógica para salvar veículos
+            if ($request->has('vehicles')) {
+                try {
+                    Log::info('Checking for vehicles data in request', [
+                        'has_vehicles' => $request->has('vehicles'),
+                        'vehicles_input' => $request->input('vehicles')
+                    ]);
+                    $this->attachVehicles($person, $request->input('vehicles'));
+                } catch (\Exception $e) {
+                    Log::error('Error attaching vehicles:', ['error' => $e->getMessage()]);
+                    throw new \Exception('Erro ao processar veículos: ' . $e->getMessage());
+                }
+            }
+
+            // Lógica para salvar vínculos de orcrim
+            if ($request->has('vinculo_orcrims')) {
+                try {
+                    $this->attachVinculoOrcrims($person, $request->input('vinculo_orcrims'));
+                } catch (\Exception $e) {
+                    Log::error('Error attaching vinculo orcrims:', ['error' => $e->getMessage()]);
+                    throw new \Exception('Erro ao processar vínculos de orcrim: ' . $e->getMessage());
+                }
+            }
+
+            // Lógica para salvar PCPAs
+            if ($request->has('pcpas')) {
+                try {
+                    $this->attachPcpas($person, $request->input('pcpas'));
+                } catch (\Exception $e) {
+                    Log::error('Error attaching pcpas:', ['error' => $e->getMessage()]);
+                    throw new \Exception('Erro ao processar PCPAs: ' . $e->getMessage());
+                }
+            }
+
+            // Lógica para salvar TJs
+            if ($request->has('tjs')) {
+                try {
+                    $this->attachTjs($person, $request->input('tjs'));
+                } catch (\Exception $e) {
+                    Log::error('Error attaching tjs:', ['error' => $e->getMessage()]);
+                    throw new \Exception('Erro ao processar TJs: ' . $e->getMessage());
+                }
+            }
+
+            // Lógica para salvar Armas
+            if ($request->has('armas')) {
+                try {
+                    $this->attachArmas($person, $request->input('armas'));
+                } catch (\Exception $e) {
+                    Log::error('Error attaching armas:', ['error' => $e->getMessage()]);
+                    throw new \Exception('Erro ao processar Armas: ' . $e->getMessage());
+                }
+            }
+
+            // Lógica para salvar RAIS
+            if ($request->has('rais')) {
+                try {
+                    $this->attachRais($person, $request->input('rais'));
+                } catch (\Exception $e) {
+                    Log::error('Error attaching rais:', ['error' => $e->getMessage()]);
+                    throw new \Exception('Erro ao processar RAIS: ' . $e->getMessage());
+                }
+            }
+
+            // Lógica para salvar Bancários
+            if ($request->has('bancarios')) {
+                try {
+                    $this->attachBancarios($person, $request->input('bancarios'));
+                } catch (\Exception $e) {
+                    Log::error('Error attaching bancarios:', ['error' => $e->getMessage()]);
+                    throw new \Exception('Erro ao processar Bancários: ' . $e->getMessage());
+                }
+            }
+
+            // Lógica para salvar Docs
+            if ($request->has('docs')) {
+                try {
+                    $this->attachDocs($person, $request->input('docs'), $request->file('doc_uploads'));
+                } catch (\Exception $e) {
+                    Log::error('Error attaching docs:', ['error' => $e->getMessage()]);
+                    throw new \Exception('Erro ao processar Documentos: ' . $e->getMessage());
+                }
+            }
 
             toast('Pessoa cadastrada com sucesso!', 'success');
 
             return redirect()->route('persons');
         } catch (\Exception $exception) {
-            Log::error($exception->getMessage());
-            toast('Erro de sistema! Não foi possível cadastrar a pessoa', 'error');
+            Log::error('Error in store method:', [
+                'error' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+                'request_data' => $request->all()
+            ]);
+            
+            // Se a pessoa foi criada mas houve erro nos anexos, tenta deletar
+            if (isset($person) && $person->id) {
+                try {
+                    $person->delete();
+                    Log::info('Person deleted due to error in attachments');
+                } catch (\Exception $deleteException) {
+                    Log::error('Failed to delete person after error:', ['error' => $deleteException->getMessage()]);
+                }
+            }
+            
+            toast($exception->getMessage(), 'error');
 
             return back();
         }
@@ -122,7 +287,7 @@ class PersonController extends Controller
             return back();
         }
 
-        $person = Person::with('vcards')->find($id);
+        $person = Person::with(['vcards', 'companies', 'vehicles', 'vinculoOrcrims', 'pcpas', 'tjs', 'armas', 'rais', 'bancarios', 'docs'])->find($id);
 
         return view('person.view.show', compact('person'));
     }
@@ -151,11 +316,11 @@ class PersonController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param PersonResquest $request
      * @param $id
      * @return RedirectResponse
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(PersonResquest $request, $id): RedirectResponse
     {
         if (!Gate::allows('pessoa.atualizar')) {
             toast('Sem permissão!', 'info');
@@ -164,7 +329,7 @@ class PersonController extends Controller
         }
         try {
             $person = Person::findOrFail($id);
-            $person->fill($request->except(['addresses', 'contacts', 'images']));
+            $person->fill($request->except(['addresses', 'contacts', 'images', 'emails', 'socials', 'companies', 'vehicles', 'vinculo_orcrims', 'pcpas', 'tjs', 'armas', 'rais', 'bancarios', 'docs', 'vcard']));
             $person->dead = $request->boolean('dead', false);
             $person->warrant = $request->boolean('warrant', false);
             $person->update();
@@ -195,6 +360,66 @@ class PersonController extends Controller
 
             if ($request->hasFile('vcard')) {
                 $this->storeWithVCard($person, $request->file('vcard'));
+            }
+
+            // Lógica para salvar as empresas
+            $person->companies()->forceDelete();
+            if ($request->has('companies')) {
+                $this->attachCompanies($person, $request->input('companies'));
+            }
+
+            // Lógica para salvar veículos
+            Log::info('Checking for vehicles data in update request', [
+                'has_vehicles' => $request->has('vehicles'),
+                'vehicles_input' => $request->input('vehicles'),
+                'all_request_data' => $request->all()
+            ]);
+            
+            $person->vehicles()->delete();
+            if ($request->has('vehicles')) {
+                $this->attachVehicles($person, $request->input('vehicles'));
+            }
+
+            // Lógica para salvar vínculos de orcrim
+            $person->vinculoOrcrims()->delete();
+            if ($request->has('vinculo_orcrims')) {
+                $this->attachVinculoOrcrims($person, $request->input('vinculo_orcrims'));
+            }
+
+            // Lógica para salvar PCPAs
+            $person->pcpas()->delete();
+            if ($request->has('pcpas')) {
+                $this->attachPcpas($person, $request->input('pcpas'));
+            }
+
+            // Lógica para salvar TJs
+            $person->tjs()->delete();
+            if ($request->has('tjs')) {
+                $this->attachTjs($person, $request->input('tjs'));
+            }
+
+            // Lógica para salvar Armas
+            $person->armas()->delete();
+            if ($request->has('armas')) {
+                $this->attachArmas($person, $request->input('armas'));
+            }
+
+            // Lógica para salvar RAIS
+            $person->rais()->delete();
+            if ($request->has('rais')) {
+                $this->attachRais($person, $request->input('rais'));
+            }
+
+            // Lógica para salvar Bancários
+            $person->bancarios()->delete();
+            if ($request->has('bancarios')) {
+                $this->attachBancarios($person, $request->input('bancarios'));
+            }
+
+            // Lógica para salvar Docs
+            $person->docs()->delete();
+            if ($request->has('docs')) {
+                $this->attachDocs($person, $request->input('docs'), $request->file('doc_uploads'));
             }
 
             toast('Pessoa atualizada com sucesso!', 'success');
@@ -265,13 +490,34 @@ class PersonController extends Controller
     private function attachAddresses(Person $person, ?array $addresses): bool
     {
         if (!$addresses) {
+            Log::info('No addresses data received');
             return false;
         }
 
-        foreach ($addresses as $json) {
-            $addressData = collect(json_decode($json, true))->filter()->all();
-            $address = Address::create($addressData);
-            $person->address()->attach($address->id);
+        Log::info('Addresses data received:', ['addresses' => $addresses]);
+
+        foreach ($addresses as $key => $json) {
+            try {
+                Log::info('Processing address at index ' . $key, [
+                    'data_type' => gettype($json),
+                    'data' => $json
+                ]);
+
+                $addressData = collect(json_decode($json, true))->filter()->all();
+                Log::info('Address data processed:', ['address' => $addressData]);
+                
+                $address = Address::create($addressData);
+                $person->address()->attach($address->id);
+                
+                Log::info('Address created and attached successfully:', ['address_id' => $address->id]);
+            } catch (\Exception $e) {
+                Log::error('Error creating address:', [
+                    'error' => $e->getMessage(),
+                    'error_trace' => $e->getTraceAsString(),
+                    'address_data' => $json ?? null
+                ]);
+                throw $e;
+            }
         }
 
         return true;
@@ -377,6 +623,594 @@ class PersonController extends Controller
             (new VCardService($person, $file, $path))->store();
         }
 
+        return true;
+    }
+
+    /**
+     * @param Person $person
+     * @param array|null $companies
+     * @return bool
+     */
+    private function attachCompanies(Person $person, ?array $companies): bool
+    {
+        if (!$companies) {
+            Log::info('No companies data received');
+            return false;
+        }
+
+        Log::info('Companies data received:', ['companies' => $companies]);
+        Log::info('Companies data type:', ['type' => gettype($companies)]);
+
+        foreach ($companies as $key => $companyData) {
+            try {
+                Log::info('Processing company at index ' . $key, [
+                    'data_type' => gettype($companyData),
+                    'data' => $companyData
+                ]);
+
+                // Se for string JSON, decodifica
+                if (is_string($companyData)) {
+                    $companyData = json_decode($companyData, true);
+                    Log::info('Decoded JSON data:', ['decoded' => $companyData]);
+                }
+                
+                // Verifica se é um array válido
+                if (!is_array($companyData)) {
+                    Log::error('Invalid company data format:', ['data' => $companyData]);
+                    continue;
+                }
+
+                // Filtra campos vazios
+                $companyData = collect($companyData)->filter()->all();
+                
+                Log::info('Processing company data:', ['company' => $companyData]);
+                
+                // Verifica se tem pelo menos o nome da empresa
+                if (empty($companyData['company_name'])) {
+                    Log::warning('Company skipped - missing company name');
+                    continue;
+                }
+
+                $company = PersonCompany::create([
+                    'person_id' => $person->id,
+                    'company_name' => $companyData['company_name'] ?? null,
+                    'fantasy_name' => $companyData['fantasy_name'] ?? null,
+                    'cnpj' => $companyData['cnpj'] ?? null,
+                    'phone' => $companyData['phone'] ?? null,
+                    'social_capital' => $companyData['social_capital'] ?? null,
+                    'status' => $companyData['status'] ?? null,
+                    'cep' => $companyData['cep'] ?? null,
+                    'address' => $companyData['address'] ?? null,
+                    'number' => $companyData['number'] ?? null,
+                    'district' => $companyData['district'] ?? null,
+                    'city' => $companyData['city'] ?? null,
+                    'uf' => $companyData['uf'] ?? null,
+                    'cnae' => $companyData['cnae'] ?? null,
+                    'accountant' => $companyData['accountant'] ?? null,
+                ]);
+
+                Log::info('Company created successfully:', ['company_id' => $company->id]);
+            } catch (\Exception $e) {
+                Log::error('Error creating company:', [
+                    'error' => $e->getMessage(),
+                    'error_trace' => $e->getTraceAsString(),
+                    'company_data' => $companyData ?? null
+                ]);
+                throw $e;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Person $person
+     * @param array|null $vehicles
+     * @return bool
+     */
+    private function attachVehicles(Person $person, ?array $vehicles): bool
+    {
+        if (!$vehicles) {
+            Log::info('No vehicles data received');
+            return false;
+        }
+
+        Log::info('Vehicles data received:', ['vehicles' => $vehicles]);
+        Log::info('Vehicles data type:', ['type' => gettype($vehicles)]);
+        
+        foreach ($vehicles as $key => $vehicleData) {
+            try {
+                Log::info('Processing vehicle at index ' . $key, [
+                    'data_type' => gettype($vehicleData),
+                    'data' => $vehicleData
+                ]);
+
+                // Se for string JSON, decodifica; se já for array, usa direto
+                if (is_string($vehicleData)) {
+                    $vehicleData = json_decode($vehicleData, true);
+                    Log::info('Decoded JSON data:', ['decoded' => $vehicleData]);
+                }
+                
+                // Verifica se é um array válido
+                if (!is_array($vehicleData)) {
+                    Log::error('Invalid vehicle data format:', ['data' => $vehicleData]);
+                    continue;
+                }
+
+                // Verifica se tem brand
+                if (empty($vehicleData['brand'])) {
+                    Log::warning('Vehicle skipped - missing brand');
+                    continue;
+                }
+
+                Log::info('Processing vehicle data:', ['vehicle' => $vehicleData]);
+                
+                $vehicle = $person->vehicles()->create([
+                    'brand' => $vehicleData['brand'],
+                    'model' => $vehicleData['model'] ?? null,
+                    'year' => $vehicleData['year'] ?? null,
+                    'color' => $vehicleData['color'] ?? null,
+                    'plate' => $vehicleData['plate'] ?? null,
+                    'jurisdiction' => $vehicleData['jurisdiction'] ?? null,
+                    'status' => $vehicleData['status'] ?? null,
+                ]);
+
+                Log::info('Vehicle created successfully:', ['vehicle_id' => $vehicle->id, 'vehicle_data' => $vehicle->toArray()]);
+            } catch (\Exception $e) {
+                Log::error('Error creating vehicle:', [
+                    'error' => $e->getMessage(),
+                    'error_trace' => $e->getTraceAsString(),
+                    'vehicle_data' => $vehicleData ?? null
+                ]);
+                throw $e;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param Person $person
+     * @param array|null $vinculoOrcrims
+     * @return bool
+     */
+    private function attachVinculoOrcrims(Person $person, ?array $vinculoOrcrims): bool
+    {
+        if (!$vinculoOrcrims) {
+            Log::info('No vinculo orcrims data received');
+            return false;
+        }
+
+        Log::info('Vinculo orcrims data received:', ['vinculo_orcrims' => $vinculoOrcrims]);
+        
+        foreach ($vinculoOrcrims as $key => $vinculoData) {
+            try {
+                Log::info('Processing vinculo orcrim at index ' . $key, [
+                    'data_type' => gettype($vinculoData),
+                    'data' => $vinculoData
+                ]);
+
+                // Se for string JSON, decodifica; se já for array, usa direto
+                if (is_string($vinculoData)) {
+                    $vinculoData = json_decode($vinculoData, true);
+                    Log::info('Decoded JSON data:', ['decoded' => $vinculoData]);
+                }
+                
+                // Verifica se é um array válido
+                if (!is_array($vinculoData)) {
+                    Log::error('Invalid vinculo orcrim data format:', ['data' => $vinculoData]);
+                    continue;
+                }
+
+                // Verifica se tem name
+                if (empty($vinculoData['name'])) {
+                    Log::warning('Vinculo orcrim skipped - missing name');
+                    continue;
+                }
+
+                Log::info('Processing vinculo orcrim data:', ['vinculo' => $vinculoData]);
+                
+                $vinculo = $person->vinculoOrcrims()->create([
+                    'name' => $vinculoData['name'],
+                    'cpf' => $vinculoData['cpf'] ?? null,
+                    'tipo_vinculo' => $vinculoData['tipo_vinculo'] ?? null,
+                    'orcrim' => $vinculoData['orcrim'] ?? null,
+                    'cargo' => $vinculoData['cargo'] ?? null,
+                    'area_atuacao' => $vinculoData['area_atuacao'] ?? null,
+                ]);
+
+                Log::info('Vinculo orcrim created successfully:', ['vinculo_id' => $vinculo->id, 'vinculo_data' => $vinculo->toArray()]);
+            } catch (\Exception $e) {
+                Log::error('Error creating vinculo orcrim:', [
+                    'error' => $e->getMessage(),
+                    'error_trace' => $e->getTraceAsString(),
+                    'vinculo_data' => $vinculoData ?? null
+                ]);
+                throw $e;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param Person $person
+     * @param array|null $pcpas
+     * @return bool
+     */
+    private function attachPcpas(Person $person, ?array $pcpas): bool
+    {
+        if (!$pcpas) {
+            Log::info('No pcpas data received');
+            return false;
+        }
+
+        Log::info('PCPAs data received:', ['pcpas' => $pcpas]);
+        
+        foreach ($pcpas as $key => $pcpaData) {
+            try {
+                Log::info('Processing PCPA at index ' . $key, [
+                    'data_type' => gettype($pcpaData),
+                    'data' => $pcpaData
+                ]);
+
+                // Se for string JSON, decodifica; se já for array, usa direto
+                if (is_string($pcpaData)) {
+                    $pcpaData = json_decode($pcpaData, true);
+                    Log::info('Decoded JSON data:', ['decoded' => $pcpaData]);
+                }
+                
+                // Verifica se é um array válido
+                if (!is_array($pcpaData)) {
+                    Log::error('Invalid PCPA data format:', ['data' => $pcpaData]);
+                    continue;
+                }
+
+                // Verifica se tem BO
+                if (empty($pcpaData['bo'])) {
+                    Log::warning('PCPA skipped - missing BO');
+                    continue;
+                }
+
+                Log::info('Processing PCPA data:', ['pcpa' => $pcpaData]);
+                
+                $pcpa = $person->pcpas()->create([
+                    'bo' => $pcpaData['bo'],
+                    'natureza' => $pcpaData['natureza'] ?? null,
+                    'data' => $pcpaData['data'] ?? null,
+                    'uf' => $pcpaData['uf'] ?? null,
+                ]);
+
+                Log::info('PCPA created successfully:', ['pcpa_id' => $pcpa->id, 'pcpa_data' => $pcpa->toArray()]);
+            } catch (\Exception $e) {
+                Log::error('Error creating PCPA:', [
+                    'error' => $e->getMessage(),
+                    'error_trace' => $e->getTraceAsString(),
+                    'pcpa_data' => $pcpaData ?? null
+                ]);
+                throw $e;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param Person $person
+     * @param array|null $tjs
+     * @return bool
+     */
+    private function attachTjs(Person $person, ?array $tjs): bool
+    {
+        if (!$tjs) {
+            Log::info('No tjs data received');
+            return false;
+        }
+
+        Log::info('TJs data received:', ['tjs' => $tjs]);
+        
+        foreach ($tjs as $key => $tjData) {
+            try {
+                Log::info('Processing TJ at index ' . $key, [
+                    'data_type' => gettype($tjData),
+                    'data' => $tjData
+                ]);
+
+                // Se for string JSON, decodifica; se já for array, usa direto
+                if (is_string($tjData)) {
+                    $tjData = json_decode($tjData, true);
+                    Log::info('Decoded JSON data:', ['decoded' => $tjData]);
+                }
+                
+                // Verifica se é um array válido
+                if (!is_array($tjData)) {
+                    Log::error('Invalid TJ data format:', ['data' => $tjData]);
+                    continue;
+                }
+
+                // Verifica se tem processo
+                if (empty($tjData['processo'])) {
+                    Log::warning('TJ skipped - missing processo');
+                    continue;
+                }
+
+                Log::info('Processing TJ data:', ['tj' => $tjData]);
+                
+                $tj = $person->tjs()->create([
+                    'processo' => $tjData['processo'],
+                    'natureza' => $tjData['natureza'] ?? null,
+                    'data' => $tjData['data'] ?? null,
+                    'uf' => $tjData['uf'] ?? null,
+                ]);
+
+                Log::info('TJ created successfully:', ['tj_id' => $tj->id, 'tj_data' => $tj->toArray()]);
+            } catch (\Exception $e) {
+                Log::error('Error creating TJ:', [
+                    'error' => $e->getMessage(),
+                    'error_trace' => $e->getTraceAsString(),
+                    'tj_data' => $tjData ?? null
+                ]);
+                throw $e;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param Person $person
+     * @param array|null $armas
+     * @return bool
+     */
+    private function attachArmas(Person $person, ?array $armas): bool
+    {
+        if (!$armas) {
+            Log::info('No armas data received');
+            return false;
+        }
+
+        Log::info('Armas data received:', ['armas' => $armas]);
+        
+        foreach ($armas as $key => $armaData) {
+            try {
+                Log::info('Processing Arma at index ' . $key, [
+                    'data_type' => gettype($armaData),
+                    'data' => $armaData
+                ]);
+
+                // Se for string JSON, decodifica; se já for array, usa direto
+                if (is_string($armaData)) {
+                    $armaData = json_decode($armaData, true);
+                    Log::info('Decoded JSON data:', ['decoded' => $armaData]);
+                }
+                
+                // Verifica se é um array válido
+                if (!is_array($armaData)) {
+                    Log::error('Invalid Arma data format:', ['data' => $armaData]);
+                    continue;
+                }
+
+                // Verifica se tem pelo menos um campo preenchido
+                if (empty($armaData['cac']) && empty($armaData['marca']) && empty($armaData['modelo']) && empty($armaData['calibre'])) {
+                    Log::warning('Arma skipped - all fields empty');
+                    continue;
+                }
+
+                Log::info('Processing Arma data:', ['arma' => $armaData]);
+                
+                $arma = $person->armas()->create([
+                    'cac' => $armaData['cac'] ?? null,
+                    'marca' => $armaData['marca'] ?? null,
+                    'modelo' => $armaData['modelo'] ?? null,
+                    'calibre' => $armaData['calibre'] ?? null,
+                ]);
+
+                Log::info('Arma created successfully:', ['arma_id' => $arma->id, 'arma_data' => $arma->toArray()]);
+            } catch (\Exception $e) {
+                Log::error('Error creating Arma:', [
+                    'error' => $e->getMessage(),
+                    'error_trace' => $e->getTraceAsString(),
+                    'arma_data' => $armaData ?? null
+                ]);
+                throw $e;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param Person $person
+     * @param array|null $rais
+     * @return bool
+     */
+    private function attachRais(Person $person, ?array $rais): bool
+    {
+        if (!$rais) {
+            Log::info('No rais data received');
+            return false;
+        }
+
+        Log::info('RAIS data received:', ['rais' => $rais]);
+        
+        foreach ($rais as $key => $raisData) {
+            try {
+                Log::info('Processing RAIS at index ' . $key, [
+                    'data_type' => gettype($raisData),
+                    'data' => $raisData
+                ]);
+
+                // Se for string JSON, decodifica; se já for array, usa direto
+                if (is_string($raisData)) {
+                    $raisData = json_decode($raisData, true);
+                    Log::info('Decoded JSON data:', ['decoded' => $raisData]);
+                }
+                
+                // Verifica se é um array válido
+                if (!is_array($raisData)) {
+                    Log::error('Invalid RAIS data format:', ['data' => $raisData]);
+                    continue;
+                }
+
+                // Verifica se tem empresa/orgão
+                if (empty($raisData['empresa_orgao'])) {
+                    Log::warning('RAIS skipped - missing empresa_orgao');
+                    continue;
+                }
+
+                Log::info('Processing RAIS data:', ['rais' => $raisData]);
+                
+                $raisRecord = $person->rais()->create([
+                    'empresa_orgao' => $raisData['empresa_orgao'],
+                    'cnpj' => $raisData['cnpj'] ?? null,
+                    'tipo_vinculo' => $raisData['tipo_vinculo'] ?? null,
+                    'admissao' => $raisData['admissao'] ?? null,
+                    'situacao' => $raisData['situacao'] ?? null,
+                ]);
+
+                Log::info('RAIS created successfully:', ['rais_id' => $raisRecord->id, 'rais_data' => $raisRecord->toArray()]);
+            } catch (\Exception $e) {
+                Log::error('Error creating RAIS:', [
+                    'error' => $e->getMessage(),
+                    'error_trace' => $e->getTraceAsString(),
+                    'rais_data' => $raisData ?? null
+                ]);
+                throw $e;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param Person $person
+     * @param array|null $bancarios
+     * @return bool
+     */
+    private function attachBancarios(Person $person, ?array $bancarios): bool
+    {
+        if (!$bancarios) {
+            Log::info('No bancarios data received');
+            return false;
+        }
+
+        Log::info('Bancarios data received:', ['bancarios' => $bancarios]);
+        
+        foreach ($bancarios as $key => $bancarioData) {
+            try {
+                Log::info('Processing Bancario at index ' . $key, [
+                    'data_type' => gettype($bancarioData),
+                    'data' => $bancarioData
+                ]);
+
+                // Se for string JSON, decodifica; se já for array, usa direto
+                if (is_string($bancarioData)) {
+                    $bancarioData = json_decode($bancarioData, true);
+                    Log::info('Decoded JSON data:', ['decoded' => $bancarioData]);
+                }
+                
+                // Verifica se é um array válido
+                if (!is_array($bancarioData)) {
+                    Log::error('Invalid Bancario data format:', ['data' => $bancarioData]);
+                    continue;
+                }
+
+                // Verifica se tem banco
+                if (empty($bancarioData['banco'])) {
+                    Log::warning('Bancario skipped - missing banco');
+                    continue;
+                }
+
+                Log::info('Processing Bancario data:', ['bancario' => $bancarioData]);
+                
+                $bancario = $person->bancarios()->create([
+                    'banco' => $bancarioData['banco'],
+                    'conta' => $bancarioData['conta'] ?? null,
+                    'agencia' => $bancarioData['agencia'] ?? null,
+                    'data_criacao' => $bancarioData['data_criacao'] ?? null,
+                    'data_exclusao' => $bancarioData['data_exclusao'] ?? null,
+                ]);
+
+                Log::info('Bancario created successfully:', ['bancario_id' => $bancario->id, 'bancario_data' => $bancario->toArray()]);
+            } catch (\Exception $e) {
+                Log::error('Error creating Bancario:', [
+                    'error' => $e->getMessage(),
+                    'error_trace' => $e->getTraceAsString(),
+                    'bancario_data' => $bancarioData ?? null
+                ]);
+                throw $e;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param Person $person
+     * @param array|null $docs
+     * @param array|null $uploads
+     * @return bool
+     */
+    private function attachDocs(Person $person, ?array $docs, ?array $uploads): bool
+    {
+        if (!$docs) {
+            Log::info('No docs data received');
+            return false;
+        }
+
+        Log::info('Docs data received:', ['docs' => $docs]);
+        
+        foreach ($docs as $key => $docData) {
+            try {
+                Log::info('Processing Doc at index ' . $key, [
+                    'data_type' => gettype($docData),
+                    'data' => $docData
+                ]);
+
+                // Se for string JSON, decodifica; se já for array, usa direto
+                if (is_string($docData)) {
+                    $docData = json_decode($docData, true);
+                    Log::info('Decoded JSON data:', ['decoded' => $docData]);
+                }
+                
+                // Verifica se é um array válido
+                if (!is_array($docData)) {
+                    Log::error('Invalid Doc data format:', ['data' => $docData]);
+                    continue;
+                }
+
+                // Verifica se tem nome do documento
+                if (empty($docData['nome_doc'])) {
+                    Log::warning('Doc skipped - missing nome_doc');
+                    continue;
+                }
+
+                Log::info('Processing Doc data:', ['doc' => $docData]);
+                
+                $uploadPath = null;
+                
+                // Verifica se há arquivo de upload correspondente
+                if ($uploads && isset($uploads[$key])) {
+                    $file = $uploads[$key];
+                    if ($file && $file->isValid()) {
+                        // Gera nome único para o arquivo
+                        $filename = time() . '_' . $file->getClientOriginalName();
+                        // Salva diretamente no public/uploads/docs
+                        $file->move(public_path('uploads/docs'), $filename);
+                        $uploadPath = 'uploads/docs/' . $filename;
+                        Log::info('File uploaded successfully:', ['path' => $uploadPath]);
+                    }
+                }
+                
+                $doc = $person->docs()->create([
+                    'nome_doc' => $docData['nome_doc'],
+                    'data' => $docData['data'] ?? null,
+                    'upload' => $uploadPath,
+                ]);
+
+                Log::info('Doc created successfully:', ['doc_id' => $doc->id, 'doc_data' => $doc->toArray()]);
+            } catch (\Exception $e) {
+                Log::error('Error creating Doc:', [
+                    'error' => $e->getMessage(),
+                    'error_trace' => $e->getTraceAsString(),
+                    'doc_data' => $docData ?? null
+                ]);
+                throw $e;
+            }
+        }
         return true;
     }
 }

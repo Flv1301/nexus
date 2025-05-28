@@ -62,7 +62,7 @@
                                data-url="{{route('procedure.find',['id' => $procedure->id])}}">
                                 <i class='fa fa-lg fa-fw fa-eye'></i>
                             </a>
-                            @if($procedure->user_id === $user->id && $procedure->status != 'CONCLUIDO')
+                            @if($procedure->user_id === $user->id && $procedure->status != 'CONCLUIDO' && $procedure->status != 'ARQUIVADO')
                                 <a class='btn btn-sm' title='Responder'
                                    data-toggle='modal'
                                    data-target='#modalProcedureResponse'

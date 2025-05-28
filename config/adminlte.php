@@ -381,7 +381,7 @@ return [
             ],
         ],
         [
-            'text' => 'CASO',
+            'text' => 'MOVIMENTO',
             'icon' => 'fa fa-book',
             'url' => '/casos',
             'can' => 'caso'

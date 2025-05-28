@@ -5,6 +5,7 @@ namespace App\Enums;
 enum StatusCaseEnum: string
 {
     case ANALISE = 'ANALISE';
+    case ARQUIVADO = 'ARQUIVADO';
     case ATRASADO = 'ATRASADO';
     case AGUARDANDO = 'AGUARDANDO';
     case CONCLUIDO = 'CONCLUIDO';
@@ -24,6 +25,7 @@ enum StatusCaseEnum: string
             StatusCaseEnum::ATRASADO => 'badge badge-danger',
             StatusCaseEnum::AGUARDANDO => 'badge badge-secondary',
             StatusCaseEnum::ANALISE => 'badge badge-info',
+            StatusCaseEnum::ARQUIVADO => 'badge badge-dark',
             StatusCaseEnum::CANCELADO => 'badge badge-gray',
             StatusCaseEnum::CONCLUIDO => 'badge badge-success',
             StatusCaseEnum::INICIADO => 'badge badge-primary',

@@ -10,6 +10,14 @@ use App\Models\Data\Image;
 use App\Models\Data\Telephone;
 use App\Models\SocialNetwork;
 use App\Models\VCard\VCard;
+use App\Models\Person\Vehicle;
+use App\Models\Person\VinculoOrcrim;
+use App\Models\Person\Pcpa;
+use App\Models\Person\Tj;
+use App\Models\Person\Arma;
+use App\Models\Person\Rais;
+use App\Models\Person\Bancario;
+use App\Models\Person\Doc;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -43,7 +51,10 @@ class Person extends Model
         'sex',
         'father',
         'mother',
+        'spouse_name',
+        'spouse_cpf',
         'tatto',
+        'conselho_de_classe',
         'user_id',
         'stuck',
         'detainee_registration',
@@ -65,12 +76,12 @@ class Person extends Model
      */
     protected $casts = [
         'birth_date' => DateCast::class,
+        'detainee_date' => DateCast::class,
         'name' => UpCaseTextCast::class,
         'nickname' => UpCaseTextCast::class,
         'father' => UpCaseTextCast::class,
         'mother' => UpCaseTextCast::class,
         'occupation' => UpCaseTextCast::class,
-        'detaineeDate' => DateCast::class,
         'orcrim' => UpCaseTextCast::class,
         'orcrimOffice' => UpCaseTextCast::class,
         'orcrimOccupationArea' => UpCaseTextCast::class,
@@ -149,6 +160,78 @@ class Person extends Model
     public function vcards(): HasMany
     {
         return $this->hasMany(VCard::class, 'person_id', 'id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function companies(): HasMany
+    {
+        return $this->hasMany(PersonCompany::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function vehicles()
+    {
+        return $this->hasMany(Vehicle::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function vinculoOrcrims(): HasMany
+    {
+        return $this->hasMany(VinculoOrcrim::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function pcpas(): HasMany
+    {
+        return $this->hasMany(Pcpa::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function tjs(): HasMany
+    {
+        return $this->hasMany(Tj::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function armas(): HasMany
+    {
+        return $this->hasMany(Arma::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function rais(): HasMany
+    {
+        return $this->hasMany(Rais::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function bancarios(): HasMany
+    {
+        return $this->hasMany(Bancario::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function docs(): HasMany
+    {
+        return $this->hasMany(Doc::class);
     }
 
     /**

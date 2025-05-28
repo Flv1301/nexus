@@ -5,12 +5,11 @@
         'Nome',
         'CPF',
         'Mãe',
-        'Nascimento',
-        ['label' => 'Opções', 'no-export' => true, 'width' => 5],
+        ['label' => 'Opções', 'no-export' => true, 'width' => 15],
     ];
     $config = [
         'order' => [[1, 'asc']],
-        'columns' => [null, null, null, null, null, null, ['orderable' => false]],
+        'columns' => [null, null, null, null, ['orderable' => false]],
         'language' => [
                         'paginate' => [
                             'first' => 'Primeiro',
@@ -40,10 +39,17 @@
                             <td>{{$person->name}}</td>
                             <td>{{$person->cpf ?? ''}}</td>
                             <td>{{$person->mother ?? ''}}</td>
-                            <td>{{$person->birth_date ?? ''}}</td>
-                            <td><a href="{{route($route, ['base'=> $key, 'id' => $person->id])}}">
-                                    <i class="fas fa-lg fa-eye"></i>
-                                </a>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <a href="{{route($route, ['base'=> $key, 'id' => $person->id])}}" class="mr-2" title="Visualizar Dados">
+                                        <i class="fas fa-lg fa-eye text-primary"></i>
+                                    </a>
+                                    @if($key === 'person' || $key === 'nexus')
+                                    <a href="{{route('person.search.report', ['id' => $person->id])}}" title="Gerar Relatório PDF" target="_blank">
+                                        <i class="fas fa-lg fa-file-pdf text-danger"></i>
+                                    </a>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @endforeach

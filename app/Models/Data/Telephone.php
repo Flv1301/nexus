@@ -2,6 +2,7 @@
 
 namespace App\Models\Data;
 
+use App\Casts\DateCast;
 use App\Models\Person\Person;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -34,6 +35,14 @@ class Telephone extends Model
         'imei',
         'imsi',
         'device',
+    ];
+
+    /**
+     * @var string[]
+     */
+    protected $casts = [
+        'start_link' => DateCast::class,
+        'end_link' => DateCast::class,
     ];
 
     /**

@@ -112,6 +112,16 @@
             </div>
             <div class="form-group col-md-3">
                 <x-adminlte-input
+                    name="conselho_de_classe"
+                    id="conselho_de_classe"
+                    label="Conselho de Classe"
+                    placeholder="Informações do Conselho de Classe"
+                    value="{{ old('conselho_de_classe') ?? $person->conselho_de_classe ?? ''}}"
+                    :disabled="$isDisabled"
+                />
+            </div>
+            <div class="form-group col-md-3">
+                <x-adminlte-input
                     name="voter_registration"
                     id="voter_registration"
                     label="Titulo Eleitor"
@@ -173,6 +183,29 @@
                     :disabled="$isDisabled"
                 />
             </div>
+            <div class="form-group col-md-6">
+                <x-adminlte-input
+                    name="spouse_name"
+                    id="spouse_name"
+                    label="Cônjuge"
+                    placeholder="Nome do Cônjuge"
+                    style="text-transform:uppercase"
+                    value="{{ old('spouse_name') ?? $person->spouse_name ?? ''}}"
+                    :disabled="$isDisabled"
+                />
+            </div>
+            <div class="form-group col-md-3">
+                <x-adminlte-input
+                    name="spouse_cpf"
+                    id="spouse_cpf"
+                    label="CPF do Cônjuge"
+                    placeholder="CPF do Cônjuge"
+                    maxlength="11"
+                    class="mask-cpf-number"
+                    value="{{ old('spouse_cpf') ?? $person->spouse_cpf ?? ''}}"
+                    :disabled="$isDisabled"
+                />
+            </div>
             <div class="form-group col-md-12">
                 <x-adminlte-input
                     name="tatto"
@@ -181,6 +214,19 @@
                     placeholder="Tatuagem"
                     style="text-transform:uppercase"
                     value="{{ old('tatto') ?? $person->tatto ?? ''}}"
+                    :disabled="$isDisabled"
+                />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <x-adminlte-input
+                    name="occupation"
+                    id="occupation"
+                    label="Ocupação/Profissão"
+                    placeholder="Ocupação/Profissão"
+                    style="text-transform:uppercase"
+                    value="{{ old('occupation') ?? $person->occupation ?? ''}}"
                     :disabled="$isDisabled"
                 />
             </div>

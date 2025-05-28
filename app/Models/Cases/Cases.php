@@ -6,6 +6,7 @@ use App\Models\Departament\Sector;
 use App\Models\Departament\Unity;
 use App\Models\Person\Person;
 use App\Models\User;
+use App\Casts\DateCast;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -41,11 +42,22 @@ class Cases extends Model
         'name',
         'subject',
         'process',
+        'secondary_process',
+        'cautelar',
         'status',
         'resume',
         'user_id',
         'unity_id',
         'sector_id',
+        'gedoc',
+        'saj',
+        'portaria',
+        'date',
+        'operation_number',
+        'grau',
+        'second_degree_name',
+        'judge_relator_name',
+        'prazo_dias',
         'created_at',
         'updated_at'
     ];
@@ -70,6 +82,7 @@ class Cases extends Model
      * @var string[]
      */
     protected $casts = [
+        'date' => DateCast::class,
         'date_start' => 'date:Y-m-d',
         'date_end' => 'date:Y-m-d',
     ];

@@ -15,6 +15,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
@@ -137,8 +138,8 @@ class CaseController extends Controller
                 toast('Sem permissão!', 'info');
                 return back();
             }
-            if ($case->status === 'CONCLUIDO') {
-                toast('Caso já encontra-se concluído.', 'info');
+            if ($case->status === 'CONCLUIDO' || $case->status === 'ARQUIVADO') {
+                toast('Caso já encontra-se concluído ou arquivado.', 'info');
                 return redirect()->route('cases');
             }
             $cases = Cases::all();
@@ -174,20 +175,51 @@ class CaseController extends Controller
     }
 
     /**
-     * @param CaseRequest $request
+     * @param Request $request
      * @param $id
      * @return RedirectResponse
      */
-    public function update(CaseRequest $request, $id): RedirectResponse
+    public function update(Request $request, $id): RedirectResponse
     {
         try {
+            $case = Cases::findOrFail($id);
+            
+            // Validação manual para edição (ignora campos protegidos)
+            $request->validate([
+                'name' => 'required|string|max:100|unique:cases,name,' . $id,
+                'adicionar_dias' => 'nullable|in:1,3,5,15,30,60,90',
+            ], [
+                'name.required' => 'O campo PJE é obrigatório.',
+                'name.unique' => 'Este PJE já está sendo utilizado.',
+                'adicionar_dias.in' => 'O campo Adicionar Dias deve ser um dos valores: 1, 3, 5, 15, 30, 60, 90.',
+            ]);
+            
+            // Preservar valores originais ANTES de qualquer processamento
+            $originalDate = $case->date;
+            $originalPrazoDias = $case->prazo_dias;
+            
             $usersAllowed = $request->input('users_allowed');
             $unitysAllowed = $request->input('unitys_allowed');
             $sectorsAllowed = $request->input('sectors_allowed');
             $persons = $request->input('persons');
-            $case = Cases::findOrFail($id);
-            $case->fill($request->except(['users_allowed', 'unitys_allowed', 'persons']));
+            $adicionarDias = $request->input('adicionar_dias');
+            
+            // Processar adição de dias ao prazo (única forma de alterar prazo_dias na edição)
+            $novoPrazoDias = $originalPrazoDias;
+            if ($adicionarDias && is_numeric($adicionarDias)) {
+                $prazoAtual = (int)($originalPrazoDias ?? 0);
+                $novoPrazoDias = $prazoAtual + (int)$adicionarDias;
+            }
+            
+            // Criar array de dados para atualização, preservando campos protegidos
+            $dataToUpdate = $request->except(['users_allowed', 'unitys_allowed', 'persons', 'adicionar_dias', 'date', 'prazo_dias']);
+            $dataToUpdate['date'] = $originalDate;
+            $dataToUpdate['prazo_dias'] = $novoPrazoDias;
+            
+            // Atualizar o caso
+            $case->fill($dataToUpdate);
             $case->save();
+            
             $keys = [];
             if ($sectorsAllowed) {
                 foreach ($sectorsAllowed as $sector) {
@@ -217,7 +249,14 @@ class CaseController extends Controller
                 }
             }
             $case->persons()->sync($keys);
-            toast('Caso atualizado com sucesso!', 'success');
+            
+            // Mensagem personalizada se dias foram adicionados
+            if ($adicionarDias && is_numeric($adicionarDias)) {
+                toast("Caso atualizado com sucesso! {$adicionarDias} dia(s) adicionado(s) ao prazo.", 'success');
+            } else {
+                toast('Caso atualizado com sucesso!', 'success');
+            }
+            
             return back();
         } catch (\Exception $exception) {
             toast('Erro de sistema. Não foi possível atualizar o caso!', 'error');
