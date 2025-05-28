@@ -8,8 +8,8 @@
 @section('plugins.Summernote', true)
 @section('plugins.Datatables', true)
 @section('plugins.InputMask', true)
-<x-page-header title="Caso {{$case->name}}">
-    @if($case->status !== 'CONCLUIDO')
+<x-page-header title="Movimento {{$case->name}}">
+    @if($case->status !== 'CONCLUIDO' && $case->status !== 'ARQUIVADO')
         <div class="mr-2">
             <x-adminlte-button
                 data-toggle="modal"
@@ -93,7 +93,7 @@
         <div class="card-footer">
             <div class="form-row d-flex justify-content-between">
                 @can('caso.atualizar')
-                    @if(($case->user_id == $user->id || ($case->sector_id == $user->sector_id && $user->coordinator)) && $case->status !== 'CONCLUIDO')
+                    @if(($case->user_id == $user->id || ($case->sector_id == $user->sector_id && $user->coordinator)) && $case->status !== 'CONCLUIDO' && $case->status !== 'ARQUIVADO')
                         <div class="form-group">
                             <form action="{{route('case.edit', $case)}}" method="get">
                                 <x-adminlte-button
@@ -107,7 +107,7 @@
                     @endif
                 @endcan
                 @can('caso.excluir')
-                    @if($case->user_id == $user->id && $case->status !== 'CONCLUIDO' && !$case->procedures->count())
+                    @if($case->user_id == $user->id && $case->status !== 'CONCLUIDO' && $case->status !== 'ARQUIVADO' && !$case->procedures->count())
                         <div class="form-group">
                             <form action="{{route('case.destroy', $case)}}" method="post">
                                 @method('DELETE')

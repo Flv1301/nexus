@@ -45,3 +45,8 @@
     </div>
 @endsection
 
+@push('js')
+<script src="{{ asset('js/uppercase-mask.js') }}"></script>
+<script src="{{ asset('js/cpf-mask.js') }}"></script>
+@endpush
+

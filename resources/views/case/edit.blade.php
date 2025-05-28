@@ -5,7 +5,7 @@
 @section('plugins.BootstrapSelect', true)
 @section('plugins.TempusDominusBs4', true)
 @section('plugins.Summernote', true)
-<x-page-header title="Edição do Caso {{\Illuminate\Support\Str::title($case->name)}}">
+<x-page-header title="Edição do Movimento {{\Illuminate\Support\Str::title($case->name)}}">
     <a href="{{ url()->previous() }}" id="history" class="btn btn-info"
        type="button"><i class="fas fa-sm fa-backward p-1"></i>Voltar</a>
 </x-page-header>

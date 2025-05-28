@@ -69,7 +69,7 @@ class PersonSearchController extends Controller
                 return back()->withInput();
             }
 
-            StrHerlper::asciiRequest($request, $request->except('_token', 'options'));
+            #StrHerlper::asciiRequest($request, $request->except('_token', 'options'));
             StrHerlper::upperRequest($request, $request->except('_token', 'options'));
 
             $id = Auth::id();
@@ -150,19 +150,32 @@ class PersonSearchController extends Controller
         }
 
         return DB::table('persons')->when($request->name, function ($query, $name) {
-            return $query->where('name', 'ilike', '%' . Str::upper($name) . '%')->orWhere(
-                'nickname',
-                'ilike',
-                '%' . Str::upper($name) . '%'
-            );
+            $nameUpper = Str::upper($name);
+            $nameAscii = Str::ascii($nameUpper);
+            return $query->where(function($q) use ($nameUpper, $nameAscii) {
+                $q->where('name', 'ilike', '%' . $nameUpper . '%')
+                  ->orWhere('name', 'ilike', '%' . $nameAscii . '%')
+                  ->orWhere('nickname', 'ilike', '%' . $nameUpper . '%')
+                  ->orWhere('nickname', 'ilike', '%' . $nameAscii . '%');
+            });
         })->when($request->cpf, function ($query, $cpf) {
             return $query->where('cpf', 'like', '%' . Str::upper($cpf) . '%');
         })->when($request->rg, function ($query, $rg) {
             return $query->where('rg', 'like', '%' . Str::upper($rg) . '%');
         })->when($request->father, function ($query, $father) {
-            return $query->where('father', 'ilike', '%' . Str::upper($father) . '%');
+            $fatherUpper = Str::upper($father);
+            $fatherAscii = Str::ascii($fatherUpper);
+            return $query->where(function($q) use ($fatherUpper, $fatherAscii) {
+                $q->where('father', 'ilike', '%' . $fatherUpper . '%')
+                  ->orWhere('father', 'ilike', '%' . $fatherAscii . '%');
+            });
         })->when($request->mother, function ($query, $mother) {
-            return $query->where('mother', 'ilike', '%' . Str::upper($mother) . '%');
+            $motherUpper = Str::upper($mother);
+            $motherAscii = Str::ascii($motherUpper);
+            return $query->where(function($q) use ($motherUpper, $motherAscii) {
+                $q->where('mother', 'ilike', '%' . $motherUpper . '%')
+                  ->orWhere('mother', 'ilike', '%' . $motherAscii . '%');
+            });
         })->when($request->birth_date, function ($query, $birthDate) {
             return $query->where('birth_date', StrHerlper::convertDateToEnUs($birthDate));
         })->limit(50)->select([
@@ -303,5 +316,32 @@ class PersonSearchController extends Controller
     {
         $requestSearch = session()->get('request_search');
         return $requestSearch ? new Request($requestSearch) : new Request(['options' => []]);
+    }
+
+    /**
+     * Gera relatório completo da pessoa
+     * @param int $id
+     * @return View
+     */
+    public function report($id): View
+    {
+        $person = Person::with([
+            'address', 
+            'telephones', 
+            'emails', 
+            'socials', 
+            'images',
+            'companies',
+            'vehicles',
+            'vinculoOrcrims',
+            'pcpas',
+            'tjs',
+            'armas',
+            'rais',
+            'bancarios',
+            'docs'
+        ])->findOrFail($id);
+
+        return view('search.person.report', compact('person'));
     }
 }

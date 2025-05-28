@@ -12,6 +12,7 @@ Route::middleware(['auth', 'permission:vcard'])->post('/vcard', [VCardController
 /** BUSCA PESSOA COMPLETA */
 Route::middleware(['auth', 'permission:pesquisa_pessoa_completa'])->controller(PersonSearchController::class)->group(function () {
     Route::middleware(['auth'])->get('/pesquisa/pessoa', 'index')->name('person.search.index');
+    Route::middleware(['auth'])->get('/pesquisa/pessoa/relatorio/{id}', 'report')->name('person.search.report');
     Route::middleware(['auth'])->get('/pesquisa/pessoa/{base}/{id}', 'show')->name('person.search.show');
     Route::middleware(['auth'])->post('/pesquisa/pessoa', 'search')->name('person.search');
 });

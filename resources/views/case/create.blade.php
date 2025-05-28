@@ -1,11 +1,11 @@
 @extends('adminlte::page')
-@section('title','Cadastro de Caso')
+@section('title','Movimento')
 @section('plugins.Select2', true)
 @section('plugins.BootstrapSelect', true)
 @section('plugins.BsCustomFileinput', true)
 @section('plugins.TempusDominusBs4', true)
 @section('plugins.Summernote', true)
-<x-page-header title="Cadastro de Caso">
+<x-page-header title="Movimento">
     <a href="{{ url()->previous() }}" id="history" class="btn btn-info"
        type="button"><i class="fas fa-sm fa-backward p-1"></i>Voltar</a>
 </x-page-header>

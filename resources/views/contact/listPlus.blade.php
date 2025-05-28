@@ -51,6 +51,23 @@
                 return;
             }
 
+            // Função para converter data do formato DD/MM/YYYY para YYYY-MM-DD
+            function convertDate(dateStr) {
+                if (!dateStr || dateStr.trim() === '') return '';
+                
+                // Verifica se está no formato DD/MM/YYYY
+                const dateParts = dateStr.split('/');
+                if (dateParts.length === 3) {
+                    const [day, month, year] = dateParts;
+                    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                }
+                return dateStr; // Retorna como está se não for no formato esperado
+            }
+
+            // Converte as datas para o formato correto
+            values.start_link = convertDate(values.start_link);
+            values.end_link = convertDate(values.end_link);
+
             let input = document.createElement('input');
             input.setAttribute('type', 'hidden');
             input.setAttribute('id', 'contacts');
@@ -59,7 +76,13 @@
 
             let table = document.querySelector('#tableContacts');
             let tr = document.createElement('tr');
-            tr.innerHTML = inputs.map(input => `<td>${values[input]}</td>`).join('') + '<td><i class="fa fa-md fa-fw fa-trash text-danger" onclick="$(this).parent().parent().remove()" title="Remover"></i></td>';
+            
+            // Para exibição na tabela, mantemos o formato original das datas
+            const displayValues = {...values};
+            displayValues.start_link = document.querySelector('#start_link').value;
+            displayValues.end_link = document.querySelector('#end_link').value;
+            
+            tr.innerHTML = inputs.map(input => `<td>${displayValues[input]}</td>`).join('') + '<td><i class="fa fa-md fa-fw fa-trash text-danger" onclick="$(this).parent().parent().remove()" title="Remover"></i></td>';
             tr.appendChild(input);
             table.appendChild(tr);
 

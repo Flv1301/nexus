@@ -29,8 +29,27 @@ class CaseRequest extends FormRequest
      */
     public function rules(): array
     {
+        // Detecta se é edição pela presença do ID do caso na URL
+        $isEdit = $this->route()->hasParameter('case') || $this->getMethod() === 'PUT' || $this->getMethod() === 'PATCH';
+        
         return [
-            'name' => 'required|string|max:100|unique:cases,name,' . ($this->id ?? 0),
+            'name' => 'required|string|max:100|unique:cases,name,' . ($this->route('case') ?? 0),
+            'date' => $isEdit ? 'sometimes|nullable|date' : 'required|date',
+            'prazo_dias' => $isEdit ? 'sometimes|nullable|in:3,5,7,15,30,60,90' : 'required|in:3,5,7,15,30,60,90',
+            'adicionar_dias' => 'nullable|in:1,3,5,15,30,60,90',
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public function messages(): array
+    {
+        return [
+            'date.required' => 'O campo Data é obrigatório.',
+            'date.date' => 'O campo Data deve ser uma data válida.',
+            'prazo_dias.required' => 'O campo Prazo Dias é obrigatório.',
+            'prazo_dias.in' => 'O campo Prazo Dias deve ser um dos valores: 3, 5, 7, 15, 30, 60, 90.',
         ];
     }
 }

@@ -43,7 +43,7 @@
                             <a href="{{route('case.file', ['id' => $key])}}" class='btn btn-sm mx-1' title='Detalhe'>
                                 <i class='fa fa-lg fa-fw fa-eye'></i>
                             </a>
-                            @if($file->user_id == Auth::id() && $file->procedure == 0 && $case->status !== 'CONCLUIDO')
+                            @if($file->user_id == Auth::id() && $file->procedure == 0 && $case->status !== 'CONCLUIDO' && $case->status !== 'ARQUIVADO')
                                 <form action="{{route('case.file.destroy', ['id' => $key])}}" method="post">
                                     @csrf
                                     @method('DELETE')

@@ -29,5 +29,32 @@
         <div class="tab-pane" id="tab_vcard" role="tabpanel">
             @include('person.view.vcard')
         </div>
+        <div class="tab-pane" id="tab_companies" role="tabpanel">
+            @include('person.view.companies')
+        </div>
+        <div class="tab-pane" id="tab_vehicles" role="tabpanel">
+            @include('person.view.vehicles')
+        </div>
+        <div class="tab-pane" id="tab_vinculo_orcrims" role="tabpanel">
+            @include('person.view.vinculo-orcrims')
+        </div>
+        <div class="tab-pane" id="tab_pcpas" role="tabpanel">
+            @include('person.view.pcpas')
+        </div>
+        <div class="tab-pane" id="tab_tjs" role="tabpanel">
+            @include('person.view.tjs')
+        </div>
+        <div class="tab-pane" id="tab_armas" role="tabpanel">
+            @include('person.view.armas')
+        </div>
+        <div class="tab-pane" id="tab_rais" role="tabpanel">
+            @include('person.view.rais')
+        </div>
+        <div class="tab-pane" id="tab_bancarios" role="tabpanel">
+            @include('person.view.bancarios')
+        </div>
+        <div class="tab-pane" id="tab_docs" role="tabpanel">
+            @include('person.view.docs')
+        </div>
     </div>
 </div>
