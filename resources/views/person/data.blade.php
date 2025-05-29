@@ -278,6 +278,28 @@
                             />
                         </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <x-adminlte-input
+                                name="orcrim_matricula"
+                                id="orcrim_matricula"
+                                label="Matrícula"
+                                placeholder="Matrícula"
+                                style="text-transform:uppercase"
+                                value="{{ old('orcrim_matricula') ?? $person->orcrim_matricula ?? ''}}"
+                            />
+                        </div>
+                        <div class="form-group col-md-9">
+                            <x-adminlte-input
+                                name="orcrim_padrinho"
+                                id="orcrim_padrinho"
+                                label="Padrinho"
+                                placeholder="Padrinho"
+                                style="text-transform:uppercase"
+                                value="{{ old('orcrim_padrinho') ?? $person->orcrim_padrinho ?? ''}}"
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         @endcan

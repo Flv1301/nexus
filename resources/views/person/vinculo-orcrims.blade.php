@@ -67,6 +67,16 @@
                 />
             </div>
         </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <x-adminlte-input
+                    name="vinculo_matricula"
+                    id="vinculo_matricula"
+                    label="Matrícula"
+                    placeholder="Matrícula"
+                />
+            </div>
+        </div>
     </div>
     <div class="card-footer">
         <x-adminlte-button

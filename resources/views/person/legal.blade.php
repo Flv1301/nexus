@@ -1,16 +1,33 @@
-<div class="d-flex align-items-center p-2" >
-    <div class="mr-2">
-        <label>Mandado de Prisão:</label>
+<div class="d-flex align-items-center p-2">
+    <div class="d-flex align-items-center mr-4">
+        <div class="mr-2">
+            <label>Mandado de Prisão:</label>
+        </div>
+        <div>
+            <x-adminlte-input-switch
+                data-on-text="SIM"
+                data-off-text="NÃO"
+                name="warrant"
+                data-on-color="danger"
+                data-off-color="success"
+                :checked="old('warrant') ?? $person->warrant ?? false">
+            </x-adminlte-input-switch>
+        </div>
     </div>
-    <div>
-        <x-adminlte-input-switch
-            data-on-text="SIM"
-            data-off-text="NÃO"
-            name="warrant"
-            data-on-color="success"
-            data-off-color="danger"
-            :checked="old('warrant') ?? $person->warrant ?? false">
-        </x-adminlte-input-switch>
+    <div class="d-flex align-items-center">
+        <div class="mr-2">
+            <label>Evadido?</label>
+        </div>
+        <div>
+            <x-adminlte-input-switch
+                data-on-text="SIM"
+                data-off-text="NÃO"
+                name="evadido"
+                data-on-color="danger"
+                data-off-color="success"
+                :checked="old('evadido') ?? $person->evadido ?? false">
+            </x-adminlte-input-switch>
+        </div>
     </div>
 </div>
 <div class="card">

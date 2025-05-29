@@ -427,12 +427,13 @@
     @endif
 
     <!-- INFOPEN - Dados Prisionais -->
-    @if($person->stuck !== null || $person->detainee_registration || $person->detainee_date || $person->detainee_uf || $person->detainee_city || $person->cela)
+    @if($person->stuck !== null || $person->evadido !== null || $person->detainee_registration || $person->detainee_date || $person->detainee_uf || $person->detainee_city || $person->cela)
     <div class="data-section">
         <h4>INFOPEN - DADOS PRISIONAIS</h4>
         <div class="data-section-content">
             <div class="contact-item">
                 @if($person->stuck !== null) <strong>PRESO:</strong> {{ $person->stuck ? 'SIM' : 'NÃO' }}, @endif
+                @if($person->evadido !== null) <strong>EVADIDO:</strong> {{ $person->evadido ? 'SIM' : 'NÃO' }}, @endif
                 @if($person->detainee_registration) <strong>MATRÍCULA:</strong> {{ $person->detainee_registration }}, @endif
                 @if($person->detainee_date) 
                     <strong>DATA DA PRISÃO:</strong> 
@@ -548,6 +549,7 @@
                 <th>ORCRIM</th>
                 <th>CARGO</th>
                 <th>ÁREA ATUAÇÃO</th>
+                <th>MATRÍCULA</th>
             </tr>
         </thead>
         <tbody>
@@ -560,6 +562,7 @@
                 <td>{{ strtoupper($vinculo->orcrim ?? '') }}</td>
                 <td>{{ strtoupper($vinculo->cargo ?? '') }}</td>
                 <td>{{ strtoupper($vinculo->area_atuacao ?? '') }}</td>
+                <td>{{ strtoupper($vinculo->matricula ?? '') }}</td>
             </tr>
             @endforeach
         </tbody>
@@ -567,7 +570,7 @@
     @endif
 
     <!-- Dados ORCRIM da própria pessoa -->
-    @if($person->orcrim || $person->orcrim_office || $person->orcrim_occupation_area)
+    @if($person->orcrim || $person->orcrim_office || $person->orcrim_occupation_area || $person->orcrim_matricula || $person->orcrim_padrinho)
     <div class="section-title-table">DADOS ORCRIM PESSOAIS</div>
     <table class="table-section">
         <thead>
@@ -575,6 +578,8 @@
                 <th>ORCRIM</th>
                 <th>CARGO</th>
                 <th>ÁREA DE ATUAÇÃO</th>
+                <th>MATRÍCULA</th>
+                <th>PADRINHO</th>
             </tr>
         </thead>
         <tbody>
@@ -582,6 +587,8 @@
                 <td>{{ strtoupper($person->orcrim ?? '') }}</td>
                 <td>{{ strtoupper($person->orcrim_office ?? '') }}</td>
                 <td>{{ strtoupper($person->orcrim_occupation_area ?? '') }}</td>
+                <td>{{ strtoupper($person->orcrim_matricula ?? '') }}</td>
+                <td>{{ strtoupper($person->orcrim_padrinho ?? '') }}</td>
             </tr>
         </tbody>
     </table>
