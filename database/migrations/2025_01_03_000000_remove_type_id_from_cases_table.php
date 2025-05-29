@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddGrauToCasesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddGrauToCasesTable extends Migration
     public function up()
     {
         Schema::table('cases', function (Blueprint $table) {
-            $table->string('grau')->nullable()->after('operation_number');
+            $table->dropColumn('type_id');
         });
     }
 
@@ -26,7 +26,7 @@ class AddGrauToCasesTable extends Migration
     public function down()
     {
         Schema::table('cases', function (Blueprint $table) {
-            $table->dropColumn('grau');
+            $table->unsignedBigInteger('type_id')->nullable(false)->after('resume');
         });
     }
-} 
+}; 

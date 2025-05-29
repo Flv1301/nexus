@@ -46,7 +46,17 @@
             <x-adminlte-datatable id="tbl_cases" :heads="$heads" :config="$config" striped hoverable>
                 @foreach($cases as $case)
                     <tr>
-                        <td>{{$case->date ? \Carbon\Carbon::parse($case->date)->format('d/m/Y') : 'N/A'}}</td>
+                        <td>
+                            @if($case->date)
+                                @php
+                                    $rawDate = $case->getRawOriginal('date');
+                                    $formattedDate = \Carbon\Carbon::createFromFormat('Y-m-d', $rawDate)->format('d/m/Y');
+                                @endphp
+                                {{ $formattedDate }}
+                            @else
+                                N/A
+                            @endif
+                        </td>
                         <td>{{$case->identifier}}</td>
                         <td>{{$case->name}}</td>
                         <td>{{$case->portaria ?? 'N/A'}}</td>

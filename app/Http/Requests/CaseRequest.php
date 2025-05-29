@@ -34,7 +34,7 @@ class CaseRequest extends FormRequest
         
         return [
             'name' => 'required|string|max:100|unique:cases,name,' . ($this->route('case') ?? 0),
-            'date' => $isEdit ? 'sometimes|nullable|date' : 'required|date',
+            'date' => $isEdit ? 'sometimes|nullable|date_format:d/m/Y' : 'required|date_format:d/m/Y',
             'prazo_dias' => $isEdit ? 'sometimes|nullable|in:3,5,7,15,30,60,90' : 'required|in:3,5,7,15,30,60,90',
             'adicionar_dias' => 'nullable|in:1,3,5,15,30,60,90',
         ];
@@ -48,6 +48,7 @@ class CaseRequest extends FormRequest
         return [
             'date.required' => 'O campo Data é obrigatório.',
             'date.date' => 'O campo Data deve ser uma data válida.',
+            'date.date_format' => 'O campo Data deve estar no formato DD/MM/AAAA.',
             'prazo_dias.required' => 'O campo Prazo Dias é obrigatório.',
             'prazo_dias.in' => 'O campo Prazo Dias deve ser um dos valores: 3, 5, 7, 15, 30, 60, 90.',
         ];

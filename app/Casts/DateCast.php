@@ -39,19 +39,41 @@ class DateCast implements CastsAttributes
      */
     public function set($model, string $key, $value, array $attributes): mixed
     {
+        // Se o valor já está no formato Y-m-d, retorna como está
         if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
             return $value;
         }
 
+        // Se o valor está no formato d/m/Y H:i:s
         if (preg_match('/^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}$/', $value)) {
-            return Carbon::createFromFormat('d/m/Y H:i:s', $value)->toDateString();
+            try {
+                return Carbon::createFromFormat('d/m/Y H:i:s', $value)->toDateString();
+            } catch (\Exception $e) {
+                // Se falhar na conversão, tenta outros formatos
+            }
         }
 
+        // Se o valor está no formato d/m/Y
         if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $value)) {
-            return Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+            try {
+                return Carbon::createFromFormat('d/m/Y', $value)->toDateString();
+            } catch (\Exception $e) {
+                // Se falhar na conversão, tenta outros formatos
+            }
         }
 
-        return '';
+        // Tenta parsing automático do Carbon para outros formatos
+        if (!empty($value)) {
+            try {
+                $carbonDate = Carbon::parse($value);
+                return $carbonDate->toDateString();
+            } catch (\Exception $e) {
+                // Se ainda falhar, retorna o valor original para que a validação do Laravel possa processar
+                return $value;
+            }
+        }
+
+        return $value;
     }
 
 }
