@@ -39,7 +39,7 @@
                 <a href="#tab_pcpas" data-toggle="tab" role="tab" class="nav-link">Antecedentes</a>
             </li>
             <li class="nav-item">
-                <a href="#tab_tjs" data-toggle="tab" role="tab" class="nav-link">TJ</a>
+                <a href="#tab_tjs" data-toggle="tab" role="tab" class="nav-link">Processos</a>
             </li>
             <li class="nav-item">
                 <a href="#tab_armas" data-toggle="tab" role="tab" class="nav-link">Armas</a>

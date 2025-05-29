@@ -6,7 +6,7 @@
 --}}
 <div class="card col-md-12">
     <div class="card-header">
-        <h3 class="card-title">TJ</h3>
+        <h3 class="card-title">Processos</h3>
     </div>
     <div class="card-body">
         @if($person->tjs->count() > 0)
@@ -33,7 +33,7 @@
         @else
             <div class="alert alert-info">
                 <i class="icon fas fa-info"></i>
-                Nenhum registro de TJ cadastrado.
+                Nenhum processo cadastrado.
             </div>
         @endif
     </div>

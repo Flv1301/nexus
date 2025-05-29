@@ -39,6 +39,11 @@ class DateCast implements CastsAttributes
      */
     public function set($model, string $key, $value, array $attributes): mixed
     {
+        // Se o valor está vazio ou é null, retorna null
+        if (empty($value) || $value === '') {
+            return null;
+        }
+
         // Se o valor já está no formato Y-m-d, retorna como está
         if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
             return $value;
@@ -68,12 +73,12 @@ class DateCast implements CastsAttributes
                 $carbonDate = Carbon::parse($value);
                 return $carbonDate->toDateString();
             } catch (\Exception $e) {
-                // Se ainda falhar, retorna o valor original para que a validação do Laravel possa processar
-                return $value;
+                // Se ainda falhar, retorna null para evitar erro de inserção
+                return null;
             }
         }
 
-        return $value;
+        return null;
     }
 
 }

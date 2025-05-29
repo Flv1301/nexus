@@ -877,9 +877,9 @@ class PersonController extends Controller
                 
                 $pcpa = $person->pcpas()->create([
                     'bo' => $pcpaData['bo'],
-                    'natureza' => $pcpaData['natureza'] ?? null,
-                    'data' => $pcpaData['data'] ?? null,
-                    'uf' => $pcpaData['uf'] ?? null,
+                    'natureza' => !empty($pcpaData['natureza']) ? $pcpaData['natureza'] : null,
+                    'data' => !empty($pcpaData['data']) ? $pcpaData['data'] : null,
+                    'uf' => !empty($pcpaData['uf']) ? $pcpaData['uf'] : null,
                 ]);
 
                 Log::info('PCPA created successfully:', ['pcpa_id' => $pcpa->id, 'pcpa_data' => $pcpa->toArray()]);
@@ -938,9 +938,9 @@ class PersonController extends Controller
                 
                 $tj = $person->tjs()->create([
                     'processo' => $tjData['processo'],
-                    'natureza' => $tjData['natureza'] ?? null,
-                    'data' => $tjData['data'] ?? null,
-                    'uf' => $tjData['uf'] ?? null,
+                    'natureza' => !empty($tjData['natureza']) ? $tjData['natureza'] : null,
+                    'data' => !empty($tjData['data']) ? $tjData['data'] : null,
+                    'uf' => !empty($tjData['uf']) ? $tjData['uf'] : null,
                 ]);
 
                 Log::info('TJ created successfully:', ['tj_id' => $tj->id, 'tj_data' => $tj->toArray()]);
