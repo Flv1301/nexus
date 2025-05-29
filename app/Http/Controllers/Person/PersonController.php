@@ -332,6 +332,7 @@ class PersonController extends Controller
             $person->fill($request->except(['addresses', 'contacts', 'images', 'emails', 'socials', 'companies', 'vehicles', 'vinculo_orcrims', 'pcpas', 'tjs', 'armas', 'rais', 'bancarios', 'docs', 'vcard']));
             $person->dead = $request->boolean('dead', false);
             $person->warrant = $request->boolean('warrant', false);
+            $person->evadido = $request->boolean('evadido', false);
             $person->update();
             $person->address()->forceDelete();
 
@@ -812,10 +813,12 @@ class PersonController extends Controller
                 $vinculo = $person->vinculoOrcrims()->create([
                     'name' => $vinculoData['name'],
                     'cpf' => $vinculoData['cpf'] ?? null,
+                    'alcunha' => $vinculoData['alcunha'] ?? null,
                     'tipo_vinculo' => $vinculoData['tipo_vinculo'] ?? null,
                     'orcrim' => $vinculoData['orcrim'] ?? null,
                     'cargo' => $vinculoData['cargo'] ?? null,
                     'area_atuacao' => $vinculoData['area_atuacao'] ?? null,
+                    'matricula' => $vinculoData['matricula'] ?? null,
                 ]);
 
                 Log::info('Vinculo orcrim created successfully:', ['vinculo_id' => $vinculo->id, 'vinculo_data' => $vinculo->toArray()]);

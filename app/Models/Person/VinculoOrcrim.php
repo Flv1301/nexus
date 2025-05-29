@@ -21,6 +21,7 @@ class VinculoOrcrim extends Model
         'orcrim',
         'cargo',
         'area_atuacao',
+        'matricula',
     ];
 
     /**

@@ -66,10 +66,13 @@ class Person extends Model
         'dead',
         'observation',
         'warrant',
+        'evadido',
         'active_orcrim',
         'orcrim',
         'orcrim_office',
         'orcrim_occupation_area',
+        'orcrim_matricula',
+        'orcrim_padrinho',
     ];
 
     /**

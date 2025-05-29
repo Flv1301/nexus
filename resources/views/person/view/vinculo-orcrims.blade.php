@@ -20,6 +20,7 @@
                     <th>Orcrim</th>
                     <th>Cargo</th>
                     <th>Área de Atuação</th>
+                    <th>Matrícula</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -32,6 +33,7 @@
                         <td>{{ $vinculo->orcrim }}</td>
                         <td>{{ $vinculo->cargo }}</td>
                         <td>{{ $vinculo->area_atuacao }}</td>
+                        <td>{{ $vinculo->matricula }}</td>
                     </tr>
                 @endforeach
                 </tbody>

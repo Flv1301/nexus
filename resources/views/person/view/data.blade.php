@@ -226,6 +226,26 @@
                             />
                         </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <x-adminlte-input
+                                name="orcrim_matricula"
+                                id="orcrim_matricula"
+                                label="Matrícula"
+                                value="{{ $person->orcrim_matricula}}"
+                                disabled
+                            />
+                        </div>
+                        <div class="form-group col-md-9">
+                            <x-adminlte-input
+                                name="orcrim_padrinho"
+                                id="orcrim_padrinho"
+                                label="Padrinho"
+                                value="{{ $person->orcrim_padrinho}}"
+                                disabled
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         @endcan

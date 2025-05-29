@@ -6,6 +6,11 @@
         <label class="mr-2">{!! $person->warrant == 0 ? '<span class="text-info text-md">NÂO</span>'
                         : '<span class="text-danger text-md">SIM</span>' !!}</label>
     </div>
+    <div class="flex-row align-items-center p-2">
+        <label>Evadido:</label>
+        <label class="mr-2">{!! $person->evadido == 0 ? '<span class="text-success text-md">NÂO</span>'
+                        : '<span class="text-warning text-md">SIM</span>' !!}</label>
+    </div>
     <div class="card">
         <div class="card-header">
             <span>INFOPEN</span>

@@ -10,6 +10,7 @@
                 <th>Orcrim</th>
                 <th>Cargo</th>
                 <th>Área de Atuação</th>
+                <th>Matrícula</th>
                 <th>Ações</th>
             </tr>
             </thead>
@@ -24,6 +25,7 @@
                         <td>{{$vinculo->orcrim}}</td>
                         <td>{{$vinculo->cargo}}</td>
                         <td>{{$vinculo->area_atuacao}}</td>
+                        <td>{{$vinculo->matricula}}</td>
                         <td><i class="fa fa-md fa-fw fa-trash text-danger"
                                onclick="$(this).parent().parent().remove()"
                                title="Remover"></i></td>
@@ -48,6 +50,7 @@
             const orcrim = document.getElementById('vinculo_orcrim').value;
             const cargo = document.getElementById('vinculo_cargo').value;
             const areaAtuacao = document.getElementById('vinculo_area_atuacao').value;
+            const matricula = document.getElementById('vinculo_matricula').value;
 
             if (name.trim() === '') {
                 alert('O campo Nome é obrigatório.');
@@ -62,7 +65,8 @@
                 tipo_vinculo: tipoVinculo,
                 orcrim: orcrim,
                 cargo: cargo,
-                area_atuacao: areaAtuacao
+                area_atuacao: areaAtuacao,
+                matricula: matricula
             };
 
             // Cria input hidden para enviar os dados
@@ -83,6 +87,7 @@
                 <td>${orcrim}</td>
                 <td>${cargo}</td>
                 <td>${areaAtuacao}</td>
+                <td>${matricula}</td>
                 <td><i class="fa fa-md fa-fw fa-trash text-danger" onclick="$(this).parent().parent().remove()" title="Remover"></i></td>
             `;
             
@@ -97,6 +102,7 @@
             document.getElementById('vinculo_orcrim').value = '';
             document.getElementById('vinculo_cargo').value = '';
             document.getElementById('vinculo_area_atuacao').value = '';
+            document.getElementById('vinculo_matricula').value = '';
 
             // Incrementa o índice
             vinculoOrcrimIndex++;
