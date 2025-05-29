@@ -94,6 +94,15 @@
                     value="{{ old('detainee_city') ?? $person->detainee_city ?? ''}}"
                 />
             </div>
+            <div class="form-group col-md-2">
+                <x-adminlte-input
+                    name="cela"
+                    id="cela"
+                    label="Estabelecimento/Cela"
+                    placeholder="Estabelecimento/Cela"
+                    value="{{ old('cela') ?? $person->cela ?? ''}}"
+                />
+            </div>
         </div>
     </div>
 </div>

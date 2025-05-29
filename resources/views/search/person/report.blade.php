@@ -427,7 +427,7 @@
     @endif
 
     <!-- INFOPEN - Dados Prisionais -->
-    @if($person->stuck !== null || $person->detainee_registration || $person->detainee_date || $person->detainee_uf || $person->detainee_city)
+    @if($person->stuck !== null || $person->detainee_registration || $person->detainee_date || $person->detainee_uf || $person->detainee_city || $person->cela)
     <div class="data-section">
         <h4>INFOPEN - DADOS PRISIONAIS</h4>
         <div class="data-section-content">
@@ -449,7 +449,8 @@
                     @endphp, 
                 @endif
                 @if($person->detainee_uf) <strong>UF PRISÃO:</strong> {{ $person->detainee_uf }}, @endif
-                @if($person->detainee_city) <strong>CIDADE PRISÃO:</strong> {{ strtoupper($person->detainee_city) }} @endif
+                @if($person->detainee_city) <strong>CIDADE PRISÃO:</strong> {{ strtoupper($person->detainee_city) }}, @endif
+                @if($person->cela) <strong>ESTABELECIMENTO/CELA:</strong> {{ strtoupper($person->cela) }} @endif
             </div>
         </div>
     </div>

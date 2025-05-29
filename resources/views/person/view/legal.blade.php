@@ -59,6 +59,15 @@
                         disabled
                     />
                 </div>
+                <div class="form-group col-md-2">
+                    <x-adminlte-input
+                        name="cela"
+                        id="cela"
+                        label="Estabelecimento/Cela"
+                        value="{{$person->cela}}"
+                        disabled
+                    />
+                </div>
             </div>
         </div>
     </div>

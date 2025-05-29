@@ -12,12 +12,12 @@
             @php
                 $heads = [
                     'Data',
-                    'N da Operação',
                     'PJE',
+                    'Pic',
+                    'Processo',
+                    'SAJ',
                     'Portaria',
-                    'Unidade',
-                    'Setor',
-                    'Usuário',
+                    'Nome do Alvo',
                     'Status',
                     'Prazo',
                     ['label' => 'Opções', 'no-export' => true, 'width' => 5],
@@ -57,12 +57,20 @@
                                 N/A
                             @endif
                         </td>
-                        <td>{{$case->identifier}}</td>
                         <td>{{$case->name}}</td>
+                        <td>{{$case->process ?? 'N/A'}}</td>
+                        <td>{{$case->secondary_process ?? 'N/A'}}</td>
+                        <td>{{$case->saj ?? 'N/A'}}</td>
                         <td>{{$case->portaria ?? 'N/A'}}</td>
-                        <td>{{$case->unity->name}}</td>
-                        <td>{{$case->sector->name}}</td>
-                        <td>{{$case->user->nickname}}</td>
+                        <td>
+                            @if($case->persons && $case->persons->count() > 0)
+                                @foreach($case->persons as $person)
+                                    {{ $person->name }}@if(!$loop->last), @endif
+                                @endforeach
+                            @else
+                                N/A
+                            @endif
+                        </td>
                         <td><span class="{{\App\Enums\StatusCaseEnum::from($case->status)->style()}}">
                                 {{$case->status}}
                             </span>
