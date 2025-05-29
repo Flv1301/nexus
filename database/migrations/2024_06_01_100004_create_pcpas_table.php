@@ -17,8 +17,9 @@ class CreatePcpasTable extends Migration
             $table->id();
             $table->foreignId('person_id')->constrained('persons')->onDelete('cascade');
             $table->string('bo');
-            $table->string('natureza');
-            $table->date('data');
+            $table->string('natureza')->nullable();
+            $table->date('data')->nullable();
+            $table->string('uf', 2)->nullable();
             $table->timestamps();
         });
     }

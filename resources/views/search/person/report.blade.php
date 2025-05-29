@@ -635,7 +635,7 @@
 
     <!-- TJ -->
     @if($person->tjs && $person->tjs->count() > 0)
-    <div class="section-title-table">TRIBUNAL DE JUSTIÇA</div>
+    <div class="section-title-table">PROCESSOS</div>
     <table class="table-section">
         <thead>
             <tr>
