@@ -13,10 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('cases', function (Blueprint $table) {
-            if (Schema::hasColumn('cases', 'type_id')) {
-                $table->dropColumn('type_id');
-            }
+        Schema::table('persons', function (Blueprint $table) {
+            $table->string('cela')->nullable()->after('detainee_city');
         });
     }
 
@@ -27,10 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('cases', function (Blueprint $table) {
-            if (!Schema::hasColumn('cases', 'type_id')) {
-                $table->unsignedBigInteger('type_id')->nullable(false)->after('resume');
-            }
+        Schema::table('persons', function (Blueprint $table) {
+            $table->dropColumn('cela');
         });
     }
 }; 

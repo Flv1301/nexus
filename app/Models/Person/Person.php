@@ -61,6 +61,7 @@ class Person extends Model
         'detainee_date',
         'detainee_uf',
         'detainee_city',
+        'cela',
         'occupation',
         'dead',
         'observation',

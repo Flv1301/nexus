@@ -44,8 +44,8 @@ class CaseController extends Controller
 
         $user = Auth::user();
         $caseUserIds = CaseService::getCaseUserIds($user);
-        $cases = $user->sector->cases()->with(['user', 'unity', 'sector'])->get()->merge(
-            Cases::with(['user', 'unity', 'sector'])->whereIn('id', $caseUserIds)->get()
+        $cases = $user->sector->cases()->with(['user', 'unity', 'sector', 'persons'])->get()->merge(
+            Cases::with(['user', 'unity', 'sector', 'persons'])->whereIn('id', $caseUserIds)->get()
         );
 
         return view('case.index', compact('cases', 'user', 'caseUserIds'));
