@@ -56,7 +56,7 @@ class CaseAnalysisController extends Controller
                 }
             }
 
-            return view('case.analysis.index', compact('user', 'case', 'files', 'unitys', 'procedures'));
+            return view('case.analysis.index', compact('user', 'case', 'files', 'unitys', 'procedures', 'caseIds'));
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             toast('Erro de sistema! Não foi possível recuperar o caso', 'error');

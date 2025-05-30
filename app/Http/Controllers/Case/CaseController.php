@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Case;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CaseRequest;
 use App\Models\Cases\Cases;
+use App\Models\Cases\CaseFile;
 use App\Models\Departament\Sector;
 use App\Models\Departament\Unity;
 use App\Models\Person\Person;
@@ -23,16 +24,6 @@ use Illuminate\Support\Facades\Log;
 class CaseController extends Controller
 {
     /**
-     * @var array|int[]
-     */
-    private array $exceptIds;
-
-    public function __construct()
-    {
-        $this->exceptIds = [1, 2];
-    }
-
-    /**
      * @return Application|Factory|View|RedirectResponse
      */
     public function index(): View|Factory|RedirectResponse|Application
@@ -44,9 +35,11 @@ class CaseController extends Controller
 
         $user = Auth::user();
         $caseUserIds = CaseService::getCaseUserIds($user);
-        $cases = $user->sector->cases()->with(['user', 'unity', 'sector', 'persons'])->get()->merge(
-            Cases::with(['user', 'unity', 'sector', 'persons'])->whereIn('id', $caseUserIds)->get()
-        );
+        
+        // Mostrar apenas os casos compartilhados com o usuário (que têm o ícone do olho)
+        $cases = Cases::with(['user', 'unity', 'sector', 'persons'])
+            ->whereIn('id', $caseUserIds)
+            ->get();
 
         return view('case.index', compact('cases', 'user', 'caseUserIds'));
     }
@@ -61,8 +54,11 @@ class CaseController extends Controller
             return back();
         }
         $user = Auth::user();
-        $this->exceptIds[] = $user->id;
-        $users = User::all()->except($this->exceptIds)->sort();
+        
+        // Carregar usuários disponíveis para compartilhamento (exceto o usuário atual)
+        $allUsers = User::all();
+        $users = $allUsers->where('id', '!=', $user->id);
+        
         $persons = Person::all();
         $unitys = Unity::all();
         $sectors = Sector::all();
@@ -92,7 +88,7 @@ class CaseController extends Controller
             $user = Auth::user();
             $identifier = CaseService::generateIdentifier($user);
             $request->merge(['identifier' => $identifier]);
-            $dataCase = $request->except(['users_allowed', 'sectors_allowed', 'unitys_allowed', 'persons']);
+            $dataCase = $request->except(['users_allowed', 'sectors_allowed', 'unitys_allowed', 'persons', 'case_files', 'file_names', 'file_types']);
 
             $merge = [
                 'user_id' => $user->id,
@@ -111,7 +107,14 @@ class CaseController extends Controller
             $case->users()->sync($users);
             $case->persons()->sync($persons);
 
-            toast("Caso {$request->input('name')} gravado com sucesso!", 'success');
+            // Processar arquivos enviados junto com o caso
+            $uploadedFiles = $this->processUploadedFiles($request, $case);
+            $uploadMessage = '';
+            if ($uploadedFiles > 0) {
+                $uploadMessage = " e {$uploadedFiles} arquivo(s) anexado(s)";
+            }
+
+            toast("Caso {$request->input('name')} gravado com sucesso{$uploadMessage}!", 'success');
 
             return redirect()->route('cases');
         } catch (\Exception $exception) {
@@ -122,6 +125,58 @@ class CaseController extends Controller
         }
     }
 
+    /**
+     * Processar arquivos enviados no formulário
+     * 
+     * @param Request $request
+     * @param Cases $case
+     * @return int Número de arquivos processados
+     */
+    private function processUploadedFiles($request, $case): int
+    {
+        $uploadedFilesCount = 0;
+        
+        if ($request->hasFile('case_files')) {
+            $files = $request->file('case_files');
+            $fileNames = $request->input('file_names', []);
+            $fileTypes = $request->input('file_types', []);
+            
+            foreach ($files as $index => $file) {
+                if ($file && $file->isValid()) {
+                    try {
+                        // Determinar o nome e tipo do arquivo
+                        $fileName = $fileNames[$index] ?? null;
+                        $fileType = $fileTypes[$index] ?? 'document';
+                        
+                        // Usar o serviço existente para salvar o arquivo
+                        $attachment = CaseService::storage($file, CaseService::fileName($case, $file), $fileType, $case);
+                        
+                        if ($attachment) {
+                            // Criar o registro do arquivo
+                            $user = Auth::user();
+                            CaseFile::create([
+                                'case_id' => $case->id,
+                                'user_id' => $user->id,
+                                'unity_id' => $user->unity_id,
+                                'sector_id' => $user->sector_id,
+                                'file_type' => config('file.file_type.' . $fileType),
+                                'file_layout' => config('file.file_type_layout.' . $fileType),
+                                'file_alias' => config('file.file_alias.' . $fileType),
+                                'file_id' => $attachment->id,
+                                'name' => $fileName,
+                            ]);
+                            
+                            $uploadedFilesCount++;
+                        }
+                    } catch (\Exception $e) {
+                        Log::error("Erro ao processar arquivo {$index}: " . $e->getMessage());
+                    }
+                }
+            }
+        }
+        
+        return $uploadedFilesCount;
+    }
 
     /**
      * @param $id
@@ -132,9 +187,14 @@ class CaseController extends Controller
         try {
             $case = Cases::findOrFail($id);
             $user = Auth::user();
-            if (!Gate::allows(
-                    'caso.atualizar'
-                ) || !($case->user_id == $user->id || ($case->sector_id == $user->sector_id && $user->coordinator))) {
+            $caseUserIds = CaseService::getCaseUserIds($user);
+            
+            // Verificar permissões: criador, coordenador do setor ou caso compartilhado
+            $hasAccess = $case->user_id == $user->id || 
+                        ($case->sector_id == $user->sector_id && $user->coordinator) || 
+                        $caseUserIds->contains($case->id);
+            
+            if (!Gate::allows('caso.atualizar') || !$hasAccess) {
                 toast('Sem permissão!', 'info');
                 return back();
             }
@@ -143,8 +203,8 @@ class CaseController extends Controller
                 return redirect()->route('cases');
             }
             $cases = Cases::all();
-            $this->exceptIds[] = $user->id;
-            $users = User::all()->except($this->exceptIds)->sort();
+            $allUsers = User::all();
+            $users = $allUsers->where('id', '!=', $user->id); // Excluir apenas o usuário atual
             $persons = Person::all();
             $unitys = Unity::all();
             $sectors = Sector::all();
@@ -152,6 +212,22 @@ class CaseController extends Controller
             $casePersons = $case->persons->modelKeys();
             $caseUnitys = $case->unitys->modelKeys();
             $caseSectors = $case->sectors->modelKeys();
+            
+            // Buscar arquivos do caso para exibir na aba de arquivos
+            $files = [];
+            if ($case->files->count()) {
+                foreach ($case->files as $file) {
+                    $document = ($file->file_type)::find($file->file_id);
+                    if ($document) {
+                        $document->user_id = $file->user_id;
+                        $document->procedure = $file->procedures->where('request_user_id', Auth::id())->count();
+                        $document->alias = $file->name;
+                        $document->file_alias = config('file.file_alias_pt_BR.' . $file->file_alias);
+                        $files[$file->id] = $document;
+                    }
+                }
+            }
+            
             return view(
                 'case.edit',
                 compact(
@@ -165,6 +241,7 @@ class CaseController extends Controller
                     'unitys',
                     'sectors',
                     'cases',
+                    'files'
                 )
             );
         } catch (\Exception $exception) {
@@ -212,7 +289,7 @@ class CaseController extends Controller
             }
             
             // Criar array de dados para atualização, preservando campos protegidos
-            $dataToUpdate = $request->except(['users_allowed', 'unitys_allowed', 'persons', 'adicionar_dias', 'date', 'prazo_dias']);
+            $dataToUpdate = $request->except(['users_allowed', 'unitys_allowed', 'persons', 'adicionar_dias', 'date', 'prazo_dias', 'case_files', 'file_names', 'file_types']);
             $dataToUpdate['date'] = $originalDate;
             $dataToUpdate['prazo_dias'] = $novoPrazoDias;
             
@@ -250,12 +327,20 @@ class CaseController extends Controller
             }
             $case->persons()->sync($keys);
             
-            // Mensagem personalizada se dias foram adicionados
+            // Processar novos arquivos enviados
+            $uploadedFiles = $this->processUploadedFiles($request, $case);
+            
+            // Mensagem personalizada baseada nas ações realizadas
+            $messages = [];
             if ($adicionarDias && is_numeric($adicionarDias)) {
-                toast("Caso atualizado com sucesso! {$adicionarDias} dia(s) adicionado(s) ao prazo.", 'success');
-            } else {
-                toast('Caso atualizado com sucesso!', 'success');
+                $messages[] = "{$adicionarDias} dia(s) adicionado(s) ao prazo";
             }
+            if ($uploadedFiles > 0) {
+                $messages[] = "{$uploadedFiles} arquivo(s) anexado(s)";
+            }
+            
+            $extraMessage = count($messages) > 0 ? ' (' . implode(', ', $messages) . ')' : '';
+            toast("Caso atualizado com sucesso{$extraMessage}!", 'success');
             
             return back();
         } catch (\Exception $exception) {

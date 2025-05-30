@@ -157,36 +157,34 @@
                             @endif
                         </td>
                         <td>
-                            @if($caseUserIds->contains($case->id) || ($case->sector_id == $user->sector_id && $user->coordinator))
-                                <div class="d-flex">
-                                    @can('caso.ler')
-                                        <a href="{{route('case.analysis', $case)}}" class='btn btn-sm mx-1'
-                                           title='Detalhe'>
-                                            <i class='fa fa-lg fa-fw fa-eye'></i>
+                            <div class="d-flex">
+                                @can('caso.ler')
+                                    <a href="{{route('case.analysis', $case)}}" class='btn btn-sm mx-1'
+                                       title='Detalhe'>
+                                        <i class='fa fa-lg fa-fw fa-eye'></i>
+                                    </a>
+                                @endcan
+                                @can('caso.atualizar')
+                                    @if(($case->user_id == $user->id || ($case->sector_id == $user->sector_id && $user->coordinator) || $caseUserIds->contains($case->id)) && $case->status !== 'CONCLUIDO' && $case->status !== 'ARQUIVADO')
+                                        <a href="{{route('case.edit', $case)}}" class='btn btn-sm mx-1 text-primary'
+                                           title='Edição'>
+                                            <i class='fa fa-lg fa-fw fa-edit'></i>
                                         </a>
-                                    @endcan
-                                    @can('caso.atualizar')
-                                        @if(($case->user_id == $user->id || ($case->sector_id == $user->sector_id && $user->coordinator)) && $case->status !== 'CONCLUIDO' && $case->status !== 'ARQUIVADO')
-                                            <a href="{{route('case.edit', $case)}}" class='btn btn-sm mx-1 text-primary'
-                                               title='Edição'>
-                                                <i class='fa fa-lg fa-fw fa-edit'></i>
-                                            </a>
-                                        @endif
-                                    @endcan
-                                    @can('caso.excluir')
-                                        @if($case->user_id == $user->id && $case->status !== 'CONCLUIDO' && $case->status !== 'ARQUIVADO' && !$case->procedures->count())
-                                            <form class="d-inline" action="{{route('case.destroy', $case)}}" method="post">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-sm text-danger mx-1 delete-alert"
-                                                        title="Deletar">
-                                                    <i class="fa fa-lg fa-fw fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        @endif
-                                    @endcan
-                                </div>
-                            @endif
+                                    @endif
+                                @endcan
+                                @can('caso.excluir')
+                                    @if($case->user_id == $user->id && $case->status !== 'CONCLUIDO' && $case->status !== 'ARQUIVADO' && !$case->procedures->count())
+                                        <form class="d-inline" action="{{route('case.destroy', $case)}}" method="post">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-sm text-danger mx-1 delete-alert"
+                                                    title="Deletar">
+                                                <i class="fa fa-lg fa-fw fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                @endcan
+                            </div>
                         </td>
                     </tr>
                 @endforeach

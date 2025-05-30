@@ -93,7 +93,7 @@
         <div class="card-footer">
             <div class="form-row d-flex justify-content-between">
                 @can('caso.atualizar')
-                    @if(($case->user_id == $user->id || ($case->sector_id == $user->sector_id && $user->coordinator)) && $case->status !== 'CONCLUIDO' && $case->status !== 'ARQUIVADO')
+                    @if(($case->user_id == $user->id || ($case->sector_id == $user->sector_id && $user->coordinator) || $caseIds->contains($case->id)) && $case->status !== 'CONCLUIDO' && $case->status !== 'ARQUIVADO')
                         <div class="form-group">
                             <form action="{{route('case.edit', $case)}}" method="get">
                                 <x-adminlte-button
