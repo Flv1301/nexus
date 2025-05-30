@@ -54,11 +54,6 @@
                                                           value="{{old('name') ?? $request->name ?? ''}}"/>
                                     </div>
                                     <div class="form-group">
-                                        <x-adminlte-input name="lastname" placeholder="Sobrenome"
-                                                          label="Sobrenome"
-                                                          value="{{old('sobrenome') ?? $request->lastname ?? ''}}"/>
-                                    </div>
-                                    <div class="form-group">
                                         <x-adminlte-input name="cpf" placeholder="CPF" class="mask-cpf-number"
                                                           label="CPF"
                                                           value="{{old('cpf') ?? $request->cpf ?? ''}}"/>

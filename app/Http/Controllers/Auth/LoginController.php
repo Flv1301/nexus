@@ -38,13 +38,12 @@ class LoginController extends Controller
      */
     public function authenticate(Request $request): Redirector|RedirectResponse|Application
     {
-        $location = empty($request->latitude) || empty($request->longitude);
-
-        if (env('APP_ENV') === 'production' && $location) {
-            toast('Por favor, habilitar a localização no navegador', 'info');
-
-            return back()->withInput();
-        }
+        // Remover verificação obrigatória de localização
+        // $location = empty($request->latitude) || empty($request->longitude);
+        // if (env('APP_ENV') === 'production' && $location) {
+        //     toast('Por favor, habilitar a localização no navegador', 'info');
+        //     return back()->withInput();
+        // }
 
         //$credentials = $request->only('email', 'password', 'g-recaptcha-response');
         $credentials = $request->only('email', 'password');
