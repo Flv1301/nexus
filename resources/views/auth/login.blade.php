@@ -123,6 +123,7 @@
 @push('js')
     <script>
         $(document).ready(function () {
+            // Localização opcional - não bloquear o login se não permitida
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
                     var latitude = position.coords.latitude;
@@ -130,10 +131,8 @@
                     $('#latitude').val(latitude);
                     $('#longitude').val(longitude);
                 }, function (error) {
-                    Swal.fire({
-                        title: 'Permissão de Localização',
-                        text: 'É Necessário a liberação da localização no navegador!.'
-                    });
+                    // Localização negada ou erro - continuar sem bloquear o login
+                    console.log('Localização não disponível ou negada pelo usuário');
                 });
             }
         });
