@@ -109,7 +109,7 @@ class CaseService
      * @param UploadedFile $file
      * @return string
      */
-    private static function fileName($case, UploadedFile $file): string
+    public static function fileName($case, UploadedFile $file): string
     {
         $filename = Str::slug($case->identifier) . '-' . time() . '-';
         $filename .= in_array($file->extension(), config('file.except_name'))

@@ -21,7 +21,7 @@
                     <i class="fas fa-user"></i>
                 </div>
             </x-slot>
-            @foreach($users->except(Auth::id()) as $user)
+            @foreach($users as $user)
                 <option value="{{ $user->id }}" data-icon="fa fa-fw fa-user-secret text-info"
                     {{ (collect(old('users_allowed'))->contains($user->id))
                     ? 'selected' : (in_array($user->id, $caseUsers ?? []) ? 'selected' : '') }}>

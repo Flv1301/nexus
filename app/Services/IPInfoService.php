@@ -42,13 +42,21 @@ class IPInfoService
     {
         try {
             foreach ($data as $value) {
-                if (array_key_exists('ip', $value)) {
+                if (is_array($value) && array_key_exists('ip', $value)) {
                     $value = Arr::flatten($value);
                     IpInfo::updateOrCreate(['ip' => $value['ip']], $value);
+                } else {
+                    Log::warning('IPInfoService: Valor ignorado - não é array ou não contém chave "ip"', [
+                        'value' => $value,
+                        'type' => gettype($value)
+                    ]);
                 }
             }
         } catch (\Exception $exception) {
-            Log::error($exception->getMessage());
+            Log::error('IPInfoService: Erro em updateOrCreateBatch - ' . $exception->getMessage(), [
+                'exception' => $exception,
+                'data_sample' => array_slice($data, 0, 3)
+            ]);
         }
     }
 
