@@ -51,16 +51,15 @@
                 />
             </div>
             <div class="form-group col-md-1">
-                <x-adminlte-input-switch
-                    label="Morto"
-                    data-on-text="SIM"
-                    data-off-text="NÃO"
+                <x-adminlte-select
                     name="dead"
-                    data-on-color="success"
-                    data-off-color="danger"
-                    :checked="old('dead') ?? $person->dead ?? false"
+                    id="dead"
+                    label="Morto"
                     :disabled="$isDisabled"
-                />
+                >
+                    <option value="0" {{ (old('dead') ?? $person->dead ?? false) == '0' || !(old('dead') ?? $person->dead ?? false) ? 'selected' : '' }}>NÃO</option>
+                    <option value="1" {{ (old('dead') ?? $person->dead ?? false) == '1' || (old('dead') ?? $person->dead ?? false) === true ? 'selected' : '' }}>SIM</option>
+                </x-adminlte-select>
             </div>
         </div>
         <div class="form-row">
@@ -237,15 +236,14 @@
                 <div class="card-body">
                     <div class="form-row">
                         <div class="form-group col-md-1">
-                            <x-adminlte-input-switch
-                                label="Ativo"
-                                data-on-text="SIM"
-                                data-off-text="NÃO"
+                            <x-adminlte-select
                                 name="active_orcrim"
-                                data-on-color="success"
-                                data-off-color="danger"
-                                :checked="old('active_orcrim') ?? $person->active_orcrim ?? false">
-                            </x-adminlte-input-switch>
+                                id="active_orcrim"
+                                label="Ativo"
+                            >
+                                <option value="0" {{ (old('active_orcrim') ?? $person->active_orcrim ?? false) == '0' || !(old('active_orcrim') ?? $person->active_orcrim ?? false) ? 'selected' : '' }}>NÃO</option>
+                                <option value="1" {{ (old('active_orcrim') ?? $person->active_orcrim ?? false) == '1' || (old('active_orcrim') ?? $person->active_orcrim ?? false) === true ? 'selected' : '' }}>SIM</option>
+                            </x-adminlte-select>
                         </div>
                         <div class="form-group col-md-2">
                             <x-adminlte-input

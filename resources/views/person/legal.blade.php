@@ -3,30 +3,28 @@
         <div class="mr-2">
             <label>Mandado de Prisão:</label>
         </div>
-        <div>
-            <x-adminlte-input-switch
-                data-on-text="SIM"
-                data-off-text="NÃO"
+        <div style="min-width: 80px;">
+            <x-adminlte-select
                 name="warrant"
-                data-on-color="danger"
-                data-off-color="success"
-                :checked="old('warrant') ?? $person->warrant ?? false">
-            </x-adminlte-input-switch>
+                id="warrant"
+            >
+                <option value="0" {{ (old('warrant') ?? $person->warrant ?? false) == '0' || !(old('warrant') ?? $person->warrant ?? false) ? 'selected' : '' }}>NÃO</option>
+                <option value="1" {{ (old('warrant') ?? $person->warrant ?? false) == '1' || (old('warrant') ?? $person->warrant ?? false) === true ? 'selected' : '' }}>SIM</option>
+            </x-adminlte-select>
         </div>
     </div>
     <div class="d-flex align-items-center">
         <div class="mr-2">
             <label>Evadido?</label>
         </div>
-        <div>
-            <x-adminlte-input-switch
-                data-on-text="SIM"
-                data-off-text="NÃO"
+        <div style="min-width: 80px;">
+            <x-adminlte-select
                 name="evadido"
-                data-on-color="danger"
-                data-off-color="success"
-                :checked="old('evadido') ?? $person->evadido ?? false">
-            </x-adminlte-input-switch>
+                id="evadido"
+            >
+                <option value="0" {{ (old('evadido') ?? $person->evadido ?? false) == '0' || !(old('evadido') ?? $person->evadido ?? false) ? 'selected' : '' }}>NÃO</option>
+                <option value="1" {{ (old('evadido') ?? $person->evadido ?? false) == '1' || (old('evadido') ?? $person->evadido ?? false) === true ? 'selected' : '' }}>SIM</option>
+            </x-adminlte-select>
         </div>
     </div>
 </div>

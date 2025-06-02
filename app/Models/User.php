@@ -78,7 +78,9 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'birth_date' => DateCast::class
+        'birth_date' => DateCast::class,
+        'coordinator' => 'boolean',
+        'status' => 'boolean'
     ];
 
     /**

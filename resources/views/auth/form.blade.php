@@ -151,26 +151,24 @@
             </div>
             @can('usuario.cadastrar')
                 <div class="form-group col-md-2">
-                    <x-adminlte-input-switch
-                        data-on-text="SIM"
-                        data-off-text="NÃO"
-                        label="Coordenador do Setor"
+                    <x-adminlte-select
                         name="coordinator"
-                        data-on-color="success"
-                        data-off-color="danger"
-                        :checked="old('coordinator') ?? $user->coordinator ?? false">
-                    </x-adminlte-input-switch>
+                        id="coordinator"
+                        label="Coordenador do Setor"
+                    >
+                        <option value="0" {{ (old('coordinator') ?? $user->coordinator ?? false) == '0' || !(old('coordinator') ?? $user->coordinator ?? false) ? 'selected' : '' }}>NÃO</option>
+                        <option value="1" {{ (old('coordinator') ?? $user->coordinator ?? false) == '1' || (old('coordinator') ?? $user->coordinator ?? false) === true ? 'selected' : '' }}>SIM</option>
+                    </x-adminlte-select>
                 </div>
                 <div class="form-group col-md-2">
-                    <x-adminlte-input-switch
-                        data-on-text="Ativo"
-                        data-off-text="Inativo"
-                        label="Status"
+                    <x-adminlte-select
                         name="status"
-                        data-on-color="success"
-                        data-off-color="danger"
-                        :checked="old('status') ?? $user->status ?? false">
-                    </x-adminlte-input-switch>
+                        id="status"
+                        label="Status"
+                    >
+                        <option value="0" {{ (old('status') ?? $user->status ?? false) == '0' || !(old('status') ?? $user->status ?? false) ? 'selected' : '' }}>INATIVO</option>
+                        <option value="1" {{ (old('status') ?? $user->status ?? false) == '1' || (old('status') ?? $user->status ?? false) === true ? 'selected' : '' }}>ATIVO</option>
+                    </x-adminlte-select>
                 </div>
             @endcan
         </div>

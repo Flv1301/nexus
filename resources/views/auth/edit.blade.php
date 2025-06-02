@@ -2,7 +2,6 @@
 @section('title','Cadastro de Usuário')
 @section('plugins.Select2', true)
 @section('plugins.BootstrapSelect', true)
-@section('plugins.BootstrapSwitch', true)
 <x-page-header title="Atualização do Usuário {{$user->nickname}}"/>
 @section('content')
     <x-page-messages/>
@@ -10,7 +9,7 @@
         <div class="card-body">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{route('register.update', $user)}}" method="post">
+                    <form action="{{route('register.update', $user)}}" method="post" id="user-form">
                         @csrf
                         @method('PUT')
                         @include('auth.form')

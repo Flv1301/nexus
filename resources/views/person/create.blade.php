@@ -3,7 +3,6 @@
 @section('plugins.TempusDominusBs4', true)
 @section('plugins.Select2', true)
 @section('plugins.Summernote', true)
-@section('plugins.BootstrapSwitch', true)
 @section('plugins.KrajeeFileinput', true)
 @section('title','Cadastro de Pessoa')
 <x-page-header title="Cadastro de Pessoa">

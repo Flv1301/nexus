@@ -41,6 +41,13 @@
         </x-adminlte-select-bs>
     </div>
     <div class="col mb-3">
-        <x-adminlte-input-switch name="status" label="Status" data-on-text="ATIVO" data-on-color="green" data-off-text="INATIVO" checked/>
+        <x-adminlte-select
+            name="status"
+            id="status"
+            label="Status"
+        >
+            <option value="0">INATIVO</option>
+            <option value="1" selected>ATIVO</option>
+        </x-adminlte-select>
     </div>
 </div>

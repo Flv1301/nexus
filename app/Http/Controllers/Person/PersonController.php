@@ -103,9 +103,17 @@ class PersonController extends Controller
         try {
             StrHerlper::asciiRequest($request);
             StrHerlper::upperRequest($request);
-            $personData = $request->except(['addresses', 'contacts', 'images', 'emails', 'socials', 'companies', 'vehicles', 'vinculo_orcrims', 'pcpas', 'tjs', 'armas', 'rais', 'bancarios', 'docs', 'vcard']);
+            
+            $personData = $request->except(['addresses', 'contacts', 'images', 'emails', 'socials', 'companies', 'vehicles', 'vinculo_orcrims', 'pcpas', 'tjs', 'armas', 'rais', 'bancarios', 'docs', 'vcard', 'dead', 'warrant', 'evadido', 'active_orcrim']);
             $filledFields = array_filter($personData, fn($value) => !empty($value));
             $filledFields['user_id'] = Auth::id();
+            
+            // Tratar campos boolean especificamente para garantir que sejam salvos corretamente
+            $filledFields['dead'] = $request->boolean('dead', false);
+            $filledFields['warrant'] = $request->boolean('warrant', false);
+            $filledFields['evadido'] = $request->boolean('evadido', false);
+            $filledFields['active_orcrim'] = $request->boolean('active_orcrim', false);
+            
             $person = Person::create($filledFields);
 
             // Attach addresses
@@ -329,10 +337,17 @@ class PersonController extends Controller
         }
         try {
             $person = Person::findOrFail($id);
-            $person->fill($request->except(['addresses', 'contacts', 'images', 'emails', 'socials', 'companies', 'vehicles', 'vinculo_orcrims', 'pcpas', 'tjs', 'armas', 'rais', 'bancarios', 'docs', 'vcard']));
+            
+            // Processar campos não-boolean excluindo os arrays e campos boolean
+            $personData = $request->except(['addresses', 'contacts', 'images', 'emails', 'socials', 'companies', 'vehicles', 'vinculo_orcrims', 'pcpas', 'tjs', 'armas', 'rais', 'bancarios', 'docs', 'vcard', 'dead', 'warrant', 'evadido', 'active_orcrim']);
+            $person->fill($personData);
+            
+            // Tratar campos boolean especificamente
             $person->dead = $request->boolean('dead', false);
             $person->warrant = $request->boolean('warrant', false);
             $person->evadido = $request->boolean('evadido', false);
+            $person->active_orcrim = $request->boolean('active_orcrim', false);
+            
             $person->update();
             $person->address()->forceDelete();
 
