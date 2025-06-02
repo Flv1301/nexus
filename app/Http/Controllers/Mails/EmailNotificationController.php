@@ -55,7 +55,7 @@ class EmailNotificationController extends Controller
         foreach ($userIds as $userId) {
             EmailNotification::updateOrCreate(
                 ['user_id' => $userId, 'type' => $type],
-                ['status' => $request->input('status', false)]
+                ['status' => $request->boolean('status', false)]
             );
         }
 

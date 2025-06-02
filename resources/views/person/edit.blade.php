@@ -3,7 +3,6 @@
 @section('plugins.TempusDominusBs4', true)
 @section('plugins.Select2', true)
 @section('plugins.Summernote', true)
-@section('plugins.BootstrapSwitch', true)
 @section('plugins.KrajeeFileinput', true)
 @section('plugins.Sweetalert2', true)
 @section('title','Atualização de Pessoa')

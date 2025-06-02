@@ -92,9 +92,13 @@ class UserRegisterController extends Controller
     {
         try {
             $request->validated();
-            $userData = $request->all();
-            $userData['password'] = bcrypt($userData['password']);
+            $userData = $request->except(['password', 'coordinator', 'status']);
+            $userData['password'] = bcrypt($request->password);
             $userData['user_creator'] = Auth::user()->name;
+            
+            // Processar campos boolean corretamente
+            $userData['coordinator'] = $request->boolean('coordinator', false);
+            $userData['status'] = $request->boolean('status', false);
 
             $user = User::create($userData);
             $user->assignRole($request->input('role'));
@@ -169,15 +173,19 @@ class UserRegisterController extends Controller
         try {
             $request->validated();
             $user = User::findOrFail($id);
-            $user->fill($request->except('password'));
+            
+            // Atualizar dados exceto password, coordinator e status
+            $user->fill($request->except(['password', 'coordinator', 'status']));
 
             if ($request->filled('password')) {
                 $user->password = bcrypt($request->password);
             }
 
+            // Processar campos boolean corretamente
             $user->coordinator = $request->boolean('coordinator', false);
             $user->status = $request->boolean('status', false);
             $user->user_update = Auth::user()->name;
+            
             $user->update();
             $user->syncRoles([$request->input('role')]);
             $user->syncPermissions($request->input('permissions'));

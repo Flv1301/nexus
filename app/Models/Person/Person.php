@@ -89,7 +89,10 @@ class Person extends Model
         'orcrim' => UpCaseTextCast::class,
         'orcrimOffice' => UpCaseTextCast::class,
         'orcrimOccupationArea' => UpCaseTextCast::class,
-
+        'dead' => 'boolean',
+        'warrant' => 'boolean',
+        'evadido' => 'boolean',
+        'active_orcrim' => 'boolean',
     ];
 
 

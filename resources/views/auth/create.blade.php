@@ -3,7 +3,6 @@
 @section('plugins.Select2', true)
 @section('plugins.BootstrapSelect', true)
 @section('plugins.TempusDominusBs4', true)
-@section('plugins.BootstrapSwitch', true)
 <x-page-header title="Cadastro de Usuário"/>
 @section('content')
     <x-page-messages/>
@@ -11,7 +10,7 @@
         <div class="card-body">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{route('register.store')}}" method="post">
+                    <form action="{{route('register.store')}}" method="post" id="user-form">
                         @csrf
                         @include('auth.form')
                         <div class="card-footer mt-2">
