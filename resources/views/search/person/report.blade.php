@@ -186,6 +186,72 @@
             .data-section {
                 page-break-inside: avoid;
             }
+            
+            /* Estilos para PDFs incorporados */
+            .pdf-container {
+                page-break-inside: avoid;
+                margin: 10px 0;
+            }
+            
+            object[type="application/pdf"] {
+                page-break-inside: avoid;
+                min-height: 800px;
+            }
+            
+            .pdf-placeholder {
+                page-break-inside: avoid;
+                border: 2px solid #ccc;
+                background-color: #f8f9fa;
+                padding: 20px;
+                text-align: center;
+            }
+            
+            /* Estilos para imagens de PDF convertidas */
+            .pdf-page-image {
+                page-break-inside: avoid;
+                max-width: 100%;
+                width: auto;
+                height: auto;
+                border: 1px solid #ddd;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                margin: 10px auto;
+                display: block;
+                image-rendering: crisp-edges;
+                image-rendering: -webkit-optimize-contrast;
+            }
+            
+            .pdf-info-box {
+                border: 2px solid #007bff;
+                background-color: #f8f9fa;
+                padding: 15px;
+                margin: 10px 0;
+                page-break-inside: avoid;
+            }
+            
+            iframe {
+                page-break-inside: avoid;
+            }
+            
+            .pdf-render-container {
+                page-break-inside: avoid;
+                margin: 20px 0;
+            }
+            
+            .pdf-loading {
+                text-align: center;
+                padding: 40px;
+                background-color: #f8f9fa;
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+            }
+            
+            .pdf-page-canvas {
+                display: block;
+                margin: 10px auto;
+                border: 1px solid #ddd;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                page-break-inside: avoid;
+            }
         }
     </style>
 </head>
@@ -794,22 +860,35 @@
     </table>
     @endif
 
-    <!-- Documentos -->
+    <!-- Anexo - Documentos -->
     @if($person->docs && $person->docs->count() > 0)
-    <div class="section-title-table">DOCUMENTOS ANEXADOS</div>
+    <div class="page-break"></div>
+    <div class="section-title-table">ANEXO</div>
+    
+    <div class="section-content">
+        <p style="font-weight: bold; margin-bottom: 10px; font-size: 10px;">
+            DOCUMENTOS ANEXADOS AO PROCESSO
+        </p>
+        <p style="margin-bottom: 15px; font-size: 10px;">
+            Relacionamos abaixo os documentos que constam anexados ao presente relatório:
+        </p>
+    </div>
+    
     <table class="table-section">
         <thead>
             <tr>
-                <th>NOME DO DOCUMENTO</th>
-                <th>DATA</th>
-                <th>ARQUIVO</th>
+                <th style="width: 8%; text-align: center;">ANEXO Nº</th>
+                <th style="width: 52%;">NOME DO DOCUMENTO</th>
+                <th style="width: 15%; text-align: center;">DATA</th>
+                <th style="width: 25%; text-align: center;">STATUS</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($person->docs as $doc)
+            @foreach($person->docs as $index => $doc)
             <tr>
-                <td>{{ strtoupper($doc->nome_doc ?? '') }}</td>
-                <td>
+                <td style="text-align: center; font-weight: bold;">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</td>
+                <td>{{ strtoupper($doc->nome_doc ?? 'DOCUMENTO SEM NOME') }}</td>
+                <td style="text-align: center;">
                     @if($doc->data)
                         @php
                             try {
@@ -822,13 +901,89 @@
                                 echo $doc->data;
                             }
                         @endphp
+                    @else
+                        --/--/----
                     @endif
                 </td>
-                <td>{{ $doc->upload ? 'ANEXADO' : 'SEM ARQUIVO' }}</td>
+                <td style="text-align: center; {{ $doc->upload ? 'color: green; font-weight: bold;' : 'color: red;' }}">
+                    {{ $doc->upload ? '✓ ANEXADO' : '✗ SEM ARQUIVO' }}
+                </td>
             </tr>
             @endforeach
         </tbody>
     </table>
+    
+    <div style="margin-top: 15px; font-size: 9px; color: #666;">
+        <p><strong>Total de anexos:</strong> {{ $person->docs->count() }} documento(s)</p>
+        <p><strong>Arquivos anexados:</strong> {{ $person->docs->where('upload', '!=', null)->count() }} documento(s)</p>
+        <p><strong>Observação:</strong> Os documentos listados como "ANEXADO" constam fisicamente ou digitalmente no processo.</p>
+    </div>
+
+    <!-- PDFs dos Documentos -->
+    @php
+        $pdfDocs = $person->docs->filter(function($doc) {
+            return $doc->upload && file_exists(public_path($doc->upload));
+        });
+    @endphp
+
+    @if($pdfDocs->count() > 0)
+        @foreach($pdfDocs as $index => $doc)
+        <div class="page-break"></div>
+        <div class="section-title-table">
+            ANEXO {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }} - {{ strtoupper($doc->nome_doc ?? 'DOCUMENTO') }}
+        </div>
+        
+        <div class="pdf-container">
+            @php
+                $filePath = public_path($doc->upload);
+            @endphp
+            
+            @if(file_exists($filePath))
+                <!-- Container para renderização do PDF via JavaScript -->
+                <div id="pdf-container-{{ $index }}" class="pdf-render-container" data-pdf-url="{{ asset($doc->upload) }}">
+                    <div class="pdf-loading">
+                        <p style="text-align: center; padding: 40px; font-size: 12px;">
+                            <i class="fas fa-spinner fa-spin"></i><br>
+                            Carregando PDF: {{ strtoupper($doc->nome_doc ?? 'DOCUMENTO') }}...<br>
+                            <small>Aguarde enquanto o documento é processado para impressão</small>
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Fallback para quando JavaScript não está disponível -->
+                <noscript>
+                    <div class="pdf-info-box">
+                        <p style="font-size: 11px; color: #666; margin: 0;">
+                            <strong>📄 DOCUMENTO PDF</strong><br>
+                            JavaScript necessário para melhor visualização.<br>
+                            <em>Localização: {{ $doc->upload }}</em>
+                        </p>
+                    </div>
+                    
+                    <iframe src="{{ asset($doc->upload) }}" 
+                            width="100%" 
+                            height="800px" 
+                            style="border: 1px solid #ccc;">
+                        <div class="pdf-placeholder">
+                            <p style="font-size: 12px; color: #666; margin: 0;">
+                                <strong>ANEXO {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}:</strong> {{ strtoupper($doc->nome_doc ?? 'DOCUMENTO') }}<br>
+                                <em>PDF não pode ser exibido. Consulte o arquivo original em: {{ $doc->upload }}</em>
+                            </p>
+                        </div>
+                    </iframe>
+                </noscript>
+            @else
+                <div class="pdf-placeholder">
+                    <p style="font-size: 12px; color: #666; margin: 0;">
+                        <strong>ANEXO {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}:</strong> {{ strtoupper($doc->nome_doc ?? 'DOCUMENTO') }}<br>
+                        <em>Arquivo não encontrado ou não pode ser carregado.</em><br>
+                        <small>Caminho esperado: {{ $doc->upload }}</small>
+                    </p>
+                </div>
+            @endif
+        </div>
+        @endforeach
+    @endif
     @endif
 
     <!-- Rodapé -->
@@ -838,7 +993,140 @@
 
     <script>
         window.onload = function() {
-            window.print();
+            // Carrega PDF.js se disponível ou tenta fallback
+            if (typeof pdfjsLib === 'undefined') {
+                loadPDFJS();
+            } else {
+                processPDFs();
+            }
+        }
+
+        function loadPDFJS() {
+            // Carrega PDF.js de CDN
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+            script.onload = function() {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                processPDFs();
+            };
+            script.onerror = function() {
+                // Se falhar ao carregar PDF.js, usa fallback
+                useFallback();
+            };
+            document.head.appendChild(script);
+        }
+
+        function processPDFs() {
+            const containers = document.querySelectorAll('.pdf-render-container');
+            
+            containers.forEach((container, index) => {
+                const pdfUrl = container.getAttribute('data-pdf-url');
+                if (pdfUrl) {
+                    renderPDF(pdfUrl, container, index);
+                }
+            });
+        }
+
+        function renderPDF(url, container, index) {
+            const loadingDiv = container.querySelector('.pdf-loading');
+            
+            pdfjsLib.getDocument(url).promise.then(function(pdf) {
+                loadingDiv.innerHTML = '<p style="text-align: center; padding: 20px; font-size: 12px;">Renderizando ' + pdf.numPages + ' página(s)...</p>';
+                
+                const renderPromises = [];
+                
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    renderPromises.push(renderPage(pdf, pageNum, container, index));
+                }
+                
+                Promise.all(renderPromises).then(() => {
+                    // Remove loading div após todas as páginas serem renderizadas
+                    loadingDiv.remove();
+                }).catch(error => {
+                    console.error('Erro ao renderizar páginas:', error);
+                    showError(container, 'Erro ao renderizar páginas do PDF');
+                });
+                
+            }).catch(error => {
+                console.error('Erro ao carregar PDF:', error);
+                showError(container, 'Erro ao carregar PDF: ' + url);
+            });
+        }
+
+        function renderPage(pdf, pageNum, container, docIndex) {
+            return pdf.getPage(pageNum).then(function(page) {
+                // Se não é a primeira página, adiciona quebra de página
+                if (pageNum > 1) {
+                    const pageBreak = document.createElement('div');
+                    pageBreak.className = 'page-break';
+                    container.appendChild(pageBreak);
+                    
+                    const pageTitle = document.createElement('div');
+                    pageTitle.className = 'section-title-table';
+                    pageTitle.innerHTML = 'ANEXO ' + String(docIndex + 1).padStart(2, '0') + ' - PÁGINA ' + pageNum;
+                    container.appendChild(pageTitle);
+                }
+                
+                const scale = 2.0; // Alta resolução para impressão
+                const viewport = page.getViewport({ scale: scale });
+                
+                const canvas = document.createElement('canvas');
+                canvas.className = 'pdf-page-canvas';
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                
+                // Ajusta tamanho para exibição (mantém resolução alta para impressão)
+                canvas.style.width = (viewport.width / 2) + 'px';
+                canvas.style.height = (viewport.height / 2) + 'px';
+                
+                const context = canvas.getContext('2d');
+                
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                
+                container.appendChild(canvas);
+                
+                return page.render(renderContext).promise;
+            });
+        }
+
+        function showError(container, message) {
+            container.innerHTML = `
+                <div class="pdf-placeholder">
+                    <p style="font-size: 12px; color: #dc3545; margin: 0;">
+                        <strong>❌ ERRO:</strong> ${message}<br>
+                        <em>Utilizando visualização padrão do navegador como fallback</em>
+                    </p>
+                </div>
+                <iframe src="${container.getAttribute('data-pdf-url')}" 
+                        width="100%" 
+                        height="600px" 
+                        style="border: 1px solid #ccc; margin-top: 10px;">
+                </iframe>
+            `;
+        }
+
+        function useFallback() {
+            // Se PDF.js não carregou, usa iframe como fallback
+            const containers = document.querySelectorAll('.pdf-render-container');
+            containers.forEach(container => {
+                const pdfUrl = container.getAttribute('data-pdf-url');
+                container.innerHTML = `
+                    <div class="pdf-info-box">
+                        <p style="font-size: 11px; color: #666; margin: 0;">
+                            <strong>📄 DOCUMENTO PDF (FALLBACK)</strong><br>
+                            PDF.js não disponível, usando visualização padrão.<br>
+                        </p>
+                    </div>
+                    <iframe src="${pdfUrl}" 
+                            width="100%" 
+                            height="800px" 
+                            style="border: 1px solid #ccc;">
+                    </iframe>
+                `;
+            });
         }
     </script>
 </body>

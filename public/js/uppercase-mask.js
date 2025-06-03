@@ -59,16 +59,43 @@ document.addEventListener('DOMContentLoaded', function() {
         'email', 'password', 'year', 'bo', 'processo', 'cac', 'conta', 'agencia',
         'password_confirmation', 'search', 'new_cep', 'new_cnpj', 'new_phone', 
         'new_social_capital', 'new_number', 'new_vehicle_year', 'vinculo_cpf',
-        'pcpa_bo', 'tj_processo', 'arma_cac', 'bancario_conta', 'bancario_agencia'
+        'pcpa_bo', 'tj_processo', 'arma_cac', 'bancario_conta', 'bancario_agencia',
+        'social'  // Campo de endereço/perfil de redes sociais (não deve ser maiúscula)
     ];
     
     // Lista de palavras-chave que indicam campos numéricos ou especiais
     const excludeKeywords = [
         'cpf', 'cnpj', 'rg', 'telefone', 'phone', 'email', 'password', 'cep', 
         'numero', 'number', 'data', 'date', 'ano', 'year', 'valor', 'price',
-        'quantidade', 'quantity', 'codigo', 'code', 'id'
+        'quantidade', 'quantity', 'codigo', 'code', 'id', 'social'
     ];
     
+    /**
+     * Função para remover acentos
+     */
+    function removeAccents(str) {
+        if (!str) return str;
+        
+        const accentsMap = {
+            'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A',
+            'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a',
+            'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E',
+            'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e',
+            'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I',
+            'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i',
+            'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O',
+            'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o',
+            'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U',
+            'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u',
+            'Ç': 'C', 'ç': 'c',
+            'Ñ': 'N', 'ñ': 'n'
+        };
+        
+        return str.replace(/[ÀÁÂÃÄÅàáâãäåÈÉÊËèéêëÌÍÎÏìíîïÒÓÔÕÖòóôõöÙÚÛÜùúûüÇçÑñ]/g, function(match) {
+            return accentsMap[match] || match;
+        });
+    }
+
     /**
      * Função para converter texto para maiúscula
      */
@@ -76,7 +103,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const element = event.target;
         const cursorPosition = element.selectionStart;
         const value = element.value;
-        const uppercaseValue = value.toUpperCase();
+        
+        // Remove acentos primeiro, depois converte para maiúscula
+        const noAccentsValue = removeAccents(value);
+        const uppercaseValue = noAccentsValue.toUpperCase();
         
         if (value !== uppercaseValue) {
             element.value = uppercaseValue;
@@ -94,6 +124,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const className = element.className || '';
         const placeholder = element.placeholder || '';
         const label = element.getAttribute('aria-label') || '';
+        
+        // VERIFICAÇÃO ESPECÍFICA PARA CAMPO SOCIAL - SEMPRE EXCLUIR
+        if (name === 'social' || element.id === 'social') {
+            console.log('Campo social detectado - EXCLUÍDO da transformação uppercase');
+            return false;
+        }
         
         // Verifica se o campo está na lista de exclusão
         if (excludeFields.includes(name)) {
@@ -130,6 +166,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Verifica se o tipo de campo deve ser convertido
         if (fieldTypesToUppercase.includes(type) || type === '') {
+            // EXCLUIR tipos específicos que não devem ter uppercase
+            if (type === 'email' || type === 'url' || type === 'password') {
+                return false;
+            }
+            
             // Aplica regras adicionais para campos de texto genéricos
             
                          // Verifica palavras-chave que indicam campos de texto/nome
@@ -251,6 +292,30 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(`Processados ${inputs.length} campos`);
     };
     
+    /**
+     * Função específica para garantir que o campo social nunca tenha uppercase
+     */
+    function ensureSocialFieldNormalCase() {
+        const socialFields = document.querySelectorAll('[name="social"], #social');
+        socialFields.forEach(field => {
+            if (field) {
+                // Remove transformação CSS
+                field.style.textTransform = 'none';
+                
+                // Remove atributo de processamento
+                field.removeAttribute('data-uppercase-applied');
+                
+                // Remove listeners se existirem (clonando o elemento)
+                const newField = field.cloneNode(true);
+                if (field.parentNode) {
+                    field.parentNode.replaceChild(newField, field);
+                }
+                
+                console.log('Campo social resetado para não usar uppercase');
+            }
+        });
+    }
+    
     // Inicia o observer
     observer.observe(document.body, {
         childList: true,
@@ -270,6 +335,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Aplica máscaras aos campos existentes
     applyMasksToExistingFields();
     
+    // Garantir que campos sociais nunca tenham uppercase
+    ensureSocialFieldNormalCase();
+    
     // Força aplicação em campos específicos que podem ter problemas
     setTimeout(() => {
         const specificFields = ['vinculo_cargo', 'rais_empresa_orgao'];
@@ -280,6 +348,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log(`Máscara forçada aplicada ao campo: ${fieldName}`);
             }
         });
+        
+        // Garantir novamente que campos sociais não tenham uppercase
+        ensureSocialFieldNormalCase();
     }, 500);
     
     // Função para debug - mostra campos detectados

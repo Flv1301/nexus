@@ -1,9 +1,10 @@
 <div class="form-row">
-    <div class="form-group col-md-6">
+    <div class="form-group col-md-4">
         <x-adminlte-input
             name="social"
             id="social"
             label="Endereço/Perfil"
+            type="url"
             placeholder="Endereço ou perfil"
             value="{{ old('social') ?? $social->social ?? ''}}">
             <x-slot name="prependSlot">
@@ -13,7 +14,7 @@
             </x-slot>
         </x-adminlte-input>
     </div>
-    <div class="form-group col-md-6">
+    <div class="form-group col-md-4">
         <x-adminlte-select
             name="type"
             id="type"
@@ -62,4 +63,31 @@
             <option value="youtube">YouTube</option>
         </x-adminlte-select>
     </div>
+    <div class="form-group col-md-4">
+        <x-adminlte-input
+            name="social_id"
+            id="social_id"
+            label="ID"
+            type="text"
+            placeholder="ID do perfil/usuário"
+            value="{{ old('social_id') ?? $social->social_id ?? ''}}">
+            <x-slot name="prependSlot">
+                <div class="input-group-text text-black">
+                    <i class="fas fa-id-badge"></i>
+                </div>
+            </x-slot>
+        </x-adminlte-input>
+    </div>
 </div>
+
+@push('css')
+<style>
+/* Regra CSS específica e forte para garantir que campo social não tenha uppercase */
+input[name="social"], 
+#social,
+input[name="social"].form-control,
+#social.form-control {
+    text-transform: none !important;
+}
+</style>
+@endpush

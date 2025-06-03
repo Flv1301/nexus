@@ -19,7 +19,7 @@
                         <th>Número</th>
                         <th>Bairro</th>
                         <th>Cidade</th>
-                        <th>Estado</th>
+                        <th>UF</th>
                         <th>CNAE</th>
                         <th>Contador</th>
                     </tr>

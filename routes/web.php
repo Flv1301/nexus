@@ -75,6 +75,8 @@ Route::middleware('auth')->get('/download/{path}', fn($path) => response()->down
 require_once 'routes/user.php';
 /** PESSOAS */
 require_once 'routes/person.php';
+/** ENDEREÇOS */
+require_once 'routes/address.php';
 /** CASO */
 require_once 'routes/case.php';
 /** SISTEMA */
@@ -110,3 +112,9 @@ Route::middleware(['auth'])->put('/notificacao/{id}', [NotificationController::c
 
 Route::get('/pesquisa/pix', [PixController::class, 'index'])->name('pesquisa.pix.index');
 Route::get('/pesquisa/pix/search', [PixController::class, 'search'])->name('pesquisa.pix.search');
+
+/** LOCALIZAÇÃO - APIs para busca de cidades */
+Route::middleware(['auth'])->group(function () {
+    Route::get('/api/cities-by-uf', [App\Http\Controllers\LocationController::class, 'getCitiesByUF'])->name('api.cities.by.uf');
+    Route::get('/api/search-cities', [App\Http\Controllers\LocationController::class, 'searchCities'])->name('api.search.cities');
+});

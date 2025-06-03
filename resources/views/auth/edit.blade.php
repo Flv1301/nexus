@@ -2,6 +2,11 @@
 @section('title','Cadastro de Usuário')
 @section('plugins.Select2', true)
 @section('plugins.BootstrapSelect', true)
+
+@push('css')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+@endpush
+
 <x-page-header title="Atualização do Usuário {{$user->nickname}}"/>
 @section('content')
     <x-page-messages/>
@@ -27,3 +32,7 @@
         </div>
     </div>
 @endsection
+
+@push('js')
+<script src="{{ asset('js/dynamic-cities.js') }}"></script>
+@endpush

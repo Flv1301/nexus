@@ -46,16 +46,7 @@
             value="{{ $address->city ?? ''}}"
         />
     </div>
-    <div class="form-group col-3">
-        <x-adminlte-input
-            name="state"
-            label="Estado"
-            placeholder="Estado"
-            disabled
-            value="{{ $address->state ?? ''}}"
-        />
-    </div>
-    <div class="form-group col-1">
+    <div class="form-group col-4">
         <x-adminlte-input
             name="uf"
             label="UF"

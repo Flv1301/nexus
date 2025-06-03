@@ -3,6 +3,11 @@
 @section('plugins.Sweetalert2', true)
 @section('plugins.Datatables', true)
 @section('title','Pesquisa de Pessoa')
+
+@push('css')
+    <link rel="stylesheet" href="{{ asset('css/dynamic-search-fields.css') }}">
+@endpush
+
 <x-page-header title="Pesquisa De Pessoa">
     <div>
         <a href="{{ url()->previous() }}" id="history" class="btn btn-info"
@@ -33,6 +38,14 @@
                                         <label for="nexus-checked" class="custom-control-label">Nexus</label>
                                     </div>
                                     @endcan
+                                    @can('nexus')
+                                        <div class="custom-control custom-checkbox ml-1">
+                                            <input class="custom-control-input" type="checkbox" id="faccionado-checked"
+                                                   value="faccionado" name="options[]"
+                                                   @if(in_array('faccionado', $request->options)) checked @endif />
+                                            <label for="faccionado-checked" class="custom-control-label">Faccionado</label>
+                                        </div>
+                                    @endcan
                                     @can('cortex')
                                         <div class="custom-control custom-checkbox ml-1">
                                             <input class="custom-control-input" type="checkbox"
@@ -47,49 +60,76 @@
                             <div class="d-flex justify-content-end">
                                 <label id="checkbox-mark" class="text-info">Desmarcar Todos</label>
                             </div>
+                            
+                            <!-- Área de Campos Dinâmicos -->
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="form-group">
-                                        <x-adminlte-input name="name" placeholder="Nome ou Alcunha" label="Nome ou Alcunha"
-                                                          value="{{old('name') ?? $request->name ?? ''}}"/>
+                                    <!-- Campos selecionados aparecerão aqui -->
+                                    <div id="selected-fields">
+                                        <!-- Os campos serão adicionados dinamicamente aqui -->
                                     </div>
+                                    
+                                    <!-- Seletor de Campo -->
                                     <div class="form-group">
-                                        <x-adminlte-input name="cpf" placeholder="CPF" class="mask-cpf-number"
-                                                          label="CPF"
-                                                          value="{{old('cpf') ?? $request->cpf ?? ''}}"/>
+                                        <label><i class="fas fa-plus-circle text-primary"></i> Selecionar Campo</label>
+                                        <select class="form-control" id="field-selector">
+                                            <option value="">Escolha um campo...</option>
+                                            
+                                            <!-- Dados Pessoais -->
+                                            <optgroup label="📄 Dados Pessoais">
+                                                <option value="name">👤 Nome ou Alcunha</option>
+                                                <option value="cpf">🆔 CPF</option>
+                                                <option value="rg">🎫 RG</option>
+                                                <option value="mother">👩 Nome da Mãe</option>
+                                                <option value="father">👨 Nome do Pai</option>
+                                                <option value="birth_date">📅 Data de Nascimento</option>
+                                                <option value="birth_city">🏙️ Município de Nascimento</option>
+                                                <option value="tattoo">👁️ Tatuagem</option>
+                                                <option value="orcrim">👥 Orcrim</option>
+                                                <option value="area_atuacao">🗺️ Área de Atuação</option>
+                                            </optgroup>
+                                            
+                                            <!-- Endereços -->
+                                            <optgroup label="🏠 Endereços">
+                                                <option value="city">🏢 Cidade</option>
+                                            </optgroup>
+                                            
+                                            <!-- Contatos -->
+                                            <optgroup label="📞 Contatos">
+                                                <option value="phone">📱 Telefone</option>
+                                            </optgroup>
+                                            
+                                            <!-- Redes Sociais -->
+                                            <optgroup label="📧 Social">
+                                                <option value="email">✉️ E-mail</option>
+                                            </optgroup>
+                                            
+                                            <!-- Infopen -->
+                                            <optgroup label="🏛️ Infopen">
+                                                <option value="matricula">🎟️ Matrícula</option>
+                                            </optgroup>
+                                            
+                                            <!-- Veículos -->
+                                            <optgroup label="🚗 Veículos">
+                                                <option value="placa">🚙 Placa</option>
+                                            </optgroup>
+                                            
+                                            <!-- Antecedentes -->
+                                            <optgroup label="📋 Antecedentes">
+                                                <option value="bo">📄 BO</option>
+                                            </optgroup>
+                                            
+                                            <!-- Processos -->
+                                            <optgroup label="⚖️ Processos">
+                                                <option value="processo">🏛️ Processo</option>
+                                            </optgroup>
+                                        </select>
                                     </div>
-                                    <div class="form-group">
-                                        <x-adminlte-input name="rg" placeholder="RG" label="RG"
-                                                          value="{{old('rg') ?? $request->rg ?? ''}}"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <x-adminlte-input name="mother" placeholder="Nome da Mãe"
-                                                          label="Genitora"
-                                                          value="{{old('mother') ?? $request->mother ?? ''}}"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <x-adminlte-input name="father" placeholder="Nome do Pai"
-                                                          label="Genitor"
-                                                          value="{{old('father') ?? $request->father ?? ''}}"/>
-                                    </div>
-                                    <div class="form-group">
-                                        @php $config = ['format' => 'DD/MM/YYYY']; @endphp
-                                        <x-adminlte-input-date name="birth_date"
-                                                               class="mask-date"
-                                                               id="birth_date"
-                                                               :config="$config"
-                                                               placeholder="Data Nascimento"
-                                                               label="Data Nascimento"
-                                                               value="{{old('birth_date') ?? $request->birth_date ?? ''}}">
-                                            <x-slot name="appendSlot">
-                                                <div class="input-group-text bg-gradient-warning">
-                                                    <i class="fas fa-calendar-alt"></i>
-                                                </div>
-                                            </x-slot>
-                                        </x-adminlte-input-date>
-                                    </div>
-                                    <div class="col-md-12 d-flex justify-content-end">
-                                        <label id="inputs-reset" class="text-info">Limpar Campos</label>
+                                    
+                                    <div class="col-md-12 d-flex justify-content-center">
+                                        <button type="button" id="remove-all-fields" class="btn btn-link text-danger p-0" style="text-decoration: none;">
+                                            <i class="fas fa-trash"></i> Remover Todos os Campos
+                                        </button>
                                     </div>
                                     <div class="card-footer">
                                         <div class="d-flex justify-content-between">
@@ -115,44 +155,111 @@
         </div>
     </div>
 @endsection
+
 @push('js')
     <script src="{{ asset('js/cpf-mask.js') }}"></script>
+    <script src="{{ asset('js/dynamic-search-fields.js') }}"></script>
+    <script src="{{ asset('js/debug-test.js') }}"></script>
+    <script src="{{ asset('js/test-backend-integration.js') }}"></script>
     <script>
-        const form = document.getElementById('form-search');
-        const button = document.getElementById('icon-bars-hidden');
-        const contentform = document.getElementById('content-form');
-        const contentresult = document.getElementById('content-result');
+        // Configuração básica da interface (não relacionada aos campos dinâmicos)
+        document.addEventListener('DOMContentLoaded', function() {
+            const button = document.getElementById('icon-bars-hidden');
+            const contentform = document.getElementById('content-form');
+            const contentresult = document.getElementById('content-result');
+            const checkboxMarks = document.getElementById('checkbox-mark');
 
-        button.addEventListener('click', function () {
-            if (contentform.style.display === 'none') {
-                contentform.style.display = 'block';
-                contentresult.classList.remove('col-md-11');
-                contentresult.classList.add('col-md-8');
-            } else {
-                contentform.style.display = 'none';
-                contentresult.classList.remove('col-md-8');
-                contentresult.classList.add('col-md-11');
+            // Toggle do formulário
+            if (button) {
+                button.addEventListener('click', function () {
+                    if (contentform.style.display === 'none') {
+                        contentform.style.display = 'block';
+                        contentresult.classList.remove('col-md-11');
+                        contentresult.classList.add('col-md-8');
+                    } else {
+                        contentform.style.display = 'none';
+                        contentresult.classList.remove('col-md-8');
+                        contentresult.classList.add('col-md-11');
+                    }
+                });
             }
-        });
 
-        const checkboxMarks = document.getElementById('checkbox-mark');
-        checkboxMarks.addEventListener('click', function () {
-            if (checkboxMarks.textContent === 'Desmarcar Todos') {
-                document.querySelectorAll('input[type="checkbox"]').forEach(input => input.checked = false);
-                checkboxMarks.textContent = 'Marcar Todos';
-            } else {
-                document.querySelectorAll('input[type="checkbox"]').forEach(input => input.checked = true);
-                checkboxMarks.textContent = 'Desmarcar Todos';
+            // Toggle dos checkboxes das bases de dados
+            if (checkboxMarks) {
+                checkboxMarks.addEventListener('click', function () {
+                    if (checkboxMarks.textContent === 'Desmarcar Todos') {
+                        document.querySelectorAll('input[type="checkbox"]').forEach(input => input.checked = false);
+                        checkboxMarks.textContent = 'Marcar Todos';
+                    } else {
+                        document.querySelectorAll('input[type="checkbox"]').forEach(input => input.checked = true);
+                        checkboxMarks.textContent = 'Desmarcar Todos';
+                    }
+                });
             }
-        });
 
-        const inputsReset = document.getElementById('inputs-reset');
-        inputsReset.addEventListener('click', function () {
-            form.querySelectorAll('input').forEach(input => {
-                if (input.name !== '_token' && input.type !== 'checkbox') {
-                    input.value = '';
-                }
-            });
+            // Carregar campos existentes da requisição após inicialização do DynamicSearchFields
+            setTimeout(() => {
+                @if(isset($request))
+                    const existingData = {
+                        @if(old('name') || (isset($request->name) && $request->name))
+                            name: '{{ old("name") ?? $request->name ?? "" }}',
+                        @endif
+                        @if(old('cpf') || (isset($request->cpf) && $request->cpf))
+                            cpf: '{{ old("cpf") ?? $request->cpf ?? "" }}',
+                        @endif
+                        @if(old('rg') || (isset($request->rg) && $request->rg))
+                            rg: '{{ old("rg") ?? $request->rg ?? "" }}',
+                        @endif
+                        @if(old('mother') || (isset($request->mother) && $request->mother))
+                            mother: '{{ old("mother") ?? $request->mother ?? "" }}',
+                        @endif
+                        @if(old('father') || (isset($request->father) && $request->father))
+                            father: '{{ old("father") ?? $request->father ?? "" }}',
+                        @endif
+                        @if(old('birth_date') || (isset($request->birth_date) && $request->birth_date))
+                            birth_date: '{{ old("birth_date") ?? $request->birth_date ?? "" }}',
+                        @endif
+                        @if(old('birth_city') || (isset($request->birth_city) && $request->birth_city))
+                            birth_city: '{{ old("birth_city") ?? $request->birth_city ?? "" }}',
+                        @endif
+                        @if(old('tattoo') || (isset($request->tattoo) && $request->tattoo))
+                            tattoo: '{{ old("tattoo") ?? $request->tattoo ?? "" }}',
+                        @endif
+                        @if(old('orcrim') || (isset($request->orcrim) && $request->orcrim))
+                            orcrim: '{{ old("orcrim") ?? $request->orcrim ?? "" }}',
+                        @endif
+                        @if(old('area_atuacao') || (isset($request->area_atuacao) && $request->area_atuacao))
+                            area_atuacao: '{{ old("area_atuacao") ?? $request->area_atuacao ?? "" }}',
+                        @endif
+                        @if(old('city') || (isset($request->city) && $request->city))
+                            city: '{{ old("city") ?? $request->city ?? "" }}',
+                        @endif
+                        @if(old('phone') || (isset($request->phone) && $request->phone))
+                            phone: '{{ old("phone") ?? $request->phone ?? "" }}',
+                        @endif
+                        @if(old('email') || (isset($request->email) && $request->email))
+                            email: '{{ old("email") ?? $request->email ?? "" }}',
+                        @endif
+                        @if(old('matricula') || (isset($request->matricula) && $request->matricula))
+                            matricula: '{{ old("matricula") ?? $request->matricula ?? "" }}',
+                        @endif
+                        @if(old('placa') || (isset($request->placa) && $request->placa))
+                            placa: '{{ old("placa") ?? $request->placa ?? "" }}',
+                        @endif
+                        @if(old('bo') || (isset($request->bo) && $request->bo))
+                            bo: '{{ old("bo") ?? $request->bo ?? "" }}',
+                        @endif
+                        @if(old('processo') || (isset($request->processo) && $request->processo))
+                            processo: '{{ old("processo") ?? $request->processo ?? "" }}',
+                        @endif
+                    };
+                    
+                    if (window.dynamicFields && Object.keys(existingData).length > 0) {
+                        window.dynamicFields.loadExistingFields(existingData);
+                        console.log('Campos existentes carregados:', existingData);
+                    }
+                @endif
+            }, 100); // Aguarda 100ms para garantir que o DynamicSearchFields foi inicializado
         });
     </script>
 @endpush

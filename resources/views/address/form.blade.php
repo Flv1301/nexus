@@ -5,6 +5,7 @@
         <div class="form-group col-md-2">
             <x-adminlte-input
                 name="code"
+                id="code"
                 label="CEP"
                 placeholder="CEP"
                 class="mask-code"
@@ -52,42 +53,33 @@
                 value="{{ old('district') ?? $address->district ?? ''}}"
             />
         </div>
-        <div class="form-group col-md-4">
-            <x-adminlte-input
+        <div class="form-group col-md-5">
+            <x-adminlte-select
                 name="city"
                 id="city"
                 label="Cidade"
-                placeholder="Cidade"
-                style="text-transform:uppercase"
-                value="{{ old('city') ?? $address->city ?? ''}}"
-            />
-        </div>
-        <div class="form-group col-md-3">
-            <x-adminlte-select
-                name="state"
-                id="state"
-                label="Estado"
-                placeholder="Estado"
+                placeholder="Selecione primeiro a UF"
             >
-                <option/>
-                @foreach(\App\Enums\UFBrEnum::cases() as $uf)
-                    <option
-                        {{$uf->state() == old('state') ? 'selected' : ($address->state == $uf->state() ? 'selected' : '')}}>
-                        {{$uf->state()}}
+                <option value="">Selecione primeiro a UF</option>
+                @if(old('city') || $address->city)
+                    <option value="{{ old('city') ?? $address->city ?? '' }}" selected>
+                        {{ old('city') ?? $address->city ?? '' }}
                     </option>
-                @endforeach
+                @endif
             </x-adminlte-select>
         </div>
-        <div class="form-group col-md-1">
+        <div class="form-group col-md-3">
             <x-adminlte-select
                 name="uf"
                 id="uf"
                 label="UF"
                 placeholder="UF"
-                style="text-transform:uppercase">
+                style="text-transform:uppercase"
+                onchange="loadCitiesByUF('uf', 'city')"
+            >
                 <option/>
                 @foreach(\App\Enums\UFBrEnum::cases() as $uf)
-                    <option {{$uf->name == old('uf') ?  'selected' : ($address->uf == $uf->name ? 'selected' : '')}} >
+                    <option value="{{$uf->name}}" {{$uf->name == old('uf') ?  'selected' : ($address->uf == $uf->name ? 'selected' : '')}} >
                         {{ $uf->name }}
                     </option>
                 @endforeach
@@ -114,29 +106,119 @@
             />
         </div>
     </div>
+    
+    <!-- Campo hidden para manter compatibilidade com backend -->
+    <input type="hidden" name="state" id="state" value="{{ old('state') ?? $address->state ?? '' }}">
 </div>
 @push('js')
     <script>
         async function zipCode() {
             let loading = document.getElementById('loading');
+            if (!loading) {
+                console.error('Elemento loading não encontrado');
+                alert('Erro: Elemento loading não encontrado na página.');
+                return;
+            }
             loading.classList.remove('d-none');
-            let code = document.getElementById('code').value;
-            if (code.length === 8) {
-                const url = "{{url('zipcode')}}/" + code;
-                let response = await fetch(url);
+            
+            let cepField = document.getElementById('code');
+            if (!cepField) {
+                console.error('Campo CEP não encontrado');
+                alert('Erro: Campo CEP não encontrado na página.');
+                loading.classList.add('d-none');
+                return;
+            }
+            
+            let code = cepField.value;
+            
+            // Remove máscara do CEP (remove pontos, hífens e espaços)
+            let cleanCode = code.replace(/\D/g, '');
+            
+            console.log('CEP digitado:', code);
+            console.log('CEP limpo:', cleanCode);
+            
+            if (cleanCode.length !== 8) {
+                alert('Por favor, digite um CEP válido com 8 dígitos.');
+                loading.classList.add('d-none');
+                return;
+            }
+            
+            try {
+                const url = "{{url('zipcode')}}/" + cleanCode;
+                console.log('Consultando URL:', url);
+                
+                let response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+                
                 let data = await response.json();
-                if (!response.ok || data.error || data.length === 0) {
+                console.log('Dados retornados:', data);
+                
+                if (!data || Object.keys(data).length === 0 || data.error) {
+                    alert('CEP não encontrado. Verifique se o CEP está correto.');
                     loading.classList.add('d-none');
                     return;
                 }
-                console.log(data.length);
-                document.getElementById('address').value = data.address;
-                document.getElementById('district').value = data.district;
-                document.getElementById('city').value = data.city;
-                document.getElementById('uf').value = data.uf;
-                document.getElementById('state').value = data.state;
+                
+                // Preencher os campos com os dados retornados
+                if (data.address) {
+                    document.getElementById('address').value = data.address;
+                }
+                if (data.district) {
+                    document.getElementById('district').value = data.district;
+                }
+                if (data.uf) {
+                    document.getElementById('uf').value = data.uf;
+                    document.getElementById('state').value = data.state || '';
+                    
+                    // Trigger o evento change para carregar as cidades
+                    document.getElementById('uf').dispatchEvent(new Event('change'));
+                    
+                    // Aguardar um pouco para as cidades carregarem, então selecionar a cidade
+                    setTimeout(() => {
+                        if (data.city) {
+                            const citySelect = document.getElementById('city');
+                            // Procurar pela opção da cidade e selecioná-la
+                            for (let option of citySelect.options) {
+                                if (option.value === data.city) {
+                                    option.selected = true;
+                                    break;
+                                }
+                            }
+                            // Se não encontrou a cidade nas opções, adicionar como nova opção
+                            if (citySelect.value !== data.city) {
+                                const newOption = document.createElement('option');
+                                newOption.value = data.city;
+                                newOption.textContent = data.city;
+                                newOption.selected = true;
+                                citySelect.appendChild(newOption);
+                            }
+                        }
+                    }, 1000);
+                }
+                
+                // Mostrar mensagem de sucesso
+                if (typeof toastr !== 'undefined') {
+                    toastr.success('CEP consultado com sucesso!');
+                } else {
+                    console.log('CEP consultado com sucesso!');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao consultar CEP:', error);
+                alert('Erro ao consultar CEP. Verifique sua conexão e tente novamente.');
+            } finally {
+                loading.classList.add('d-none');
             }
-            loading.classList.add('d-none');
         }
     </script>
 @endpush

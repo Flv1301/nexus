@@ -41,6 +41,7 @@
                     id="new_vehicle_plate"
                     label="Placa"
                     placeholder="Placa"
+                    class="mask-plate"
                     style="text-transform:uppercase;"
                     maxlength="8"
                 />
