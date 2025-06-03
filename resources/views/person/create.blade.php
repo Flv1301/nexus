@@ -5,6 +5,11 @@
 @section('plugins.Summernote', true)
 @section('plugins.KrajeeFileinput', true)
 @section('title','Cadastro de Pessoa')
+
+@push('css')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+@endpush
+
 <x-page-header title="Cadastro de Pessoa">
     <div>
         <a href="{{ url()->previous() }}" id="history" class="btn btn-info"
@@ -35,5 +40,6 @@
 @push('js')
 <script src="{{ asset('js/uppercase-mask.js') }}"></script>
 <script src="{{ asset('js/cpf-mask.js') }}"></script>
+<script src="{{ asset('js/dynamic-cities.js') }}"></script>
 @endpush
 

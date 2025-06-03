@@ -91,23 +91,31 @@
                     name="detainee_uf"
                     id="detainee_uf"
                     label="UF"
-                    placeholder="UF">
+                    placeholder="UF"
+                    onchange="loadCitiesByUF('detainee_uf', 'detainee_city')"
+                >
                     <option/>
                     @foreach(\App\Enums\UFBrEnum::cases() as $uf)
-                        <option {{old('detainee_uf') == $uf->name ? 'selected' : ($person->detainee_uf == $uf->name ? 'selected' : '')}}>
+                        <option value="{{$uf->name}}" {{old('detainee_uf') == $uf->name ? 'selected' : ($person->detainee_uf == $uf->name ? 'selected' : '')}}>
                             {{ $uf->name }}
                         </option>
                     @endforeach
                 </x-adminlte-select>
             </div>
             <div class="form-group col-md-3">
-                <x-adminlte-input
+                <x-adminlte-select
                     name="detainee_city"
                     id="detainee_city"
                     label="Município"
-                    placeholder="Município"
-                    value="{{ old('detainee_city') ?? $person->detainee_city ?? ''}}"
-                />
+                    placeholder="Selecione primeiro a UF"
+                >
+                    <option value="">Selecione primeiro a UF</option>
+                    @if(old('detainee_city') || $person->detainee_city)
+                        <option value="{{ old('detainee_city') ?? $person->detainee_city ?? '' }}" selected>
+                            {{ old('detainee_city') ?? $person->detainee_city ?? '' }}
+                        </option>
+                    @endif
+                </x-adminlte-select>
             </div>
             <div class="form-group col-md-2">
                 <x-adminlte-input

@@ -95,48 +95,27 @@
                 />
             </div>
             <div class="form-group col-md-2">
-                <x-adminlte-input
+                <x-adminlte-select
                     name="new_city"
                     id="new_city"
                     label="Cidade"
-                    placeholder="Cidade"
-                />
+                    placeholder="Selecione primeiro a UF"
+                >
+                    <option value="">Selecione primeiro a UF</option>
+                </x-adminlte-select>
             </div>
             <div class="form-group col-md-2">
                 <x-adminlte-select
                     name="new_uf"
                     id="new_uf"
-                    label="Estado"
+                    label="UF"
                     placeholder="UF"
+                    onchange="loadCitiesByUF('new_uf', 'new_city')"
                 >
                     <option value="">Selecione</option>
-                    <option value="AC">AC</option>
-                    <option value="AL">AL</option>
-                    <option value="AP">AP</option>
-                    <option value="AM">AM</option>
-                    <option value="BA">BA</option>
-                    <option value="CE">CE</option>
-                    <option value="DF">DF</option>
-                    <option value="ES">ES</option>
-                    <option value="GO">GO</option>
-                    <option value="MA">MA</option>
-                    <option value="MT">MT</option>
-                    <option value="MS">MS</option>
-                    <option value="MG">MG</option>
-                    <option value="PA">PA</option>
-                    <option value="PB">PB</option>
-                    <option value="PR">PR</option>
-                    <option value="PE">PE</option>
-                    <option value="PI">PI</option>
-                    <option value="RJ">RJ</option>
-                    <option value="RN">RN</option>
-                    <option value="RS">RS</option>
-                    <option value="RO">RO</option>
-                    <option value="RR">RR</option>
-                    <option value="SC">SC</option>
-                    <option value="SP">SP</option>
-                    <option value="SE">SE</option>
-                    <option value="TO">TO</option>
+                    @foreach(\App\Enums\UFBrEnum::cases() as $uf)
+                        <option value="{{$uf->name}}">{{$uf->name}}</option>
+                    @endforeach
                 </x-adminlte-select>
             </div>
             <div class="form-group col-md-2">
@@ -174,6 +153,11 @@
 <script>
     $(document).ready(function() {
         var companyIndex = {{ isset($person) && $person->companies->count() > 0 ? $person->companies->count() : 0 }};
+
+        // Registrar o mapeamento UF -> cidade para empresas
+        if (typeof window.loadCitiesByUF === 'function') {
+            console.log('Dynamic cities loaded for companies tab');
+        }
 
         $('#add-company').click(function() {
             var companyHtml = '<div class="form-row company-item">' +

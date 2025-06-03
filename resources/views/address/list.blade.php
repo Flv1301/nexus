@@ -8,7 +8,6 @@
                 <th>Número</th>
                 <th>Bairro</th>
                 <th>Cidade</th>
-                <th>Estado</th>
                 <th>UF</th>
                 <th>Complemento</th>
                 <th>Ponto de Referencia</th>
@@ -22,7 +21,6 @@
                     <td>{{$address->number}}</td>
                     <td>{{$address->district}}</td>
                     <td>{{$address->city}}</td>
-                    <td>{{$address->state}}</td>
                     <td>{{$address->uf}}</td>
                     <td>{{$address->complement}}</td>
                     <td>{{$address->reference_point}}</td>

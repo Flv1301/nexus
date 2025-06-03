@@ -44,7 +44,7 @@
                                     <a href="{{route($route, ['base'=> $key, 'id' => $person->id])}}" class="mr-2" title="Visualizar Dados">
                                         <i class="fas fa-lg fa-eye text-primary"></i>
                                     </a>
-                                    @if($key === 'person' || $key === 'nexus')
+                                    @if($key === 'person' || $key === 'nexus' || $key === 'faccionado')
                                     <a href="{{route('person.search.report', ['id' => $person->id])}}" title="Gerar Relatório PDF" target="_blank">
                                         <i class="fas fa-lg fa-file-pdf text-danger"></i>
                                     </a>

@@ -3,11 +3,15 @@
         <div class="d-flex justify-content-between align-items-center">
             <ul class="nav nav-tabs" role="tablist">
                 <li class="nav-item">
-                    <a href="#tab_hydra" data-toggle="pill" aria-controls="tab_data" role="tab"
+                    <a href="#tab_nexus" data-toggle="pill" aria-controls="tab_nexus" role="tab"
                        class="nav-link active">NEXUS</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#tab_cortex" data-toggle="pill" aria-controls="tab_address" role="tab"
+                    <a href="#tab_faccionado" data-toggle="pill" aria-controls="tab_faccionado" role="tab"
+                       class="nav-link">FACCIONADO</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#tab_cortex" data-toggle="pill" aria-controls="tab_cortex" role="tab"
                        class="nav-link">CORTEX</a>
                 </li>
             </ul>

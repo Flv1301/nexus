@@ -5,6 +5,8 @@
             <tr>
                 <th>Rede Social</th>
                 <th>Endereço/Perfil</th>
+                <th>ID</th>
+                <th>Ação</th>
             </tr>
             </thead>
             <tbody id="tableSocials">
@@ -12,6 +14,7 @@
                 <tr>
                     <td>{{$social->type}}</td>
                     <td>{{$social->social}}</td>
+                    <td>{{$social->social_id}}</td>
                     <td><i class="fa fa-md fa-fw fa-trash text-danger"
                            onclick="$(this).parent().parent().remove()"
                            title="Remover"></i></td>
@@ -29,6 +32,7 @@
                             onclick="$(this).parent().parent().remove()"
                             title="Remover"></i>`;
             let social = document.getElementById('social');
+            let socialId = document.getElementById('social_id');
             let type = document.getElementById('type');
             let socials = [];
             if (social.value === '') {
@@ -36,6 +40,7 @@
             }
             socials = {
                 social: social.value,
+                social_id: socialId.value,
                 type: type.value,
             }
             let input = document.createElement('input');
@@ -52,11 +57,15 @@
             td.append(social.value);
             tr.append(td);
             td = document.createElement('td');
+            td.append(socialId.value);
+            tr.append(td);
+            td = document.createElement('td');
             td.innerHTML = html;
             tr.append(td);
             tr.append(input);
             table.append(tr);
             social.value = '';
+            socialId.value = '';
             type.value = '';
         }
     </script>

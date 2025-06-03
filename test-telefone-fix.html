@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste de Correção de Telefones</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .warning { background-color: #fff3cd; color: #856404; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        input { margin: 10px; padding: 8px; font-size: 16px; width: 200px; }
+        .demo { border: 1px solid #ccc; padding: 15px; margin: 20px 0; }
+        .sql-query { background-color: #f8f9fa; padding: 10px; margin: 5px 0; border-left: 4px solid #007bff; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>📞 Teste de Correção da Busca por Telefones</h1>
+    
+    <div class="demo">
+        <h3>Cenário do Problema:</h3>
+        <p><strong>No banco de dados:</strong></p>
+        <code>ddd = '91', telephone = '980696190'</code>
+        
+        <p><strong>Na busca:</strong></p>
+        <input type="text" id="phoneTest" placeholder="Digite um telefone" 
+               value="(91) 98069-6190">
+        <p id="phoneResult"></p>
+    </div>
+    
+    <div id="testResults"></div>
+
+    <script>
+        // Simular dados do banco
+        const bancoDados = [
+            { ddd: '91', telephone: '980696190', nome: 'João Silva' },
+            { ddd: '11', telephone: '987654321', nome: 'Maria Santos' },
+            { ddd: '85', telephone: '91234567', nome: 'Pedro Costa' }
+        ];
+
+        function testTelephoneSearch() {
+            const testCases = [
+                { input: '(91) 98069-6190', description: 'Formato com máscara' },
+                { input: '91980696190', description: 'Apenas números' },
+                { input: '980696190', description: 'Sem DDD' },
+                { input: '9806', description: 'Busca parcial' },
+                { input: '(11) 98765-4321', description: 'Outro número' }
+            ];
+            
+            let results = '<h2>Resultados dos Testes:</h2>';
+            
+            testCases.forEach(testCase => {
+                const phoneClean = testCase.input.replace(/\D/g, '');
+                const encontrados = buscarTelefone(phoneClean);
+                
+                results += `<div class="test-result ${encontrados.length > 0 ? 'success' : 'error'}">
+                    <strong>${testCase.description}:</strong> "${testCase.input}" → "${phoneClean}"<br>
+                    <strong>Resultado:</strong> ${encontrados.length} telefone(s) encontrado(s)
+                `;
+                
+                if (encontrados.length > 0) {
+                    results += '<br><strong>Pessoas encontradas:</strong> ' + 
+                               encontrados.map(p => p.nome).join(', ');
+                }
+                
+                results += '</div>';
+                
+                // Mostrar as queries SQL testadas
+                results += '<div class="sql-query">';
+                results += `<strong>Estratégias de busca para "${phoneClean}":</strong><br>`;
+                
+                const estrategias = getEstrategiasBusca(phoneClean);
+                estrategias.forEach(est => {
+                    const funciona = est.matches.length > 0;
+                    results += `${funciona ? '✅' : '❌'} ${est.nome}: ${est.query}<br>`;
+                    if (funciona) {
+                        results += `&nbsp;&nbsp;&nbsp;&nbsp;→ Encontrou: ${est.matches.map(m => m.nome).join(', ')}<br>`;
+                    }
+                });
+                
+                results += '</div>';
+            });
+            
+            document.getElementById('testResults').innerHTML = results;
+        }
+        
+        function buscarTelefone(phoneClean) {
+            const encontrados = [];
+            
+            bancoDados.forEach(registro => {
+                // Estratégia 1: CONCAT(ddd, telephone)
+                const numeroCompleto = registro.ddd + registro.telephone;
+                if (numeroCompleto.includes(phoneClean)) {
+                    if (!encontrados.includes(registro)) encontrados.push(registro);
+                }
+                
+                // Estratégia 2: Apenas telephone
+                if (registro.telephone.includes(phoneClean)) {
+                    if (!encontrados.includes(registro)) encontrados.push(registro);
+                }
+                
+                // Estratégia 3: DDD + telephone separados
+                if (phoneClean.length >= 10) {
+                    const ddd = phoneClean.substr(0, 2);
+                    const numero = phoneClean.substr(2);
+                    if (registro.ddd === ddd && registro.telephone.includes(numero)) {
+                        if (!encontrados.includes(registro)) encontrados.push(registro);
+                    }
+                }
+            });
+            
+            return encontrados;
+        }
+        
+        function getEstrategiasBusca(phoneClean) {
+            const estrategias = [];
+            
+            // Estratégia 1: CONCAT
+            const matches1 = bancoDados.filter(r => (r.ddd + r.telephone).includes(phoneClean));
+            estrategias.push({
+                nome: 'CONCAT(ddd, telephone)',
+                query: `CONCAT(ddd, telephone) LIKE '%${phoneClean}%'`,
+                matches: matches1
+            });
+            
+            // Estratégia 2: Só telephone
+            const matches2 = bancoDados.filter(r => r.telephone.includes(phoneClean));
+            estrategias.push({
+                nome: 'Apenas telephone',
+                query: `telephone LIKE '%${phoneClean}%'`,
+                matches: matches2
+            });
+            
+            // Estratégia 3: Separado
+            if (phoneClean.length >= 10) {
+                const ddd = phoneClean.substr(0, 2);
+                const numero = phoneClean.substr(2);
+                const matches3 = bancoDados.filter(r => r.ddd === ddd && r.telephone.includes(numero));
+                estrategias.push({
+                    nome: 'DDD + telephone separados',
+                    query: `ddd = '${ddd}' AND telephone LIKE '%${numero}%'`,
+                    matches: matches3
+                });
+            }
+            
+            return estrategias;
+        }
+        
+        function updatePhoneResult() {
+            const input = document.getElementById('phoneTest').value;
+            const phoneClean = input.replace(/\D/g, '');
+            const encontrados = buscarTelefone(phoneClean);
+            
+            let result = `<strong>Entrada:</strong> "${input}"<br>`;
+            result += `<strong>Normalizado:</strong> "${phoneClean}"<br>`;
+            result += `<strong>Resultado:</strong> ${encontrados.length} telefone(s) encontrado(s)`;
+            
+            if (encontrados.length > 0) {
+                result += '<br><strong>Encontrados:</strong> ' + encontrados.map(p => p.nome).join(', ');
+            }
+            
+            document.getElementById('phoneResult').innerHTML = result;
+        }
+        
+        // Eventos
+        document.addEventListener('DOMContentLoaded', function() {
+            testTelephoneSearch();
+            updatePhoneResult();
+            
+            document.getElementById('phoneTest').addEventListener('input', updatePhoneResult);
+        });
+    </script>
+</body>
+</html> 

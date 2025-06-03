@@ -132,15 +132,20 @@
         </div>
         <div class="form-row">
             <div class="form-group col-md-3">
-                <x-adminlte-input
+                <x-adminlte-select
                     name="birth_city"
                     id="birth_city"
                     label="Município Nascimento"
-                    placeholder="Município Nascimento"
-                    style="text-transform:uppercase"
-                    value="{{ old('birth_city') ?? $person->birth_city ?? ''}}"
+                    placeholder="Selecione primeiro a UF"
                     :disabled="$isDisabled"
-                />
+                >
+                    <option value="">Selecione primeiro a UF</option>
+                    @if(old('birth_city') || $person->birth_city)
+                        <option value="{{ old('birth_city') ?? $person->birth_city ?? '' }}" selected>
+                            {{ old('birth_city') ?? $person->birth_city ?? '' }}
+                        </option>
+                    @endif
+                </x-adminlte-select>
             </div>
             <div class="form-group col-md-1">
                 <x-adminlte-select
@@ -149,11 +154,12 @@
                     label="UF"
                     placeholder="UF"
                     :disabled="$isDisabled"
+                    onchange="loadCitiesByUF('uf_birth_city', 'birth_city')"
                 >
                     <option/>
                     @foreach(\App\Enums\UFBrEnum::cases() as $uf)
                         <option value="{{$uf->name}}"
-                            {{ old('uf') == $uf->name ? 'selected'
+                            {{ old('uf_birth_city') == $uf->name ? 'selected'
                             : ($person->uf_birth_city == $uf->name ? 'selected' : '')}}>
                             {{ $uf->name }}
                         </option>
@@ -328,6 +334,71 @@
 </div>
 @push('js')
     <script>
+        // Função para remover acentos
+        function removeAccents(str) {
+            if (!str) return str;
+            
+            const accentsMap = {
+                'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A',
+                'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a',
+                'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E',
+                'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e',
+                'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I',
+                'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i',
+                'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O',
+                'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o',
+                'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U',
+                'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u',
+                'Ç': 'C', 'ç': 'c',
+                'Ñ': 'N', 'ñ': 'n'
+            };
+            
+            return str.replace(/[ÀÁÂÃÄÅàáâãäåÈÉÊËèéêëÌÍÎÏìíîïÒÓÔÕÖòóôõöÙÚÛÜùúûüÇçÑñ]/g, function(match) {
+                return accentsMap[match] || match;
+            });
+        }
+        
+        // Função para aplicar máscara anti-acentos
+        function applyNoAccentMask(element) {
+            if (!element) return;
+            
+            element.addEventListener('input', function(event) {
+                const cursorPosition = element.selectionStart;
+                const originalValue = element.value;
+                const cleanValue = removeAccents(originalValue);
+                
+                if (originalValue !== cleanValue) {
+                    element.value = cleanValue;
+                    // Mantém a posição do cursor
+                    element.setSelectionRange(cursorPosition, cursorPosition);
+                }
+            });
+            
+            element.addEventListener('paste', function(event) {
+                setTimeout(() => {
+                    const originalValue = element.value;
+                    const cleanValue = removeAccents(originalValue);
+                    if (originalValue !== cleanValue) {
+                        element.value = cleanValue;
+                    }
+                }, 10);
+            });
+        }
+        
+        // Lista de campos que devem ter a máscara anti-acentos
+        const fieldsNoAccent = ['name', 'nickname', 'father', 'mother', 'spouse_name', 'tatto'];
+        
+        // Aplicar máscara quando o documento carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            fieldsNoAccent.forEach(fieldName => {
+                const field = document.getElementById(fieldName);
+                if (field) {
+                    applyNoAccentMask(field);
+                    console.log(`Máscara anti-acentos aplicada ao campo: ${fieldName}`);
+                }
+            });
+        });
+        
         async function searchCPF() {
             let loading = document.getElementById('loading');
             loading.classList.remove('d-none');
@@ -341,9 +412,10 @@
                         loading.classList.add('d-none');
                         return;
                     }
-                    document.getElementById('name').value = data.nomeCompleto;
-                    document.getElementById('nickname').value = data.nomeSocial;
-                    document.getElementById('mother').value = data.nomeMae;
+                    // Aplicar remoção de acentos nos dados vindos da API
+                    document.getElementById('name').value = removeAccents(data.nomeCompleto || '');
+                    document.getElementById('nickname').value = removeAccents(data.nomeSocial || '');
+                    document.getElementById('mother').value = removeAccents(data.nomeMae || '');
                     document.getElementById('birth_date').value = formatDate(data.dataNascimento);
                     document.getElementById('voter_registration').value = data.tituloEleitor;
                     document.getElementById('birth_city').value = data.municipioNaturalidade;

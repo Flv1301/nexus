@@ -14,7 +14,7 @@
                 <th>Número</th>
                 <th>Bairro</th>
                 <th>Cidade</th>
-                <th>Estado</th>
+                <th>UF</th>
                 <th>CNAE</th>
                 <th>Contador</th>
                 <th></th>
@@ -246,7 +246,7 @@
         addressInput.value = '';
         numberInput.value = '';
         districtInput.value = '';
-        cityInput.value = '';
+        cityInput.innerHTML = '<option value="">Selecione primeiro a UF</option>'; // Reset city select
         ufInput.value = '';
         cnaeInput.value = '';
         accountantInput.value = '';

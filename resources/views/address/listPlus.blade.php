@@ -8,8 +8,10 @@
                 <th>Número</th>
                 <th>Bairro</th>
                 <th>Cidade</th>
-                <th>Estado</th>
                 <th>UF</th>
+                <th>Complemento</th>
+                <th>Ponto de Referencia</th>
+                <th>Ações</th>
             </tr>
             </thead>
             <tbody id="tableAddress">
@@ -20,13 +22,15 @@
                     <td>{{$address->number}}</td>
                     <td>{{$address->district}}</td>
                     <td>{{$address->city}}</td>
-                    <td>{{$address->state}}</td>
                     <td>{{$address->uf}}</td>
-                    <td>{{$address->uf}}</td>
-                    <td><i class="fa fa-md fa-fw fa-trash text-danger"
-                           onclick="$(this).parent().parent().remove()"
-                           title="Remover"></i></td>
-                    <input type="hidden" id="addresses" name="addresses[]" value="{{json_encode($address)}}">
+                    <td>{{$address->complement}}</td>
+                    <td>{{$address->reference_point}}</td>
+                    <td>
+                        <x-adminlte-button size="sm" theme="warning" icon="fas fa-edit"
+                                           onclick="window.location.href='{{ route('address.edit', $address) }}'"/>
+                        <x-adminlte-button size="sm" theme="danger" icon="fas fa-trash"
+                                           onclick="if(confirm('Deseja realmente excluir?')) window.location.href='{{ route('address.destroy', $address) }}'"/>
+                    </td>
                 </tr>
             @endforeach
             </tbody>
@@ -86,10 +90,13 @@
             td.append(city);
             tr.append(td);
             td = document.createElement('td');
-            td.append(state);
+            td.append(uf);
             tr.append(td);
             td = document.createElement('td');
-            td.append(uf);
+            td.append(complement);
+            tr.append(td);
+            td = document.createElement('td');
+            td.append(reference_point);
             tr.append(td);
             td = document.createElement('td');
             td.innerHTML = html;

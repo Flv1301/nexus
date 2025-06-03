@@ -3,6 +3,11 @@
 @section('plugins.Select2', true)
 @section('plugins.BootstrapSelect', true)
 @section('plugins.TempusDominusBs4', true)
+
+@push('css')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+@endpush
+
 <x-page-header title="Cadastro de Usuário"/>
 @section('content')
     <x-page-messages/>
@@ -27,3 +32,7 @@
         </div>
     </div>
 @endsection
+
+@push('js')
+<script src="{{ asset('js/dynamic-cities.js') }}"></script>
+@endpush

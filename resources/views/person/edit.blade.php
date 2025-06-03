@@ -6,6 +6,11 @@
 @section('plugins.KrajeeFileinput', true)
 @section('plugins.Sweetalert2', true)
 @section('title','Atualização de Pessoa')
+
+@push('css')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+@endpush
+
 <x-page-header title="Atualização de Pessoa">
     @if($person->active_orcrim && !auth()->user()->can('sisfac'))
         <span class="text-danger text-lg rounded mr-xl-5">
@@ -47,5 +52,6 @@
 @push('js')
 <script src="{{ asset('js/uppercase-mask.js') }}"></script>
 <script src="{{ asset('js/cpf-mask.js') }}"></script>
+<script src="{{ asset('js/dynamic-cities.js') }}"></script>
 @endpush
 
