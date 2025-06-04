@@ -8,6 +8,11 @@
         <div class="tab-pane active" id="tab_data" role="tabpanel">
             @include('person.view.data')
         </div>
+        @can('sisfac')
+        <div class="tab-pane" id="tab_faccao" role="tabpanel">
+            @include('person.view.faccao')
+        </div>
+        @endcan
         <div class="tab-pane" id="tab_legal" role="tabpanel">
             @include('person.view.legal')
         </div>

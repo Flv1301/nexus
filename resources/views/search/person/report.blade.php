@@ -34,8 +34,8 @@
         
         .section-title {
             background-color: #f0f0f0;
-            padding: 8px;
-            margin: 15px 0 0 0;
+            padding: 6px;
+            margin: 10px 0 0 0;
             font-weight: bold;
             font-size: 10px;
             text-align: center;
@@ -43,21 +43,21 @@
         
         .section-title-table {
             background-color: #f0f0f0;
-            padding: 8px;
-            margin: 15px 0 0 0;
+            padding: 6px;
+            margin: 8px 0 0 0;
             font-weight: bold;
             font-size: 10px;
             text-align: center;
         }
         
         .section-content {
-            padding: 10px;
-            margin-bottom: 15px;
+            padding: 8px;
+            margin-bottom: 10px;
             background-color: #fafafa;
         }
         
         .identification-section {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         
         .person-info {
@@ -82,7 +82,7 @@
         }
         
         .info-row {
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             font-size: 10px;
         }
         
@@ -105,24 +105,24 @@
         }
         
         .data-section {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
         
         .data-section h4 {
             background-color: #f0f0f0;
-            padding: 8px;
-            margin: 15px 0 0 0;
+            padding: 6px;
+            margin: 8px 0 0 0;
             font-size: 10px;
             font-weight: bold;
         }
         
         .data-section-content {
-            padding: 10px;
+            padding: 8px;
             background-color: #fafafa;
         }
         
         .address-item, .contact-item {
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             font-size: 10px;
             line-height: 1.3;
         }
@@ -130,7 +130,7 @@
         .table-section {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
             font-size: 10px;
             margin-top: 0;
         }
@@ -138,9 +138,10 @@
         .table-section th,
         .table-section td {
             border: 1px solid #ddd;
-            padding: 5px;
+            padding: 3px;
             text-align: left;
             font-size: 10px;
+            line-height: 1.2;
         }
         
         .table-section th {
@@ -230,6 +231,8 @@
             
             iframe {
                 page-break-inside: avoid;
+                max-width: 734px !important; /* Largura máxima para A4 com margens */
+                width: 100% !important;
             }
             
             .pdf-render-container {
@@ -245,12 +248,45 @@
                 border-radius: 4px;
             }
             
+            /* Controle específico para canvas de PDF */
             .pdf-page-canvas {
                 display: block;
                 margin: 10px auto;
                 border: 1px solid #ddd;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                 page-break-inside: avoid;
+                max-width: 734px !important; /* Largura máxima para A4 */
+                height: auto !important;
+                width: auto !important;
+            }
+            
+            /* Container das páginas PDF */
+            .pdf-page-container {
+                page-break-inside: avoid;
+                margin: 15px 0;
+                text-align: center;
+            }
+            
+            /* Informações de redimensionamento */
+            .pdf-resize-info {
+                font-size: 7px !important;
+                color: #888 !important;
+                margin-bottom: 5px;
+                font-style: italic;
+            }
+            
+            .pdf-summary-info {
+                margin-top: 10px !important;
+                padding: 8px !important;
+                background-color: #f8f9fa !important;
+                border: 1px solid #dee2e6 !important;
+                font-size: 8px !important;
+                page-break-inside: avoid;
+            }
+            
+            /* Esconde elementos desnecessários na impressão */
+            .pdf-loading {
+                display: none !important;
             }
         }
     </style>
@@ -543,7 +579,6 @@
 
     <!-- Empresas -->
     @if($person->companies && $person->companies->count() > 0)
-    <div class="page-break"></div>
     <div class="section-title-table">EMPRESAS VINCULADAS</div>
     <table class="table-section">
         <thead>
@@ -862,7 +897,6 @@
 
     <!-- Anexo - Documentos -->
     @if($person->docs && $person->docs->count() > 0)
-    <div class="page-break"></div>
     <div class="section-title-table">ANEXO</div>
     
     <div class="section-content">
@@ -992,6 +1026,13 @@
     </div>
 
     <script>
+        // Configurações para impressão A4 (em pixels com 96 DPI)
+        const A4_WIDTH_PX = 794;  // ~210mm em 96 DPI
+        const A4_HEIGHT_PX = 1123; // ~297mm em 96 DPI
+        const PRINT_MARGIN = 60;   // Margem de segurança (15mm cada lado)
+        const MAX_PDF_WIDTH = A4_WIDTH_PX - PRINT_MARGIN;
+        const MAX_PDF_HEIGHT = A4_HEIGHT_PX - PRINT_MARGIN;
+
         window.onload = function() {
             // Carrega PDF.js se disponível ou tenta fallback
             if (typeof pdfjsLib === 'undefined') {
@@ -1031,7 +1072,7 @@
             const loadingDiv = container.querySelector('.pdf-loading');
             
             pdfjsLib.getDocument(url).promise.then(function(pdf) {
-                loadingDiv.innerHTML = '<p style="text-align: center; padding: 20px; font-size: 12px;">Renderizando ' + pdf.numPages + ' página(s)...</p>';
+                loadingDiv.innerHTML = '<p style="text-align: center; padding: 20px; font-size: 12px;">Analisando e redimensionando ' + pdf.numPages + ' página(s)...</p>';
                 
                 const renderPromises = [];
                 
@@ -1042,6 +1083,9 @@
                 Promise.all(renderPromises).then(() => {
                     // Remove loading div após todas as páginas serem renderizadas
                     loadingDiv.remove();
+                    
+                    // Adiciona informações de redimensionamento se necessário
+                    addResizeInfo(container, pdf.numPages);
                 }).catch(error => {
                     console.error('Erro ao renderizar páginas:', error);
                     showError(container, 'Erro ao renderizar páginas do PDF');
@@ -1067,17 +1111,31 @@
                     container.appendChild(pageTitle);
                 }
                 
-                const scale = 2.0; // Alta resolução para impressão
-                const viewport = page.getViewport({ scale: scale });
+                // Calcula a escala ideal para caber na página A4
+                const originalViewport = page.getViewport({ scale: 1.0 });
+                const optimalScale = calculateOptimalScale(originalViewport.width, originalViewport.height);
+                
+                // Usa escala otimizada
+                const viewport = page.getViewport({ scale: optimalScale });
                 
                 const canvas = document.createElement('canvas');
                 canvas.className = 'pdf-page-canvas';
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
                 
-                // Ajusta tamanho para exibição (mantém resolução alta para impressão)
-                canvas.style.width = (viewport.width / 2) + 'px';
-                canvas.style.height = (viewport.height / 2) + 'px';
+                // Define tamanho de exibição para garantir que caiba na página
+                const displayWidth = Math.min(viewport.width, MAX_PDF_WIDTH);
+                const displayHeight = Math.min(viewport.height, MAX_PDF_HEIGHT);
+                
+                canvas.style.width = displayWidth + 'px';
+                canvas.style.height = displayHeight + 'px';
+                canvas.style.maxWidth = '100%';
+                canvas.style.height = 'auto';
+                
+                // Adiciona atributos para controle de impressão
+                canvas.setAttribute('data-original-width', originalViewport.width);
+                canvas.setAttribute('data-original-height', originalViewport.height);
+                canvas.setAttribute('data-scale-used', optimalScale);
                 
                 const context = canvas.getContext('2d');
                 
@@ -1086,10 +1144,77 @@
                     viewport: viewport
                 };
                 
-                container.appendChild(canvas);
+                // Cria container para a página com informações de redimensionamento
+                const pageContainer = document.createElement('div');
+                pageContainer.className = 'pdf-page-container';
+                pageContainer.style.marginBottom = '10px';
+                pageContainer.style.textAlign = 'center';
+                pageContainer.style.pageBreakInside = 'avoid';
+                
+                // Adiciona informação de redimensionamento se necessário
+                if (optimalScale < 1.0) {
+                    const resizeInfo = document.createElement('div');
+                    resizeInfo.className = 'pdf-resize-info';
+                    resizeInfo.style.fontSize = '8px';
+                    resizeInfo.style.color = '#666';
+                    resizeInfo.style.marginBottom = '5px';
+                    resizeInfo.style.fontStyle = 'italic';
+                    resizeInfo.innerHTML = `📏 Documento redimensionado para ${Math.round(optimalScale * 100)}% para ajustar à página A4`;
+                    pageContainer.appendChild(resizeInfo);
+                }
+                
+                pageContainer.appendChild(canvas);
+                container.appendChild(pageContainer);
                 
                 return page.render(renderContext).promise;
             });
+        }
+
+        function calculateOptimalScale(originalWidth, originalHeight) {
+            // Calcula as escalas necessárias para largura e altura
+            const scaleByWidth = MAX_PDF_WIDTH / originalWidth;
+            const scaleByHeight = MAX_PDF_HEIGHT / originalHeight;
+            
+            // Usa a menor escala para garantir que caiba em ambas as dimensões
+            const optimalScale = Math.min(scaleByWidth, scaleByHeight, 2.0); // Máximo 2x para manter qualidade
+            
+            // Se o documento já é pequeno, usa escala mínima de 0.8 para manter legibilidade
+            return Math.max(optimalScale, 0.5);
+        }
+
+        function addResizeInfo(container, numPages) {
+            // Coleta informações sobre redimensionamento
+            const canvases = container.querySelectorAll('canvas[data-scale-used]');
+            const resizedPages = Array.from(canvases).filter(canvas => 
+                parseFloat(canvas.getAttribute('data-scale-used')) < 1.0
+            );
+            
+            if (resizedPages.length > 0) {
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'pdf-summary-info';
+                infoDiv.style.marginTop = '15px';
+                infoDiv.style.padding = '10px';
+                infoDiv.style.backgroundColor = '#f8f9fa';
+                infoDiv.style.border = '1px solid #dee2e6';
+                infoDiv.style.borderRadius = '4px';
+                infoDiv.style.fontSize = '9px';
+                infoDiv.style.color = '#666';
+                
+                const avgScale = resizedPages.reduce((sum, canvas) => 
+                    sum + parseFloat(canvas.getAttribute('data-scale-used')), 0
+                ) / resizedPages.length;
+                
+                infoDiv.innerHTML = `
+                    <p style="margin: 0; font-weight: bold;">ℹ️ Informações de Redimensionamento:</p>
+                    <p style="margin: 5px 0 0 0;">
+                        • ${resizedPages.length} de ${numPages} página(s) foram redimensionadas para caber na impressão<br>
+                        • Escala média aplicada: ${Math.round(avgScale * 100)}%<br>
+                        • Todas as páginas foram otimizadas para formato A4 com margens de segurança
+                    </p>
+                `;
+                
+                container.appendChild(infoDiv);
+            }
         }
 
         function showError(container, message) {
@@ -1103,13 +1228,13 @@
                 <iframe src="${container.getAttribute('data-pdf-url')}" 
                         width="100%" 
                         height="600px" 
-                        style="border: 1px solid #ccc; margin-top: 10px;">
+                        style="border: 1px solid #ccc; margin-top: 10px; max-width: ${MAX_PDF_WIDTH}px;">
                 </iframe>
             `;
         }
 
         function useFallback() {
-            // Se PDF.js não carregou, usa iframe como fallback
+            // Se PDF.js não carregou, usa iframe como fallback com redimensionamento
             const containers = document.querySelectorAll('.pdf-render-container');
             containers.forEach(container => {
                 const pdfUrl = container.getAttribute('data-pdf-url');
@@ -1117,13 +1242,13 @@
                     <div class="pdf-info-box">
                         <p style="font-size: 11px; color: #666; margin: 0;">
                             <strong>📄 DOCUMENTO PDF (FALLBACK)</strong><br>
-                            PDF.js não disponível, usando visualização padrão.<br>
+                            PDF.js não disponível, usando visualização padrão com limites de tamanho.<br>
                         </p>
                     </div>
                     <iframe src="${pdfUrl}" 
                             width="100%" 
                             height="800px" 
-                            style="border: 1px solid #ccc;">
+                            style="border: 1px solid #ccc; max-width: ${MAX_PDF_WIDTH}px;">
                     </iframe>
                 `;
             });
