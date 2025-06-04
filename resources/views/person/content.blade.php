@@ -1,6 +1,11 @@
 <div class="tab-pane active" id="tab_data" role="tabpanel">
     @include('person.data')
 </div>
+@can('sisfac')
+<div class="tab-pane" id="tab_faccao" role="tabpanel">
+    @include('person.faccao')
+</div>
+@endcan
 <div class="tab-pane" id="tab_legal" role="tabpanel">
     @include('person.legal')
 </div>

@@ -249,10 +249,6 @@ class PersonController extends Controller
             }
 
             // Lógica para salvar Docs
-            if ($request->has('removed_docs')) {
-                $this->removeSpecificDocs($person, $request->input('removed_docs'));
-            }
-            
             if ($request->has('new_docs')) {
                 $this->attachDocs($person, $request->input('new_docs'), $request->file('doc_uploads'));
             }
@@ -357,22 +353,22 @@ class PersonController extends Controller
             $person->active_orcrim = $request->boolean('active_orcrim', false);
             
             $person->update();
-            // $person->address()->forceDelete(); // Comentado para permitir adicionar endereços incrementalmente
+            $person->address()->forceDelete();
 
             if ($request->has('addresses')) {
                 $this->attachAddresses($person, $request->input('addresses'));
             }
-            // $person->telephones()->forceDelete(); // Comentado para permitir adicionar telefones incrementalmente
+            $person->telephones()->forceDelete();
 
             if ($request->has('contacts')) {
                 $this->attachContacts($person, $request->input('contacts'));
             }
-            // $person->socials()->forceDelete(); // Comentado para permitir adicionar redes sociais incrementalmente
+            $person->socials()->forceDelete();
 
             if ($request->has('socials')) {
                 $this->attachSocialNetworks($person, $request->input('socials'));
             }
-            // $person->emails()->forceDelete(); // Comentado para permitir adicionar emails incrementalmente
+            $person->emails()->forceDelete();
 
             if ($request->has('emails')) {
                 $this->attachEmails($person, $request->input('emails'));
@@ -387,7 +383,7 @@ class PersonController extends Controller
             }
 
             // Lógica para salvar as empresas
-            // $person->companies()->forceDelete(); // Comentado para permitir adicionar empresas incrementalmente
+            $person->companies()->forceDelete();
             if ($request->has('companies')) {
                 $this->attachCompanies($person, $request->input('companies'));
             }
@@ -399,51 +395,54 @@ class PersonController extends Controller
                 'all_request_data' => $request->all()
             ]);
             
-            // $person->vehicles()->delete(); // Comentado para permitir adicionar veículos incrementalmente
+            $person->vehicles()->delete();
             if ($request->has('vehicles')) {
                 $this->attachVehicles($person, $request->input('vehicles'));
             }
 
             // Lógica para salvar vínculos de orcrim
-            // $person->vinculoOrcrims()->delete(); // Comentado para permitir adicionar vínculos incrementalmente
+            $person->vinculoOrcrims()->delete();
             if ($request->has('vinculo_orcrims')) {
                 $this->attachVinculoOrcrims($person, $request->input('vinculo_orcrims'));
             }
 
             // Lógica para salvar PCPAs
-            // $person->pcpas()->delete(); // Comentado para permitir adicionar PCPAs incrementalmente
+            $person->pcpas()->delete();
             if ($request->has('pcpas')) {
                 $this->attachPcpas($person, $request->input('pcpas'));
             }
 
             // Lógica para salvar TJs
-            // $person->tjs()->delete(); // Comentado para permitir adicionar TJs incrementalmente
+            $person->tjs()->delete();
             if ($request->has('tjs')) {
                 $this->attachTjs($person, $request->input('tjs'));
             }
 
             // Lógica para salvar Armas
-            // $person->armas()->delete(); // Comentado para permitir adicionar armas incrementalmente
+            $person->armas()->delete();
             if ($request->has('armas')) {
                 $this->attachArmas($person, $request->input('armas'));
             }
 
             // Lógica para salvar RAIS
-            // $person->rais()->delete(); // Comentado para permitir adicionar RAIS incrementalmente
+            $person->rais()->delete();
             if ($request->has('rais')) {
                 $this->attachRais($person, $request->input('rais'));
             }
 
             // Lógica para salvar Bancários
+            $person->bancarios()->delete();
             if ($request->has('bancarios')) {
                 $this->attachBancarios($person, $request->input('bancarios'));
             }
 
             // Lógica para salvar Docs
+            // Primeiro, processar documentos removidos
             if ($request->has('removed_docs')) {
                 $this->removeSpecificDocs($person, $request->input('removed_docs'));
             }
             
+            // Depois, adicionar novos documentos
             if ($request->has('new_docs')) {
                 $this->attachDocs($person, $request->input('new_docs'), $request->file('doc_uploads'));
             }

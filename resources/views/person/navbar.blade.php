@@ -5,6 +5,12 @@
                 <a href="#tab_data" data-toggle="tab" aria-controls="tab_data" role="tab"
                    class="nav-link active">Dados</a>
             </li>
+            @can('sisfac')
+            <li class="nav-item">
+                <a href="#tab_faccao" data-toggle="tab" aria-controls="tab_faccao" role="tab"
+                   class="nav-link">Facção</a>
+            </li>
+            @endcan
             <li class="nav-item">
                 <a href="#tab_address" data-toggle="tab" aria-controls="tab_address" role="tab"
                    class="nav-link">Endereços</a>
