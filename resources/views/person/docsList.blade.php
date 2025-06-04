@@ -11,7 +11,7 @@
             </thead>
             <tbody id="tableDocs">
             @if(isset($person) && $person->docs->count())
-                @foreach($person->docs as $doc)
+                @foreach($person->docs as $index => $doc)
                     <tr>
                         <td>{{$doc->nome_doc}}</td>
                         <td>{{$doc->data}}</td>
@@ -25,9 +25,9 @@
                             @endif
                         </td>
                         <td><i class="fa fa-md fa-fw fa-trash text-danger"
-                               onclick="$(this).parent().parent().remove()"
-                               title="Remover"></i></td>
-                        <input type="hidden" name="docs[]" value="{{json_encode($doc)}}">
+                               onclick="removeExistingDoc(this, {{ $doc->id }})"
+                               title="Remover" style="cursor: pointer;"></i></td>
+                        <input type="hidden" name="existing_docs[{{ $index }}]" value="{{json_encode($doc)}}">
                     </tr>
                 @endforeach
             @endif
@@ -38,13 +38,59 @@
 
 @push('js')
     <script>
-        let docIndex = 0;
+        // Inicializa o índice baseado nos documentos já existentes
+        let docIndex = {{ isset($person) && $person->docs ? $person->docs->count() : 0 }};
+        
+        // Array para rastrear documentos removidos
+        let removedDocs = [];
 
         // Atualiza o label do arquivo quando selecionado
         $('#doc_upload').on('change', function() {
             const fileName = $(this)[0].files[0]?.name || 'Escolher arquivo PDF...';
             $(this).next('.custom-file-label').text(fileName);
         });
+
+        // Função para remover documento existente
+        function removeExistingDoc(element, docId) {
+            // Adiciona o ID do documento ao array de removidos
+            if (docId && !removedDocs.includes(docId)) {
+                removedDocs.push(docId);
+            }
+            
+            // Remove a linha visualmente
+            $(element).parent().parent().remove();
+            
+            // Atualiza o campo hidden com os documentos removidos
+            updateRemovedDocsField();
+        }
+
+        // Função para atualizar o campo hidden com documentos removidos
+        function updateRemovedDocsField() {
+            // Remove o campo existente se houver
+            $('input[name="removed_docs"]').remove();
+            
+            // Cria novo campo hidden com os documentos removidos
+            if (removedDocs.length > 0) {
+                let input = document.createElement('input');
+                input.setAttribute('type', 'hidden');
+                input.setAttribute('name', 'removed_docs');
+                input.setAttribute('value', JSON.stringify(removedDocs));
+                
+                // Adiciona dentro do formulário específico
+                const form = document.getElementById('form');
+                if (form) {
+                    form.appendChild(input);
+                } else {
+                    // Fallback para o primeiro formulário encontrado
+                    const firstForm = document.querySelector('form');
+                    if (firstForm) {
+                        firstForm.appendChild(input);
+                    }
+                }
+                
+                console.log('Campo removed_docs atualizado:', removedDocs);
+            }
+        }
 
         function addDoc() {
             const nomeDoc = document.getElementById('doc_nome_doc').value;
@@ -77,10 +123,10 @@
                 file_index: docIndex
             };
 
-            // Cria input hidden para enviar os dados
+            // Cria input hidden para enviar os dados - usa nome único para novos documentos
             let input = document.createElement('input');
             input.setAttribute('type', 'hidden');
-            input.setAttribute('name', `docs[${docIndex}]`);
+            input.setAttribute('name', `new_docs[${docIndex}]`);
             input.setAttribute('value', JSON.stringify(docData));
 
             // Se há arquivo, cria input file para envio

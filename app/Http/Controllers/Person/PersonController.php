@@ -249,13 +249,8 @@ class PersonController extends Controller
             }
 
             // Lógica para salvar Docs
-            if ($request->has('docs')) {
-                try {
-                    $this->attachDocs($person, $request->input('docs'), $request->file('doc_uploads'));
-                } catch (\Exception $e) {
-                    Log::error('Error attaching docs:', ['error' => $e->getMessage()]);
-                    throw new \Exception('Erro ao processar Documentos: ' . $e->getMessage());
-                }
+            if ($request->has('new_docs')) {
+                $this->attachDocs($person, $request->input('new_docs'), $request->file('doc_uploads'));
             }
 
             toast('Pessoa cadastrada com sucesso!', 'success');
@@ -336,6 +331,15 @@ class PersonController extends Controller
             return back();
         }
         try {
+            // Debug log para verificar dados recebidos
+            Log::info('Update request data received:', [
+                'has_removed_docs' => $request->has('removed_docs'),
+                'removed_docs' => $request->input('removed_docs'),
+                'has_new_docs' => $request->has('new_docs'),
+                'new_docs' => $request->input('new_docs'),
+                'all_request_keys' => array_keys($request->all())
+            ]);
+
             $person = Person::findOrFail($id);
             
             // Processar campos não-boolean excluindo os arrays e campos boolean
@@ -433,9 +437,14 @@ class PersonController extends Controller
             }
 
             // Lógica para salvar Docs
-            $person->docs()->delete();
-            if ($request->has('docs')) {
-                $this->attachDocs($person, $request->input('docs'), $request->file('doc_uploads'));
+            // Primeiro, processar documentos removidos
+            if ($request->has('removed_docs')) {
+                $this->removeSpecificDocs($person, $request->input('removed_docs'));
+            }
+            
+            // Depois, adicionar novos documentos
+            if ($request->has('new_docs')) {
+                $this->attachDocs($person, $request->input('new_docs'), $request->file('doc_uploads'));
             }
 
             toast('Pessoa atualizada com sucesso!', 'success');
@@ -1204,10 +1213,16 @@ class PersonController extends Controller
                 if ($uploads && isset($uploads[$key])) {
                     $file = $uploads[$key];
                     if ($file && $file->isValid()) {
+                        // Verifica se o diretório existe, senão cria
+                        $uploadDir = public_path('uploads/docs');
+                        if (!file_exists($uploadDir)) {
+                            mkdir($uploadDir, 0755, true);
+                        }
+                        
                         // Gera nome único para o arquivo
                         $filename = time() . '_' . $file->getClientOriginalName();
                         // Salva diretamente no public/uploads/docs
-                        $file->move(public_path('uploads/docs'), $filename);
+                        $file->move($uploadDir, $filename);
                         $uploadPath = 'uploads/docs/' . $filename;
                         Log::info('File uploaded successfully:', ['path' => $uploadPath]);
                     }
@@ -1229,6 +1244,72 @@ class PersonController extends Controller
                 throw $e;
             }
         }
+        return true;
+    }
+
+    /**
+     * @param Person $person
+     * @param string|array $removedDocs
+     * @return bool
+     */
+    private function removeSpecificDocs(Person $person, $removedDocs): bool
+    {
+        Log::info('removeSpecificDocs called:', [
+            'person_id' => $person->id,
+            'removedDocs_type' => gettype($removedDocs),
+            'removedDocs_value' => $removedDocs
+        ]);
+
+        if (!$removedDocs) {
+            Log::info('No removed docs data received');
+            return false;
+        }
+
+        // Se for string JSON, decodifica
+        if (is_string($removedDocs)) {
+            $removedDocs = json_decode($removedDocs, true);
+            Log::info('Decoded removedDocs:', ['decoded' => $removedDocs]);
+        }
+
+        if (!is_array($removedDocs)) {
+            Log::error('Invalid removed docs format:', ['data' => $removedDocs]);
+            return false;
+        }
+
+        Log::info('Processing removed docs:', ['count' => count($removedDocs), 'docs' => $removedDocs]);
+        
+        foreach ($removedDocs as $docId) {
+            try {
+                Log::info('Processing doc removal, ID: ' . $docId);
+
+                // Busca o documento que pertence à pessoa específica
+                $doc = $person->docs()->find($docId);
+                if ($doc) {
+                    Log::info('Document found, preparing to delete:', ['doc' => $doc->toArray()]);
+                    
+                    // Remove o arquivo físico se existir
+                    if ($doc->upload && file_exists(public_path($doc->upload))) {
+                        unlink(public_path($doc->upload));
+                        Log::info('Physical file removed:', ['path' => $doc->upload]);
+                    }
+                    
+                    // Remove o documento do banco
+                    $doc->delete();
+                    Log::info('Doc removed successfully:', ['doc_id' => $docId]);
+                } else {
+                    Log::warning('Doc not found or does not belong to this person:', ['doc_id' => $docId, 'person_id' => $person->id]);
+                }
+            } catch (\Exception $e) {
+                Log::error('Error removing doc:', [
+                    'error' => $e->getMessage(),
+                    'error_trace' => $e->getTraceAsString(),
+                    'doc_id' => $docId
+                ]);
+                throw $e;
+            }
+        }
+        
+        Log::info('removeSpecificDocs completed successfully');
         return true;
     }
 }
