@@ -41,9 +41,17 @@
                             <td>{{$person->mother ?? ''}}</td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <a href="{{route($route, ['base'=> $key, 'id' => $person->id])}}" class="mr-2" title="Visualizar Dados">
-                                        <i class="fas fa-lg fa-eye text-primary"></i>
-                                    </a>
+                                    @if($key === 'faccionado')
+                                        {{-- Para dados faccionados, redireciona para visualização normal da pessoa --}}
+                                        <a href="{{route('person.show', $person->id)}}" class="mr-2" title="Visualizar Dados">
+                                            <i class="fas fa-lg fa-eye text-primary"></i>
+                                        </a>
+                                    @else
+                                        {{-- Para outras bases, usa a rota de busca normal --}}
+                                        <a href="{{route($route, ['base'=> $key, 'id' => $person->id])}}" class="mr-2" title="Visualizar Dados">
+                                            <i class="fas fa-lg fa-eye text-primary"></i>
+                                        </a>
+                                    @endif
                                     @if($key === 'person' || $key === 'nexus' || $key === 'faccionado')
                                     <a href="{{route('person.search.report', ['id' => $person->id])}}" title="Gerar Relatório PDF" target="_blank">
                                         <i class="fas fa-lg fa-file-pdf text-danger"></i>
