@@ -14,7 +14,11 @@ Route::middleware(['auth', 'permission:pessoa'])->controller(PersonController::c
     Route::put('/pessoa/{id}', 'update')->name('person.update');
     Route::delete('/pessoa/{id}', 'destroy')->name('person.destroy');
     Route::delete('/pessoa/imagem/{personId}/{imageId}', 'removeImage')->name('person.remove.image');
-
+    
+    // Rota específica para servir documentos com headers apropriados
+    Route::get('/pessoa/documento/{personId}/{docId}', 'serveDocument')
+        ->name('person.serve.document')
+        ->middleware('web');
 });
 
 

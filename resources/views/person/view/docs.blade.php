@@ -25,7 +25,7 @@
                         <td>{{ $doc->data }}</td>
                         <td>
                             @if($doc->upload)
-                                <a href="{{ asset($doc->upload) }}" target="_blank" class="btn btn-sm btn-primary">
+                                <a href="{{ route('person.serve.document', ['personId' => $person->id, 'docId' => $doc->id]) }}" target="_blank" class="btn btn-sm btn-primary">
                                     <i class="fas fa-file-pdf"></i> Ver PDF
                                 </a>
                             @else

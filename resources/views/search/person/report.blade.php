@@ -974,7 +974,7 @@
             
             @if(file_exists($filePath))
                 <!-- Container para renderização do PDF via JavaScript -->
-                <div id="pdf-container-{{ $index }}" class="pdf-render-container" data-pdf-url="{{ asset($doc->upload) }}">
+                <div id="pdf-container-{{ $index }}" class="pdf-render-container" data-pdf-url="{{ route('person.serve.document', ['personId' => $person->id, 'docId' => $doc->id]) }}">
                     <div class="pdf-loading">
                         <p style="text-align: center; padding: 40px; font-size: 12px;">
                             <i class="fas fa-spinner fa-spin"></i><br>
@@ -994,7 +994,7 @@
                         </p>
                     </div>
                     
-                    <iframe src="{{ asset($doc->upload) }}" 
+                    <iframe src="{{ route('person.serve.document', ['personId' => $person->id, 'docId' => $doc->id]) }}" 
                             width="100%" 
                             height="800px" 
                             style="border: 1px solid #ccc;">
@@ -1071,7 +1071,17 @@
         function renderPDF(url, container, index) {
             const loadingDiv = container.querySelector('.pdf-loading');
             
-            pdfjsLib.getDocument(url).promise.then(function(pdf) {
+            // Configurar headers para autenticação
+            const loadingTask = pdfjsLib.getDocument({
+                url: url,
+                httpHeaders: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/pdf'
+                },
+                withCredentials: true
+            });
+            
+            loadingTask.promise.then(function(pdf) {
                 loadingDiv.innerHTML = '<p style="text-align: center; padding: 20px; font-size: 12px;">Analisando e redimensionando ' + pdf.numPages + ' página(s)...</p>';
                 
                 const renderPromises = [];
@@ -1093,8 +1103,32 @@
                 
             }).catch(error => {
                 console.error('Erro ao carregar PDF:', error);
-                showError(container, 'Erro ao carregar PDF: ' + url);
+                // Se falhar, tenta usar iframe como fallback
+                showFallbackIframe(container, url);
             });
+        }
+
+        function showFallbackIframe(container, url) {
+            container.innerHTML = `
+                <div class="pdf-info-box" style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; margin-bottom: 10px;">
+                    <p style="font-size: 11px; color: #856404; margin: 0;">
+                        <strong>📄 DOCUMENTO PDF (MODO COMPATIBILIDADE)</strong><br>
+                        Carregando via iframe devido a limitações de acesso. Se o documento não aparecer, 
+                        pode ser necessário abrir em nova aba.
+                    </p>
+                </div>
+                <iframe src="${url}" 
+                        width="100%" 
+                        height="800px" 
+                        style="border: 1px solid #ccc; max-width: ${MAX_PDF_WIDTH}px;">
+                    <div class="pdf-placeholder">
+                        <p style="font-size: 12px; color: #666; margin: 20px;">
+                            <strong>❌ Não foi possível carregar o documento.</strong><br>
+                            <a href="${url}" target="_blank" style="color: #007bff;">Clique aqui para abrir em nova aba</a>
+                        </p>
+                    </div>
+                </iframe>
+            `;
         }
 
         function renderPage(pdf, pageNum, container, docIndex) {

@@ -490,20 +490,74 @@ class PersonController extends Controller
      */
     public function removeImage($personId, $imageId): JsonResponse
     {
-        try {
-            $person = Person::findOrFail($personId);
-            $person->images()->detach($imageId);
-            $image = Image::find($imageId);
-            if ($image->delete()) {
-                return response()->json(['success' => true]);
-            }
+        $person = Person::findOrFail($personId);
+        $image = Image::findOrFail($imageId);
+
+        $person->images()->detach($imageId);
+
+        if ($person->images()->count() === 0) {
             $person->images()->attach($image->id);
+        }
 
-            return response()->json(['success' => false, 'error' => 'Não foi possível exluir o arquivo do servidor.']);
-        } catch (ModelNotFoundException $exception) {
-            Log::error($exception->getMessage());
+        return response()->json(['success' => true, 'message' => 'Imagem removida com sucesso!']);
+    }
 
-            return response()->json(['success' => false, 'error' => $exception->getMessage()]);
+    /**
+     * Serve document with proper authentication and authorization
+     * 
+     * @param int $personId
+     * @param int $docId
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|\Illuminate\Http\JsonResponse
+     */
+    public function serveDocument($personId, $docId)
+    {
+        try {
+            // Verificar se a pessoa existe
+            $person = Person::findOrFail($personId);
+            
+            // Verificar se o documento existe e pertence à pessoa
+            $doc = $person->docs()->findOrFail($docId);
+            
+            // Verificar se o arquivo existe fisicamente
+            $filePath = public_path($doc->upload);
+            if (!file_exists($filePath)) {
+                return response()->json(['error' => 'Arquivo não encontrado'], 404);
+            }
+            
+            // Log de acesso para auditoria
+            \Log::info('Document accessed', [
+                'user_id' => auth()->id(),
+                'person_id' => $personId,
+                'doc_id' => $docId,
+                'file_path' => $doc->upload,
+                'ip' => request()->ip(),
+                'user_agent' => request()->userAgent()
+            ]);
+            
+            // Detectar tipo de conteúdo
+            $mimeType = mime_content_type($filePath);
+            
+            // Servir o arquivo com headers apropriados para PDF.js
+            return response()->file($filePath, [
+                'Content-Type' => $mimeType,
+                'Content-Disposition' => 'inline; filename="' . basename($doc->upload) . '"',
+                'Cache-Control' => 'no-store, no-cache, must-revalidate',
+                'X-Content-Type-Options' => 'nosniff',
+                'X-Frame-Options' => 'SAMEORIGIN',
+                'Access-Control-Allow-Origin' => request()->getSchemeAndHttpHost(),
+                'Access-Control-Allow-Methods' => 'GET',
+                'Access-Control-Allow-Headers' => 'Content-Type, Authorization'
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error('Error serving document', [
+                'user_id' => auth()->id(),
+                'person_id' => $personId,
+                'doc_id' => $docId,
+                'error' => $e->getMessage()
+            ]);
+            
+            return response()->json(['error' => 'Erro ao acessar documento'], 500);
         }
     }
 
