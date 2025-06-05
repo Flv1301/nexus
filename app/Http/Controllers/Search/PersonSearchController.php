@@ -149,7 +149,7 @@ class PersonSearchController extends Controller
             return collect([]);
         }
 
-        $query = DB::table('persons')
+        $query = Person::with('images')
             ->where('active_orcrim', false) // Exclui pessoas faccionadas (ativas)
             
             // Campos diretos da tabela persons
@@ -232,120 +232,92 @@ class PersonSearchController extends Controller
                 return $query->where('orcrim_matricula', 'like', '%' . Str::upper($matricula) . '%');
             })
             
-            // Campos de tabelas relacionadas - usando EXISTS para manter AND logic
+            // Campos de tabelas relacionadas - usando whereHas para manter AND logic
             ->when($request->phone, function ($query, $phone) {
                 $phoneClean = preg_replace('/\D/', '', $phone);
-                return $query->whereExists(function ($subQuery) use ($phoneClean) {
-                    $subQuery->select(DB::raw(1))
-                            ->from('person_telephones')
-                            ->join('telephones', 'person_telephones.telephone_id', '=', 'telephones.id')
-                            ->whereColumn('person_telephones.person_id', 'persons.id')
-                            ->where(function($q) use ($phoneClean) {
-                                // Busca por número completo (DDD + telefone concatenados)
-                                $q->whereRaw("CONCAT(telephones.ddd, telephones.telephone) LIKE ?", ['%' . $phoneClean . '%'])
-                                  // Busca apenas pelo número do telefone (sem DDD)
-                                  ->orWhere('telephones.telephone', 'like', '%' . $phoneClean . '%');
-                                  
-                                // Se o número tem 11 dígitos, separar DDD dos primeiros 2 dígitos
-                                if (strlen($phoneClean) === 11) {
-                                    $ddd = substr($phoneClean, 0, 2);
-                                    $numero = substr($phoneClean, 2);
-                                    $q->orWhere(function($subQ) use ($ddd, $numero) {
-                                        $subQ->where('telephones.ddd', $ddd)
-                                             ->where('telephones.telephone', 'like', '%' . $numero . '%');
-                                    });
-                                }
-                                // Se o número tem 10 dígitos, separar DDD dos primeiros 2 dígitos
-                                elseif (strlen($phoneClean) === 10) {
-                                    $ddd = substr($phoneClean, 0, 2);
-                                    $numero = substr($phoneClean, 2);
-                                    $q->orWhere(function($subQ) use ($ddd, $numero) {
-                                        $subQ->where('telephones.ddd', $ddd)
-                                             ->where('telephones.telephone', 'like', '%' . $numero . '%');
-                                    });
-                                }
+                return $query->whereHas('telephones', function ($subQuery) use ($phoneClean) {
+                    $subQuery->where(function($q) use ($phoneClean) {
+                        // Busca por número completo (DDD + telefone concatenados)
+                        $q->whereRaw("CONCAT(ddd, telephone) LIKE ?", ['%' . $phoneClean . '%'])
+                          // Busca apenas pelo número do telefone (sem DDD)
+                          ->orWhere('telephone', 'like', '%' . $phoneClean . '%');
+                          
+                        // Se o número tem 11 dígitos, separar DDD dos primeiros 2 dígitos
+                        if (strlen($phoneClean) === 11) {
+                            $ddd = substr($phoneClean, 0, 2);
+                            $numero = substr($phoneClean, 2);
+                            $q->orWhere(function($subQ) use ($ddd, $numero) {
+                                $subQ->where('ddd', $ddd)
+                                     ->where('telephone', 'like', '%' . $numero . '%');
                             });
+                        }
+                        // Se o número tem 10 dígitos, separar DDD dos primeiros 2 dígitos
+                        elseif (strlen($phoneClean) === 10) {
+                            $ddd = substr($phoneClean, 0, 2);
+                            $numero = substr($phoneClean, 2);
+                            $q->orWhere(function($subQ) use ($ddd, $numero) {
+                                $subQ->where('ddd', $ddd)
+                                     ->where('telephone', 'like', '%' . $numero . '%');
+                            });
+                        }
+                    });
                 });
             })
             ->when($request->email, function ($query, $email) {
                 $emailUpper = Str::upper($email);
-                return $query->whereExists(function ($subQuery) use ($emailUpper) {
-                    $subQuery->select(DB::raw(1))
-                            ->from('person_emails')
-                            ->join('emails', 'person_emails.email_id', '=', 'emails.id')
-                            ->whereColumn('person_emails.person_id', 'persons.id')
-                            ->where('emails.email', 'ilike', '%' . $emailUpper . '%');
+                return $query->whereHas('emails', function ($subQuery) use ($emailUpper) {
+                    $subQuery->where('email', 'ilike', '%' . $emailUpper . '%');
                 });
             })
             ->when($request->city, function ($query, $city) {
                 $cityUpper = Str::upper($city);
                 $cityAscii = Str::upper(Str::ascii($city));
                 
-                return $query->whereExists(function ($subQuery) use ($cityUpper, $cityAscii) {
-                    $subQuery->select(DB::raw(1))
-                            ->from('person_address')
-                            ->join('address', 'person_address.address_id', '=', 'address.id')
-                            ->whereColumn('person_address.person_id', 'persons.id')
-                            ->where(function($q) use ($cityUpper, $cityAscii) {
-                                // Busca tradicional com acentos
-                                $q->where('address.city', 'ilike', '%' . $cityUpper . '%')
-                                  // Busca insensível a acentos usando TRANSLATE
-                                  ->orWhereRaw("UPPER(TRANSLATE(address.city, 
-                                      'ÁÀÃÂÄáàãâäÉÈÊËéèêëÍÌÎÏíìîïÓÒÕÔÖóòõôöÚÙÛÜúùûüÇçÑñ', 
-                                      'AAAAAaaaaaEEEEeeeeIIIIiiiiOOOOOoooooUUUUuuuuCcNn'
-                                  )) ILIKE ?", ['%' . $cityAscii . '%']);
-                            });
+                return $query->whereHas('address', function ($subQuery) use ($cityUpper, $cityAscii) {
+                    $subQuery->where(function($q) use ($cityUpper, $cityAscii) {
+                        // Busca tradicional com acentos
+                        $q->where('city', 'ilike', '%' . $cityUpper . '%')
+                          // Busca insensível a acentos usando TRANSLATE
+                          ->orWhereRaw("UPPER(TRANSLATE(city, 
+                              'ÁÀÃÂÄáàãâäÉÈÊËéèêëÍÌÎÏíìîïÓÒÕÔÖóòõôöÚÙÛÜúùûüÇçÑñ', 
+                              'AAAAAaaaaaEEEEeeeeIIIIiiiiOOOOOoooooUUUUuuuuCcNn'
+                          )) ILIKE ?", ['%' . $cityAscii . '%']);
+                    });
                 });
             })
             ->when($request->placa, function ($query, $placa) {
                 // Normalizar a placa removendo caracteres especiais (hífen, espaços, etc.)
                 $placaNormalized = preg_replace('/[^A-Z0-9]/i', '', Str::upper($placa));
-                return $query->whereExists(function ($subQuery) use ($placaNormalized) {
-                    $subQuery->select(DB::raw(1))
-                            ->from('vehicles')
-                            ->whereColumn('vehicles.person_id', 'persons.id')
-                            // Buscar tanto com hífen quanto sem hífen para máxima compatibilidade
-                            ->where(function($q) use ($placaNormalized) {
-                                // Busca sem caracteres especiais
-                                $q->whereRaw("UPPER(REPLACE(REPLACE(vehicles.plate, '-', ''), ' ', '')) LIKE ?", ['%' . $placaNormalized . '%'])
-                                  // Busca com hífen automático nas posições tradicionais
-                                  ->orWhere('vehicles.plate', 'ilike', '%' . $placaNormalized . '%');
-                                  
-                                // Se a placa tem 7 caracteres, testar com hífen na posição 3
-                                if (strlen($placaNormalized) === 7) {
-                                    $placaWithHyphen = substr($placaNormalized, 0, 3) . '-' . substr($placaNormalized, 3);
-                                    $q->orWhere('vehicles.plate', 'ilike', '%' . $placaWithHyphen . '%');
-                                }
-                            });
+                return $query->whereHas('vehicles', function ($subQuery) use ($placaNormalized) {
+                    // Buscar tanto com hífen quanto sem hífen para máxima compatibilidade
+                    $subQuery->where(function($q) use ($placaNormalized) {
+                        // Busca sem caracteres especiais
+                        $q->whereRaw("UPPER(REPLACE(REPLACE(plate, '-', ''), ' ', '')) LIKE ?", ['%' . $placaNormalized . '%'])
+                          // Busca com hífen automático nas posições tradicionais
+                          ->orWhere('plate', 'ilike', '%' . $placaNormalized . '%');
+                          
+                        // Se a placa tem 7 caracteres, testar com hífen na posição 3
+                        if (strlen($placaNormalized) === 7) {
+                            $placaWithHyphen = substr($placaNormalized, 0, 3) . '-' . substr($placaNormalized, 3);
+                            $q->orWhere('plate', 'ilike', '%' . $placaWithHyphen . '%');
+                        }
+                    });
                 });
             })
             ->when($request->bo, function ($query, $bo) {
                 $boUpper = Str::upper($bo);
-                return $query->whereExists(function ($subQuery) use ($boUpper) {
-                    $subQuery->select(DB::raw(1))
-                            ->from('pcpas')
-                            ->whereColumn('pcpas.person_id', 'persons.id')
-                            ->where('pcpas.bo', 'like', '%' . $boUpper . '%');
+                return $query->whereHas('pcpas', function ($subQuery) use ($boUpper) {
+                    $subQuery->where('bo', 'like', '%' . $boUpper . '%');
                 });
             })
             ->when($request->processo, function ($query, $processo) {
                 $processoUpper = Str::upper($processo);
-                return $query->whereExists(function ($subQuery) use ($processoUpper) {
-                    $subQuery->select(DB::raw(1))
-                            ->from('tjs')
-                            ->whereColumn('tjs.person_id', 'persons.id')
-                            ->where('tjs.processo', 'like', '%' . $processoUpper . '%');
+                return $query->whereHas('tjs', function ($subQuery) use ($processoUpper) {
+                    $subQuery->where('processo', 'like', '%' . $processoUpper . '%');
                 });
             });
 
-        return $query->limit(50)->select([
-            'id',
-            'name',
-            'cpf',
-            'mother',
-            'father',
-            DB::raw('to_char(birth_date::date, \'dd/mm/yyyy\') as birth_date')
-        ])->get();
+        return $query->limit(50)->get();
     }
 
     /**
@@ -517,7 +489,7 @@ class PersonSearchController extends Controller
             return collect([]);
         }
 
-        $query = DB::table('persons')
+        $query = Person::with('images')
             ->where('active_orcrim', true) // Apenas pessoas faccionadas (ativas)
             
             // Campos diretos da tabela persons
@@ -706,14 +678,7 @@ class PersonSearchController extends Controller
                 });
             });
 
-        return $query->select([
-            'id',
-            'name',
-            'cpf',
-            'mother',
-            'father',
-            DB::raw('to_char(birth_date::date, \'dd/mm/yyyy\') as birth_date')
-        ])->get();
+        return $query->limit(50)->get();
     }
 
     /**
