@@ -251,4 +251,33 @@ class Person extends Model
             ->logOnlyDirty()
             ->useLogName('Pessoa');
     }
+
+    /**
+     * Get the first image thumbnail for display in lists
+     * 
+     * @return string|null
+     */
+    public function getFirstImageThumbnail(): ?string
+    {
+        if ($this->images && $this->images->count() > 0) {
+            $image = $this->images->first();
+            if (\Illuminate\Support\Facades\Storage::exists($image->path)) {
+                $type = \Illuminate\Support\Facades\Storage::mimeType($image->path);
+                $content = \Illuminate\Support\Facades\Storage::get($image->path);
+                $content = base64_encode($content);
+                return "data:{$type};base64,{$content}";
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Check if person has images
+     * 
+     * @return bool
+     */
+    public function hasImages(): bool
+    {
+        return $this->images && $this->images->count() > 0;
+    }
 }

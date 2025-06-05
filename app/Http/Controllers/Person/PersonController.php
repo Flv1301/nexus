@@ -47,7 +47,8 @@ class PersonController extends Controller
             return back();
         }
 
-        $persons = Person::select('id', 'name', 'nickname', 'birth_date', 'cpf', 'created_at', 'dead')
+        $persons = Person::with('images')
+            ->select('id', 'name', 'nickname', 'birth_date', 'cpf', 'created_at', 'dead')
             ->orderBy('name', 'asc')->paginate(15);
 
         return view('person.index', compact('persons'));
@@ -63,19 +64,20 @@ class PersonController extends Controller
         $search = Str::upper($request->search);
         $searchAscii = Str::ascii($search);
         
-        $persons = Person::where(function($query) use ($search, $searchAscii) {
-            $query->where('name', 'ilike', '%' . $search . '%')
-                  ->orWhere('name', 'ilike', '%' . $searchAscii . '%')
-                  ->orWhere('nickname', 'ilike', '%' . $search . '%')
-                  ->orWhere('nickname', 'ilike', '%' . $searchAscii . '%')
-                  ->orWhere('cpf', 'like', '%' . $search . '%')
-                  ->orWhere('rg', 'like', '%' . $search . '%')
-                  ->orWhere('tatto', 'ilike', '%' . $search . '%')
-                  ->orWhere('tatto', 'ilike', '%' . $searchAscii . '%');
-        })
-        ->orderBy('name')
-        ->select('id', 'name', 'nickname', 'dead', 'birth_date', 'cpf')
-        ->paginate(15);
+        $persons = Person::with('images')
+            ->where(function($query) use ($search, $searchAscii) {
+                $query->where('name', 'ilike', '%' . $search . '%')
+                      ->orWhere('name', 'ilike', '%' . $searchAscii . '%')
+                      ->orWhere('nickname', 'ilike', '%' . $search . '%')
+                      ->orWhere('nickname', 'ilike', '%' . $searchAscii . '%')
+                      ->orWhere('cpf', 'like', '%' . $search . '%')
+                      ->orWhere('rg', 'like', '%' . $search . '%')
+                      ->orWhere('tatto', 'ilike', '%' . $search . '%')
+                      ->orWhere('tatto', 'ilike', '%' . $searchAscii . '%');
+            })
+            ->orderBy('name')
+            ->select('id', 'name', 'nickname', 'dead', 'birth_date', 'cpf')
+            ->paginate(15);
 
         return view('person.index', compact('persons'))->with(['search' => $request->search]);
     }

@@ -1,15 +1,59 @@
 @props(['bases', 'route'])
+
+@push('css')
+<style>
+.person-photo {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.person-photo:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0,123,255,0.3);
+}
+
+.photo-column {
+    text-align: center;
+    width: 70px;
+    padding: 8px !important;
+}
+
+.no-photo-icon {
+    color: #6c757d;
+    font-size: 45px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.no-photo-icon:hover {
+    opacity: 1;
+}
+</style>
+@endpush
+
 @php
     $heads = [
         'Base',
+        'Foto',
         'Nome',
         'CPF',
         'Mãe',
         ['label' => 'Opções', 'no-export' => true, 'width' => 15],
     ];
     $config = [
-        'order' => [[1, 'asc']],
-        'columns' => [null, null, null, null, ['orderable' => false]],
+        'order' => [[2, 'asc']],
+        'columns' => [null, ['orderable' => false], null, null, null, ['orderable' => false]],
         'language' => [
                         'paginate' => [
                             'first' => 'Primeiro',
@@ -36,6 +80,21 @@
                     @foreach($base as $person)
                         <tr>
                             <td>{{ $key === 'person' ? 'HYDRA' : \Illuminate\Support\Str::upper($key)}}</td>
+                            <td class="photo-column">
+                                @if(($key === 'nexus' || $key === 'faccionado') && method_exists($person, 'hasImages') && $person->hasImages())
+                                    @php $imageSrc = $person->getFirstImageThumbnail(); @endphp
+                                    @if($imageSrc)
+                                        <img src="{{$imageSrc}}" 
+                                             alt="Foto de {{$person->name}}" 
+                                             class="person-photo"
+                                             title="{{$person->name}}">
+                                    @else
+                                        <i class="fas fa-user-circle no-photo-icon" title="Foto não encontrada"></i>
+                                    @endif
+                                @else
+                                    <i class="fas fa-user-circle no-photo-icon" title="{{($key === 'nexus' || $key === 'faccionado') ? 'Sem foto cadastrada' : 'Base externa'}}"></i>
+                                @endif
+                            </td>
                             <td>{{$person->name}}</td>
                             <td>{{$person->cpf ?? ''}}</td>
                             <td>{{$person->mother ?? ''}}</td>

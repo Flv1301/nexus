@@ -6,37 +6,32 @@
 @push('css')
 <style>
 .person-photo {
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    border: none;
+    border: 2px solid #ddd;
     transition: all 0.3s ease;
     cursor: pointer;
 }
 
 .person-photo:hover {
+    border-color: #007bff;
     transform: scale(1.1);
     box-shadow: 0 2px 8px rgba(0,123,255,0.3);
 }
 
 .photo-column {
     text-align: center;
-    width: 70px;
+    width: 60px;
     padding: 8px !important;
 }
 
 .no-photo-icon {
     color: #6c757d;
-    font-size: 45px;
+    font-size: 2em;
     opacity: 0.7;
     transition: opacity 0.3s ease;
-    width: 45px;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
 }
 
 .no-photo-icon:hover {
@@ -124,7 +119,7 @@
                                 @if($imageSrc)
                                     <img src="{{$imageSrc}}" 
                                          alt="Foto de {{$person->name}}" 
-                                         class="person-photo"
+                                         class="person-photo img-thumbnail"
                                          title="{{$person->name}}"
                                          onclick="window.open('{{route('person.show', $person)}}', '_blank')">
                                 @else
