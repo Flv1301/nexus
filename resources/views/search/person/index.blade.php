@@ -42,7 +42,7 @@
                                         <div class="custom-control custom-checkbox ml-1">
                                             <input class="custom-control-input" type="checkbox" id="faccionado-checked"
                                                    value="faccionado" name="options[]"
-                                                   @if(in_array('faccionado', $request->options)) checked @endif />
+                                                   @if(in_array('faccionado', $request->options) || empty($request->options)) checked @endif />
                                             <label for="faccionado-checked" class="custom-control-label">Faccionado</label>
                                         </div>
                                     @endcan
