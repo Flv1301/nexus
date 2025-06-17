@@ -29,7 +29,6 @@ class User extends Authenticatable
     use Notifiable;
     use LogsActivity;
     use SoftDeletes;
-    use Notifiable;
 
     /**
      * @var string[]
@@ -199,5 +198,25 @@ class User extends Authenticatable
             ->logFillable()
             ->logOnlyDirty()
             ->useLogName('Usuario');
+    }
+
+    /**
+     * Get the URL for the user's profile.
+     *
+     * @return string
+     */
+    public function adminlte_profile_url()
+    {
+        return 'profile';
+    }
+
+    /**
+     * Get the user's description for the AdminLTE menu.
+     *
+     * @return string
+     */
+    public function adminlte_desc()
+    {
+        return $this->email;
     }
 }

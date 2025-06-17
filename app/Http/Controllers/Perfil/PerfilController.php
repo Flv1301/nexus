@@ -48,21 +48,29 @@ class PerfilController extends Controller
      * @param Request $request
      * @return RedirectResponse
      */
-    public function reset(Request $request)
+    public function reset(Request $request): RedirectResponse
     {
         $request->validate([
             'password_current' => 'required',
             'password' => 'required|min:6|string|confirmed'
+        ], [
+            'password_current.required' => 'A senha atual é obrigatória.',
+            'password.required' => 'A nova senha é obrigatória.',
+            'password.min' => 'A nova senha deve ter pelo menos 6 caracteres.',
+            'password.confirmed' => 'A confirmação da senha não confere.',
         ]);
+
         if (!Hash::check($request->password_current, $request->user()->password)) {
             return back()->withErrors([
-                'password_current' => ['The provided password does not match our records.']
+                'password_current' => 'A senha atual informada está incorreta.'
             ])->withInput();
         }
+
         $user = Auth::user();
         $user->password = bcrypt($request->password);
         $user->save();
+
         toast('Senha atualizada com sucesso!', 'success');
-        return back();
+        return redirect()->route('perfil')->with('success', 'Senha alterada com sucesso!');
     }
 }
