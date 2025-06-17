@@ -117,6 +117,7 @@
                                             <!-- Antecedentes -->
                                             <optgroup label="📋 Antecedentes">
                                                 <option value="bo">📄 BO</option>
+                                                <option value="natureza">⚖️ Natureza</option>
                                             </optgroup>
                                             
                                             <!-- Processos -->
@@ -158,7 +159,7 @@
 
 @push('js')
     <script src="{{ asset('js/cpf-mask.js') }}"></script>
-    <script src="{{ asset('js/dynamic-search-fields.js') }}"></script>
+    <script src="{{ asset('js/dynamic-search-fields-v2.js') }}"></script>
     <script src="{{ asset('js/debug-test.js') }}"></script>
     <script src="{{ asset('js/test-backend-integration.js') }}"></script>
     <script>

@@ -310,6 +310,16 @@ class PersonSearchController extends Controller
                     $subQuery->where('bo', 'like', '%' . $boUpper . '%');
                 });
             })
+            ->when($request->natureza, function ($query, $natureza) {
+                $naturezaUpper = Str::upper($natureza);
+                $naturezaAscii = Str::ascii($naturezaUpper);
+                return $query->whereHas('pcpas', function ($subQuery) use ($naturezaUpper, $naturezaAscii) {
+                    $subQuery->where(function($q) use ($naturezaUpper, $naturezaAscii) {
+                        $q->where('natureza', 'ilike', '%' . $naturezaUpper . '%')
+                          ->orWhere('natureza', 'ilike', '%' . $naturezaAscii . '%');
+                    });
+                });
+            })
             ->when($request->processo, function ($query, $processo) {
                 $processoUpper = Str::upper($processo);
                 return $query->whereHas('tjs', function ($subQuery) use ($processoUpper) {
@@ -666,6 +676,19 @@ class PersonSearchController extends Controller
                             ->from('pcpas')
                             ->whereColumn('pcpas.person_id', 'persons.id')
                             ->where('pcpas.bo', 'like', '%' . $boUpper . '%');
+                });
+            })
+            ->when($request->natureza, function ($query, $natureza) {
+                $naturezaUpper = Str::upper($natureza);
+                $naturezaAscii = Str::ascii($naturezaUpper);
+                return $query->whereExists(function ($subQuery) use ($naturezaUpper, $naturezaAscii) {
+                    $subQuery->select(DB::raw(1))
+                            ->from('pcpas')
+                            ->whereColumn('pcpas.person_id', 'persons.id')
+                            ->where(function($q) use ($naturezaUpper, $naturezaAscii) {
+                                $q->where('natureza', 'ilike', '%' . $naturezaUpper . '%')
+                                  ->orWhere('natureza', 'ilike', '%' . $naturezaAscii . '%');
+                            });
                 });
             })
             ->when($request->processo, function ($query, $processo) {
