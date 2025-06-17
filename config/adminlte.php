@@ -129,12 +129,12 @@ return [
     |
     */
 
-    'usermenu_enabled' => false,
-    'usermenu_header' => false,
+    'usermenu_enabled' => true,
+    'usermenu_header' => true,
     'usermenu_header_class' => 'bg-primary',
     'usermenu_image' => false,
-    'usermenu_desc' => false,
-    'usermenu_profile_url' => false,
+    'usermenu_desc' => true,
+    'usermenu_profile_url' => '/perfil',
 
     /*
     |--------------------------------------------------------------------------
@@ -259,7 +259,7 @@ return [
     'register_url' => '', #'/usuario/cadastro',
     'password_reset_url' => '',
     'password_email_url' => '/reset-senha',
-    'profile_url' => false,
+    'profile_url' => '/perfil',
 
     /*
     |--------------------------------------------------------------------------

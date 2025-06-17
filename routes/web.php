@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'authenticate'])->name('authenticate');
@@ -117,4 +118,9 @@ Route::get('/pesquisa/pix/search', [PixController::class, 'search'])->name('pesq
 Route::middleware(['auth'])->group(function () {
     Route::get('/api/cities-by-uf', [App\Http\Controllers\LocationController::class, 'getCitiesByUF'])->name('api.cities.by.uf');
     Route::get('/api/search-cities', [App\Http\Controllers\LocationController::class, 'searchCities'])->name('api.search.cities');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 });
