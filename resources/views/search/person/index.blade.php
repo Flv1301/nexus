@@ -123,6 +123,7 @@
                                             <!-- Processos -->
                                             <optgroup label="⚖️ Processos">
                                                 <option value="processo">🏛️ Processo</option>
+                                                <option value="situacao">⚖️ Situação</option>
                                             </optgroup>
                                         </select>
                                     </div>
@@ -160,8 +161,6 @@
 @push('js')
     <script src="{{ asset('js/cpf-mask.js') }}"></script>
     <script src="{{ asset('js/dynamic-search-fields-v2.js') }}"></script>
-    <script src="{{ asset('js/debug-test.js') }}"></script>
-    <script src="{{ asset('js/test-backend-integration.js') }}"></script>
     <script>
         // Configuração básica da interface (não relacionada aos campos dinâmicos)
         document.addEventListener('DOMContentLoaded', function() {
@@ -252,6 +251,9 @@
                         @endif
                         @if(old('processo') || (isset($request->processo) && $request->processo))
                             processo: '{{ old("processo") ?? $request->processo ?? "" }}',
+                        @endif
+                        @if(old('situacao') || (isset($request->situacao) && $request->situacao))
+                            situacao: '{{ old("situacao") ?? $request->situacao ?? "" }}',
                         @endif
                     };
                     

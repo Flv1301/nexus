@@ -362,7 +362,7 @@ class DynamicSearchFields {
         const selector = document.getElementById('field-selector');
         if (!selector) return;
 
-        const options = selector.querySelectorAll('option[value!=""]');
+        const options = selector.querySelectorAll('option:not([value=""])');
         
         options.forEach(option => {
             option.style.display = this.addedFields.includes(option.value) ? 'none' : 'block';

@@ -72,6 +72,12 @@ enum PermissionsEnum: string
 
     case PROCEDURE = 'tramitacao';
 
+    case WHATSAPP = 'whatsapp';
+    case WHATSAPP_READ = 'whatsapp.ler';
+    case WHATSAPP_WRITE = 'whatsapp.cadastrar';
+    case WHATSAPP_DELETE = 'whatsapp.excluir';
+    case WHATSAPP_UPDATE = 'whatsapp.atualizar';
+
     /** BANCOS DE CONSULTAS */
    case CORTEX = 'cortex';
     case NEXUS = 'nexus';

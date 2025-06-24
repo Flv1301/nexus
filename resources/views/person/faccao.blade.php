@@ -33,7 +33,7 @@
                     value="{{ old('orcrim_office') ?? $person->orcrim_office ?? ''}}"
                 />
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-3">
                 <x-adminlte-input
                     name="orcrim_occupation_area"
                     id="orcrim_occupation_area"
@@ -42,6 +42,22 @@
                     style="text-transform:uppercase"
                     value="{{ old('orcrim_occupation_area') ?? $person->orcrim_occupation_area ?? ''}}"
                 />
+            </div>
+            <div class="form-group col-md-3">
+                @php $config = ['format' => 'DD/MM/YYYY']; @endphp
+                <x-adminlte-input-date
+                    name="data_ingresso"
+                    id="data_ingresso"
+                    label="Data de Ingresso"
+                    placeholder="Data de Ingresso"
+                    :config="$config"
+                    value="{{ old('data_ingresso') ?? $person->data_ingresso ?? '' }}">
+                    <x-slot name="prependSlot">
+                        <div class="input-group-text bg-gradient-info">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </x-slot>
+                </x-adminlte-input-date>
             </div>
         </div>
         <div class="form-row">
@@ -55,7 +71,7 @@
                     value="{{ old('orcrim_matricula') ?? $person->orcrim_matricula ?? ''}}"
                 />
             </div>
-            <div class="form-group col-md-9">
+            <div class="form-group col-md-5">
                 <x-adminlte-input
                     name="orcrim_padrinho"
                     id="orcrim_padrinho"
@@ -63,6 +79,16 @@
                     placeholder="Padrinho"
                     style="text-transform:uppercase"
                     value="{{ old('orcrim_padrinho') ?? $person->orcrim_padrinho ?? ''}}"
+                />
+            </div>
+            <div class="form-group col-md-4">
+                <x-adminlte-input
+                    name="vulgo_padrinho"
+                    id="vulgo_padrinho"
+                    label="Vulgo Padrinho"
+                    placeholder="Vulgo Padrinho"
+                    style="text-transform:uppercase"
+                    value="{{ old('vulgo_padrinho') ?? $person->vulgo_padrinho ?? ''}}"
                 />
             </div>
         </div>

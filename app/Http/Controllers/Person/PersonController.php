@@ -960,6 +960,7 @@ class PersonController extends Controller
                     'natureza' => !empty($pcpaData['natureza']) ? $pcpaData['natureza'] : null,
                     'data' => !empty($pcpaData['data']) ? $pcpaData['data'] : null,
                     'uf' => !empty($pcpaData['uf']) ? $pcpaData['uf'] : null,
+                    'cidade' => !empty($pcpaData['cidade']) ? $pcpaData['cidade'] : null,
                 ]);
 
                 Log::info('PCPA created successfully:', ['pcpa_id' => $pcpa->id, 'pcpa_data' => $pcpa->toArray()]);
@@ -1017,10 +1018,14 @@ class PersonController extends Controller
                 Log::info('Processing TJ data:', ['tj' => $tjData]);
                 
                 $tj = $person->tjs()->create([
+                    'situacao' => !empty($tjData['situacao']) ? $tjData['situacao'] : null,
+                    'data_denuncia' => !empty($tjData['data_denuncia']) ? $tjData['data_denuncia'] : null,
+                    'data_condenacao' => !empty($tjData['data_condenacao']) ? $tjData['data_condenacao'] : null,
                     'processo' => $tjData['processo'],
                     'natureza' => !empty($tjData['natureza']) ? $tjData['natureza'] : null,
                     'data' => !empty($tjData['data']) ? $tjData['data'] : null,
                     'uf' => !empty($tjData['uf']) ? $tjData['uf'] : null,
+                    'comarca' => !empty($tjData['comarca']) ? $tjData['comarca'] : null,
                 ]);
 
                 Log::info('TJ created successfully:', ['tj_id' => $tj->id, 'tj_data' => $tj->toArray()]);

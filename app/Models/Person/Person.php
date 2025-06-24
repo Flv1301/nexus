@@ -73,6 +73,8 @@ class Person extends Model
         'orcrim_occupation_area',
         'orcrim_matricula',
         'orcrim_padrinho',
+        'vulgo_padrinho',
+        'data_ingresso',
     ];
 
     /**
@@ -81,6 +83,7 @@ class Person extends Model
     protected $casts = [
         'birth_date' => DateCast::class,
         'detainee_date' => DateCast::class,
+        'data_ingresso' => DateCast::class,
         'name' => UpCaseTextCast::class,
         'nickname' => UpCaseTextCast::class,
         'father' => UpCaseTextCast::class,

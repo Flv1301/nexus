@@ -402,7 +402,6 @@ return [
         [
             'text' => ' CADASTRO',
             'icon' => 'fas fa-id-card',
-            'can' => 'cadastro',
             'submenu' => [
                 [
                     'text' => 'Pessoa',
@@ -441,6 +440,11 @@ return [
                     'url' => '/usuarios',
                     'can' => 'usuario'
                 ],
+                [
+                    'text' => 'WhatsApp Analysis',
+                    'icon' => 'fab fa-whatsapp',
+                    'url' => '/whatsapp-analysis'
+                ],
             ],
         ],
 
@@ -455,6 +459,12 @@ return [
             'text' => 'PERFIL',
             'url' => '/perfil',
             'icon' => 'fas fa-user'
+        ],
+
+        [
+            'text' => 'WHATSAPP ANALYSIS',
+            'url' => '/whatsapp-analysis',
+            'icon' => 'fab fa-whatsapp'
         ],
     ],
 

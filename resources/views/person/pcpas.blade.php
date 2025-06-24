@@ -45,11 +45,23 @@
                     name="pcpa_uf"
                     id="pcpa_uf"
                     label="UF"
-                    placeholder="UF">
+                    placeholder="UF"
+                    onchange="loadCitiesByUF('pcpa_uf', 'pcpa_cidade')">
                     <option value="">Selecione</option>
                     @foreach(\App\Enums\UFBrEnum::cases() as $uf)
                         <option value="{{ $uf->name }}">{{ $uf->name }}</option>
                     @endforeach
+                </x-adminlte-select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <x-adminlte-select
+                    name="pcpa_cidade"
+                    id="pcpa_cidade"
+                    label="Cidade"
+                    placeholder="Selecione primeiro a UF">
+                    <option value="">Selecione primeiro a UF</option>
                 </x-adminlte-select>
             </div>
         </div>

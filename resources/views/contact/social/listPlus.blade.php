@@ -6,6 +6,7 @@
                 <th>Rede Social</th>
                 <th>Endereço/Perfil</th>
                 <th>ID</th>
+                <th>Vínculo</th>
                 <th>Ação</th>
             </tr>
             </thead>
@@ -15,6 +16,7 @@
                     <td>{{$social->type}}</td>
                     <td>{{$social->social}}</td>
                     <td>{{$social->social_id}}</td>
+                    <td>{{$social->vinculo}}</td>
                     <td><i class="fa fa-md fa-fw fa-trash text-danger"
                            onclick="$(this).parent().parent().remove()"
                            title="Remover"></i></td>
@@ -34,6 +36,7 @@
             let social = document.getElementById('social');
             let socialId = document.getElementById('social_id');
             let type = document.getElementById('type');
+            let vinculo = document.getElementById('vinculo');
             let socials = [];
             if (social.value === '') {
                 return;
@@ -42,6 +45,7 @@
                 social: social.value,
                 social_id: socialId.value,
                 type: type.value,
+                vinculo: vinculo.value,
             }
             let input = document.createElement('input');
             input.setAttribute('type', 'hidden');
@@ -60,6 +64,9 @@
             td.append(socialId.value);
             tr.append(td);
             td = document.createElement('td');
+            td.append(vinculo.value);
+            tr.append(td);
+            td = document.createElement('td');
             td.innerHTML = html;
             tr.append(td);
             tr.append(input);
@@ -67,6 +74,7 @@
             social.value = '';
             socialId.value = '';
             type.value = '';
+            vinculo.value = '';
         }
     </script>
 @endpush

@@ -12,6 +12,8 @@
                 <th>IMEI</th>
                 <th>IMSI</th>
                 <th>Modelo de Aparelho</th>
+                <th>Data do dado</th>
+                <th>Fonte do dado</th>
             </tr>
             </thead>
             <tbody id="tableContacts">
@@ -27,6 +29,8 @@
                         <td>{{$telephones->imei}}</td>
                         <td>{{$telephones->imsi}}</td>
                         <td>{{$telephones->device}}</td>
+                        <td>{{$telephones->data_do_dado ? date('d/m/Y', strtotime($telephones->data_do_dado)) : ''}}</td>
+                        <td>{{$telephones->fonte_do_dado}}</td>
                         <td><i class="fa fa-md fa-fw fa-trash text-danger"
                                onclick="$(this).parent().parent().remove()"
                                title="Remover"></i></td>
@@ -46,6 +50,15 @@
                 acc[input] = document.querySelector(`#${input}`).value;
                 return acc;
             }, {});
+            
+            // Adicionar os campos com IDs específicos
+            values.data_do_dado = document.querySelector('#contact_data_do_dado').value;
+            values.fonte_do_dado = document.querySelector('#contact_fonte_do_dado').value;
+            
+            // Debug para verificar se os campos estão sendo coletados
+            console.log('Valores coletados:', values);
+            console.log('Data do dado:', values.data_do_dado);
+            console.log('Fonte do dado:', values.fonte_do_dado);
 
             if (values.telephone === '' && values.imei === '' && values.imsi === '' && values.device === '') {
                 return;
@@ -67,6 +80,7 @@
             // Converte as datas para o formato correto
             values.start_link = convertDate(values.start_link);
             values.end_link = convertDate(values.end_link);
+            values.data_do_dado = convertDate(values.data_do_dado);
 
             let input = document.createElement('input');
             input.setAttribute('type', 'hidden');
@@ -81,14 +95,19 @@
             const displayValues = {...values};
             displayValues.start_link = document.querySelector('#start_link').value;
             displayValues.end_link = document.querySelector('#end_link').value;
+            displayValues.data_do_dado = document.querySelector('#contact_data_do_dado').value;
             
-            tr.innerHTML = inputs.map(input => `<td>${displayValues[input]}</td>`).join('') + '<td><i class="fa fa-md fa-fw fa-trash text-danger" onclick="$(this).parent().parent().remove()" title="Remover"></i></td>';
+            tr.innerHTML = inputs.map(input => `<td>${displayValues[input]}</td>`).join('') + `<td>${displayValues.data_do_dado}</td><td>${displayValues.fonte_do_dado}</td><td><i class="fa fa-md fa-fw fa-trash text-danger" onclick="$(this).parent().parent().remove()" title="Remover"></i></td>`;
             tr.appendChild(input);
             table.appendChild(tr);
 
             inputs.forEach(input => {
                 document.getElementById(input).value = '';
             });
+            
+            // Limpar os campos específicos
+            document.getElementById('contact_data_do_dado').value = '';
+            document.getElementById('contact_fonte_do_dado').value = '';
         }
     </script>
 @endpush

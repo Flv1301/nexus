@@ -15,14 +15,20 @@ class Tj extends Model
 
     protected $fillable = [
         'person_id',
+        'situacao',
+        'data_denuncia',
+        'data_condenacao',
         'processo',
         'natureza',
         'data',
         'uf',
+        'comarca',
     ];
 
     protected $casts = [
         'data' => DateCast::class,
+        'data_denuncia' => DateCast::class,
+        'data_condenacao' => DateCast::class,
     ];
 
     /**

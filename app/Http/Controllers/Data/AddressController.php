@@ -76,6 +76,8 @@ class AddressController extends Controller
                 'uf' => 'nullable|string|max:2',
                 'complement' => 'nullable|string|max:255',
                 'reference_point' => 'nullable|string|max:255',
+                'data_do_dado' => 'nullable|date',
+                'fonte_do_dado' => 'nullable|string|max:255',
             ]);
 
             $address->update($validated);
