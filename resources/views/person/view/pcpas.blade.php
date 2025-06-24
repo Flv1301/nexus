@@ -17,6 +17,7 @@
                     <th>Natureza</th>
                     <th>Data</th>
                     <th>UF</th>
+                    <th>Cidade</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -26,6 +27,7 @@
                         <td>{{ $pcpa->natureza }}</td>
                         <td>{{ $pcpa->data }}</td>
                         <td>{{ $pcpa->uf }}</td>
+                        <td>{{ $pcpa->cidade }}</td>
                     </tr>
                 @endforeach
                 </tbody>

@@ -477,7 +477,9 @@
                 @if($address->city) <strong>CIDADE:</strong> {{ strtoupper($address->city) }}, @endif
                 @if($address->state) <strong>ESTADO:</strong> {{ strtoupper($address->state) }}, @endif
                 @if($address->uf) <strong>UF:</strong> {{ strtoupper($address->uf) }}, @endif
-                @if($address->complement) <strong>COMPLEMENTO:</strong> {{ strtoupper($address->complement) }} @endif
+                @if($address->complement) <strong>COMPLEMENTO:</strong> {{ strtoupper($address->complement) }}, @endif
+                @if($address->data_do_dado) <strong>DATA DO DADO:</strong> {{ date('d/m/Y', strtotime($address->data_do_dado)) }}, @endif
+                @if($address->fonte_do_dado) <strong>FONTE DO DADO:</strong> {{ strtoupper($address->fonte_do_dado) }} @endif
             </div>
             @endforeach
         </div>
@@ -496,7 +498,9 @@
                     @if($phone->ddd && $phone->telephone) <strong>TELEFONE:</strong> ({{ $phone->ddd }}) {{ $phone->telephone }}, @endif
                     @if($phone->operator) <strong>OPERADORA:</strong> {{ strtoupper($phone->operator) }}, @endif
                     @if($phone->owner) <strong>TITULAR:</strong> {{ strtoupper($phone->owner) }}, @endif
-                    @if($phone->status) <strong>STATUS:</strong> {{ strtoupper($phone->status) }} @endif
+                    @if($phone->status) <strong>STATUS:</strong> {{ strtoupper($phone->status) }}, @endif
+                    @if($phone->data_do_dado) <strong>DATA DO DADO:</strong> {{ date('d/m/Y', strtotime($phone->data_do_dado)) }}, @endif
+                    @if($phone->fonte_do_dado) <strong>FONTE DO DADO:</strong> {{ strtoupper($phone->fonte_do_dado) }} @endif
                 </div>
                 @endforeach
             @endif
@@ -521,7 +525,9 @@
             <div class="contact-item">
                 <strong>{{ $index + 1 }}.</strong>
                 @if($social->type) <strong>REDE:</strong> {{ strtoupper($social->type) }}, @endif
-                @if($social->social) <strong>ENDEREÇO/PERFIL:</strong> {{ $social->social }} @endif
+                @if($social->social) <strong>ENDEREÇO/PERFIL:</strong> {{ $social->social }}, @endif
+                @if($social->social_id) <strong>ID:</strong> {{ $social->social_id }}, @endif
+                @if($social->vinculo) <strong>VÍNCULO:</strong> {{ strtoupper($social->vinculo) }} @endif
             </div>
             @endforeach
         </div>
@@ -671,7 +677,7 @@
     @endif
 
     <!-- Dados ORCRIM da própria pessoa -->
-    @if($person->orcrim || $person->orcrim_office || $person->orcrim_occupation_area || $person->orcrim_matricula || $person->orcrim_padrinho)
+    @if($person->orcrim || $person->orcrim_office || $person->orcrim_occupation_area || $person->orcrim_matricula || $person->orcrim_padrinho || $person->vulgo_padrinho || $person->data_ingresso)
     <div class="section-title-table">DADOS ORCRIM PESSOAIS</div>
     <table class="table-section">
         <thead>
@@ -681,6 +687,8 @@
                 <th>ÁREA DE ATUAÇÃO</th>
                 <th>MATRÍCULA</th>
                 <th>PADRINHO</th>
+                <th>VULGO PADRINHO</th>
+                <th>DATA INGRESSO</th>
             </tr>
         </thead>
         <tbody>
@@ -690,6 +698,8 @@
                 <td>{{ strtoupper($person->orcrim_occupation_area ?? '') }}</td>
                 <td>{{ strtoupper($person->orcrim_matricula ?? '') }}</td>
                 <td>{{ strtoupper($person->orcrim_padrinho ?? '') }}</td>
+                <td>{{ strtoupper($person->vulgo_padrinho ?? '') }}</td>
+                <td>{{ $person->data_ingresso ? date('d/m/Y', strtotime($person->data_ingresso)) : '' }}</td>
             </tr>
         </tbody>
     </table>
@@ -705,6 +715,7 @@
                 <th>NATUREZA</th>
                 <th>DATA</th>
                 <th>UF</th>
+                <th>CIDADE</th>
             </tr>
         </thead>
         <tbody>
@@ -728,6 +739,7 @@
                     @endif
                 </td>
                 <td>{{ $pcpa->uf ?? '' }}</td>
+                <td>{{ strtoupper($pcpa->cidade ?? '') }}</td>
             </tr>
             @endforeach
         </tbody>
@@ -740,15 +752,20 @@
     <table class="table-section">
         <thead>
             <tr>
+                <th>SITUAÇÃO</th>
                 <th>PROCESSO</th>
                 <th>NATUREZA</th>
                 <th>DATA</th>
                 <th>UF</th>
+                <th>COMARCA</th>
+                <th>DATA DENÚNCIA</th>
+                <th>DATA CONDENAÇÃO</th>
             </tr>
         </thead>
         <tbody>
             @foreach($person->tjs as $tj)
             <tr>
+                <td>{{ strtoupper($tj->situacao ?? '') }}</td>
                 <td>{{ $tj->processo ?? '' }}</td>
                 <td>{{ strtoupper($tj->natureza ?? '') }}</td>
                 <td>
@@ -767,6 +784,37 @@
                     @endif
                 </td>
                 <td>{{ $tj->uf ?? '' }}</td>
+                <td>{{ strtoupper($tj->comarca ?? '') }}</td>
+                <td>
+                    @if($tj->data_denuncia)
+                        @php
+                            try {
+                                if(is_string($tj->data_denuncia) && strpos($tj->data_denuncia, '/') !== false) {
+                                    echo \Carbon\Carbon::createFromFormat('d/m/Y', $tj->data_denuncia)->format('d/m/Y');
+                                } else {
+                                    echo \Carbon\Carbon::parse($tj->data_denuncia)->format('d/m/Y');
+                                }
+                            } catch(\Exception $e) {
+                                echo $tj->data_denuncia;
+                            }
+                        @endphp
+                    @endif
+                </td>
+                <td>
+                    @if($tj->data_condenacao)
+                        @php
+                            try {
+                                if(is_string($tj->data_condenacao) && strpos($tj->data_condenacao, '/') !== false) {
+                                    echo \Carbon\Carbon::createFromFormat('d/m/Y', $tj->data_condenacao)->format('d/m/Y');
+                                } else {
+                                    echo \Carbon\Carbon::parse($tj->data_condenacao)->format('d/m/Y');
+                                }
+                            } catch(\Exception $e) {
+                                echo $tj->data_condenacao;
+                            }
+                        @endphp
+                    @endif
+                </td>
             </tr>
             @endforeach
         </tbody>

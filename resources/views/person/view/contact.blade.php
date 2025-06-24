@@ -15,6 +15,8 @@
                     <th>IMEI</th>
                     <th>IMSI</th>
                     <th>Modelo do Aparelho</th>
+                    <th>Data do dado</th>
+                    <th>Fonte do dado</th>
                 </tr>
                 </thead>
                 <tbody id="tableContacts">
@@ -29,6 +31,8 @@
                         <td>{{$telephones->imei}}</td>
                         <td>{{$telephones->imsi}}</td>
                         <td>{{$telephones->device}}</td>
+                        <td>{{$telephones->data_do_dado ? date('d/m/Y', strtotime($telephones->data_do_dado)) : ''}}</td>
+                        <td>{{$telephones->fonte_do_dado}}</td>
                     </tr>
                 @endforeach
                 </tbody>

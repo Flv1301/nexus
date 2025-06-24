@@ -106,6 +106,35 @@
             />
         </div>
     </div>
+    <div class="form-row">
+        @php
+            $config = ['format' => 'DD/MM/YYYY'];
+        @endphp
+        <div class="form-group col-md-3">
+            <x-adminlte-input-date 
+                name="data_do_dado"
+                id="data_do_dado"
+                :config="$config"
+                placeholder="Data do dado"
+                label="Data do dado"
+                value="{{ old('data_do_dado') ?? $address->data_do_dado ?? '' }}">
+                <x-slot name="appendSlot">
+                    <div class="input-group-text bg-gradient-warning">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                </x-slot>
+            </x-adminlte-input-date>
+        </div>
+        <div class="form-group col-md-3">
+            <x-adminlte-input
+                name="fonte_do_dado"
+                id="fonte_do_dado"
+                label="Fonte do dado"
+                placeholder="Fonte do dado"
+                value="{{ old('fonte_do_dado') ?? $address->fonte_do_dado ?? ''}}"
+            />
+        </div>
+    </div>
     
     <!-- Campo hidden para manter compatibilidade com backend -->
     <input type="hidden" name="state" id="state" value="{{ old('state') ?? $address->state ?? '' }}">

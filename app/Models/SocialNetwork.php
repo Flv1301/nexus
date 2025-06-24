@@ -15,7 +15,7 @@ class SocialNetwork extends Model
     /**
      * @var string[]
      */
-    protected $fillable = ['social', 'social_id', 'type'];
+    protected $fillable = ['social', 'social_id', 'type', 'vinculo'];
     /**
      * @var string
      */

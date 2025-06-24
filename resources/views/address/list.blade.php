@@ -11,6 +11,8 @@
                 <th>UF</th>
                 <th>Complemento</th>
                 <th>Ponto de Referencia</th>
+                <th>Data do dado</th>
+                <th>Fonte do dado</th>
             </tr>
             </thead>
             <tbody id="tableAddress">
@@ -24,6 +26,8 @@
                     <td>{{$address->uf}}</td>
                     <td>{{$address->complement}}</td>
                     <td>{{$address->reference_point}}</td>
+                    <td>{{$address->data_do_dado ? date('d/m/Y', strtotime($address->data_do_dado)) : ''}}</td>
+                    <td>{{$address->fonte_do_dado}}</td>
                 </tr>
             @endforeach
             </tbody>

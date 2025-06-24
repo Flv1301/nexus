@@ -35,6 +35,8 @@ class Telephone extends Model
         'imei',
         'imsi',
         'device',
+        'data_do_dado',
+        'fonte_do_dado',
     ];
 
     /**

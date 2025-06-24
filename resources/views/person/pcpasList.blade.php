@@ -7,6 +7,7 @@
                 <th>Natureza</th>
                 <th>Data</th>
                 <th>UF</th>
+                <th>Cidade</th>
                 <th>Ações</th>
             </tr>
             </thead>
@@ -18,6 +19,7 @@
                         <td>{{$pcpa->natureza}}</td>
                         <td>{{$pcpa->data}}</td>
                         <td>{{$pcpa->uf}}</td>
+                        <td>{{$pcpa->cidade}}</td>
                         <td><i class="fa fa-md fa-fw fa-trash text-danger"
                                onclick="$(this).parent().parent().remove()"
                                title="Remover"></i></td>
@@ -39,6 +41,7 @@
             const natureza = document.getElementById('pcpa_natureza').value;
             const data = document.getElementById('pcpa_data').value;
             const uf = document.getElementById('pcpa_uf').value;
+            const cidade = document.getElementById('pcpa_cidade').value;
 
             if (bo.trim() === '') {
                 alert('O campo BO é obrigatório.');
@@ -63,7 +66,8 @@
                 bo: bo,
                 natureza: natureza,
                 data: convertDate(data),
-                uf: uf
+                uf: uf,
+                cidade: cidade
             };
 
             // Cria input hidden para enviar os dados
@@ -81,6 +85,7 @@
                 <td>${natureza}</td>
                 <td>${data}</td>
                 <td>${uf}</td>
+                <td>${cidade}</td>
                 <td><i class="fa fa-md fa-fw fa-trash text-danger" onclick="$(this).parent().parent().remove()" title="Remover"></i></td>
             `;
             
@@ -92,6 +97,8 @@
             document.getElementById('pcpa_natureza').value = '';
             document.getElementById('pcpa_data').value = '';
             document.getElementById('pcpa_uf').value = '';
+            document.getElementById('pcpa_cidade').value = '';
+            document.getElementById('pcpa_cidade').innerHTML = '<option value="">Selecione primeiro a UF</option>';
 
             // Incrementa o índice
             pcpaIndex++;

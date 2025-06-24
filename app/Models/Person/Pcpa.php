@@ -19,6 +19,7 @@ class Pcpa extends Model
         'natureza',
         'data',
         'uf',
+        'cidade',
     ];
 
     protected $casts = [

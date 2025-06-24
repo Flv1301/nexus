@@ -11,6 +11,8 @@
                 <th>UF</th>
                 <th>Complemento</th>
                 <th>Ponto de Referencia</th>
+                <th>Data do dado</th>
+                <th>Fonte do dado</th>
                 <th>Ações</th>
             </tr>
             </thead>
@@ -25,6 +27,8 @@
                     <td>{{$address->uf}}</td>
                     <td>{{$address->complement}}</td>
                     <td>{{$address->reference_point}}</td>
+                    <td>{{$address->data_do_dado ? date('d/m/Y', strtotime($address->data_do_dado)) : ''}}</td>
+                    <td>{{$address->fonte_do_dado}}</td>
                     <td>
                         <x-adminlte-button size="sm" theme="warning" icon="fas fa-edit"
                                            onclick="window.location.href='{{ route('address.edit', $address) }}'"/>
@@ -52,6 +56,18 @@
             let uf = document.getElementById('uf').value;
             let complement = document.getElementById('complement').value;
             let reference_point = document.getElementById('reference_point').value;
+            let data_do_dado = document.getElementById('data_do_dado').value;
+            let fonte_do_dado = document.getElementById('fonte_do_dado').value;
+            
+            // Converter data de DD/MM/YYYY para YYYY-MM-DD (formato ISO)
+            let convertedDate = '';
+            if (data_do_dado && data_do_dado.length === 10) {
+                const dateParts = data_do_dado.split('/');
+                if (dateParts.length === 3) {
+                    convertedDate = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0];
+                }
+            }
+            
             let addresses = [];
             if (address === '') {
                 return;
@@ -65,7 +81,9 @@
                 state: state,
                 uf: uf,
                 complement: complement,
-                reference_point: reference_point
+                reference_point: reference_point,
+                data_do_dado: convertedDate,
+                fonte_do_dado: fonte_do_dado
             }
             let input = document.createElement('input');
             input.setAttribute('type', 'hidden');
@@ -99,10 +117,29 @@
             td.append(reference_point);
             tr.append(td);
             td = document.createElement('td');
+            td.append(data_do_dado);
+            tr.append(td);
+            td = document.createElement('td');
+            td.append(fonte_do_dado);
+            tr.append(td);
+            td = document.createElement('td');
             td.innerHTML = html;
             tr.append(td);
             tr.append(input);
             table.append(tr);
+            
+            // Limpar os campos após adicionar
+            document.getElementById('code').value = '';
+            document.getElementById('address').value = '';
+            document.getElementById('number').value = '';
+            document.getElementById('district').value = '';
+            document.getElementById('city').value = '';
+            document.getElementById('state').value = '';
+            document.getElementById('uf').value = '';
+            document.getElementById('complement').value = '';
+            document.getElementById('reference_point').value = '';
+            document.getElementById('data_do_dado').value = '';
+            document.getElementById('fonte_do_dado').value = '';
         }
     </script>
 @endpush

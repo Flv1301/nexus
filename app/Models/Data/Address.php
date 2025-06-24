@@ -33,6 +33,8 @@ class Address extends Model
         'uf',
         'complement',
         'reference_point',
+        'data_do_dado',
+        'fonte_do_dado',
         'user_id',
     ];
 

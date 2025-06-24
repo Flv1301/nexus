@@ -1,5 +1,5 @@
 <div class="form-row">
-    <div class="form-group col-md-4">
+    <div class="form-group col-md-3">
         <x-adminlte-input
             name="social"
             id="social"
@@ -14,7 +14,7 @@
             </x-slot>
         </x-adminlte-input>
     </div>
-    <div class="form-group col-md-4">
+    <div class="form-group col-md-3">
         <x-adminlte-select
             name="type"
             id="type"
@@ -63,7 +63,7 @@
             <option value="youtube">YouTube</option>
         </x-adminlte-select>
     </div>
-    <div class="form-group col-md-4">
+    <div class="form-group col-md-3">
         <x-adminlte-input
             name="social_id"
             id="social_id"
@@ -77,6 +77,18 @@
                 </div>
             </x-slot>
         </x-adminlte-input>
+    </div>
+    <div class="form-group col-md-3">
+        <x-adminlte-select
+            name="vinculo"
+            id="vinculo"
+            label="Vínculo">
+            <option value="">Selecione...</option>
+            <option value="Próprio" {{ (old('vinculo') ?? $social->vinculo ?? '') == 'Próprio' ? 'selected' : '' }}>Próprio</option>
+            <option value="Esposo(a)/Namorado(a)" {{ (old('vinculo') ?? $social->vinculo ?? '') == 'Esposo(a)/Namorado(a)' ? 'selected' : '' }}>Esposo(a)/Namorado(a)</option>
+            <option value="Parente" {{ (old('vinculo') ?? $social->vinculo ?? '') == 'Parente' ? 'selected' : '' }}>Parente</option>
+            <option value="Amigo" {{ (old('vinculo') ?? $social->vinculo ?? '') == 'Amigo' ? 'selected' : '' }}>Amigo</option>
+        </x-adminlte-select>
     </div>
 </div>
 

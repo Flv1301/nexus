@@ -129,6 +129,20 @@ class DynamicSearchFields {
                 placeholder: 'Número do Processo',
                 label: 'Processo',
                 icon: 'fas fa-gavel'
+            },
+            situacao: {
+                name: 'situacao',
+                placeholder: 'Situação do Processo',
+                label: 'Situação',
+                type: 'select',
+                options: [
+                    { value: '', text: 'Selecione...' },
+                    { value: 'Suspeito', text: 'Suspeito' },
+                    { value: 'Cautelar', text: 'Cautelar' },
+                    { value: 'Denunciado', text: 'Denunciado' },
+                    { value: 'Condenado', text: 'Condenado' }
+                ],
+                icon: 'fas fa-user-shield'
             }
         };
         
@@ -189,7 +203,14 @@ class DynamicSearchFields {
     getFilledFields() {
         return this.addedFields.filter(fieldType => {
             const input = document.querySelector(`input[name="${fieldType}"]`);
-            return input && input.value.trim() !== '';
+            const select = document.querySelector(`select[name="${fieldType}"]`);
+            
+            if (input) {
+                return input.value.trim() !== '';
+            } else if (select) {
+                return select.value.trim() !== '';
+            }
+            return false;
         });
     }
 
@@ -226,8 +247,11 @@ class DynamicSearchFields {
         
         // Foca no campo recém adicionado
         const input = fieldContainer.querySelector('input');
+        const select = fieldContainer.querySelector('select');
         if (input) {
             setTimeout(() => input.focus(), 350);
+        } else if (select) {
+            setTimeout(() => select.focus(), 350);
         }
     }
 
@@ -261,6 +285,23 @@ class DynamicSearchFields {
                         </div>
                     </div>
                 </div>
+            `;
+        } else if (config.type === 'select') {
+            let optionsHtml = '';
+            if (config.options) {
+                config.options.forEach(option => {
+                    const selected = option.value === value ? 'selected' : '';
+                    optionsHtml += `<option value="${option.value}" ${selected}>${option.text}</option>`;
+                });
+            }
+            
+            return `
+                <label for="${config.name}">${iconHtml}${config.label}</label>
+                <select name="${config.name}" id="${config.name}" 
+                        class="form-control ${config.class || ''}" 
+                        data-field-type="${config.name}">
+                    ${optionsHtml}
+                </select>
             `;
         } else {
             let maxLength = '';

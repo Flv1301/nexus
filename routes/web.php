@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WhatsappAnalysisController;
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'authenticate'])->name('authenticate');
@@ -123,4 +124,10 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/whatsapp-analysis', [WhatsappAnalysisController::class, 'index'])->name('whatsapp.analysis');
+    Route::post('/whatsapp-analysis/upload', [WhatsappAnalysisController::class, 'upload'])->name('whatsapp.upload');
+    Route::get('/whatsapp-analysis/{id}', [WhatsappAnalysisController::class, 'show'])->name('whatsapp.show');
 });

@@ -76,3 +76,23 @@
         />
     </div>
 </div>
+<div class="form-row">
+    <div class="form-group col-6">
+        <x-adminlte-input
+            name="data_do_dado"
+            label="Data do dado"
+            placeholder="Data do dado"
+            disabled
+            value="{{ $address->data_do_dado ? date('d/m/Y', strtotime($address->data_do_dado)) : '' }}"
+        />
+    </div>
+    <div class="form-group col-6">
+        <x-adminlte-input
+            name="fonte_do_dado"
+            label="Fonte do dado"
+            placeholder="Fonte do dado"
+            disabled
+            value="{{ $address->fonte_do_dado ?? ''}}"
+        />
+    </div>
+</div>
