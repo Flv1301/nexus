@@ -70,10 +70,10 @@
                     :disabled="$isDisabled"
                 >
                     <option value="">Selecione...</option>
-                    <option value="Suspeito" {{ (old('situacao') ?? $person->situacao ?? '') == 'Suspeito' ? 'selected' : '' }}>Suspeito</option>
-                    <option value="Cautelar" {{ (old('situacao') ?? $person->situacao ?? '') == 'Cautelar' ? 'selected' : '' }}>Cautelar</option>
-                    <option value="Denunciado" {{ (old('situacao') ?? $person->situacao ?? '') == 'Denunciado' ? 'selected' : '' }}>Denunciado</option>
-                    <option value="Condenado" {{ (old('situacao') ?? $person->situacao ?? '') == 'Condenado' ? 'selected' : '' }}>Condenado</option>
+                    <option value="SUSPEITO" {{ (old('situacao') ?? $person->situacao ?? '') == 'SUSPEITO' ? 'selected' : '' }}>SUSPEITO</option>
+                    <option value="CAUTELAR" {{ (old('situacao') ?? $person->situacao ?? '') == 'CAUTELAR' ? 'selected' : '' }}>CAUTELAR</option>
+                    <option value="DENUNCIADO" {{ (old('situacao') ?? $person->situacao ?? '') == 'DENUNCIADO' ? 'selected' : '' }}>DENUNCIADO</option>
+                    <option value="CONDENADO" {{ (old('situacao') ?? $person->situacao ?? '') == 'CONDENADO' ? 'selected' : '' }}>CONDENADO</option>
                 </x-adminlte-select>
             </div>
             <div class="form-group col-md-3" id="data_cautelar_group" style="display: none;">
@@ -342,11 +342,11 @@
             dataCondenacaoGroup.style.display = 'none';
             
             // Mostra campo baseado na situação
-            if (situacao === 'Cautelar') {
+            if (situacao === 'CAUTELAR') {
                 dataCautelarGroup.style.display = 'block';
-            } else if (situacao === 'Denunciado') {
+            } else if (situacao === 'DENUNCIADO') {
                 dataDenunciaGroup.style.display = 'block';
-            } else if (situacao === 'Condenado') {
+            } else if (situacao === 'CONDENADO') {
                 dataCondenacaoGroup.style.display = 'block';
             }
         }
