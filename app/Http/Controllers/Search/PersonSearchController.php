@@ -327,9 +327,7 @@ class PersonSearchController extends Controller
                 });
             })
             ->when($request->situacao, function ($query, $situacao) {
-                return $query->whereHas('tjs', function ($subQuery) use ($situacao) {
-                    $subQuery->where('situacao', $situacao);
-                });
+                return $query->where('situacao', $situacao);
             });
 
         return $query->limit(50)->get();
@@ -706,12 +704,7 @@ class PersonSearchController extends Controller
                 });
             })
             ->when($request->situacao, function ($query, $situacao) {
-                return $query->whereExists(function ($subQuery) use ($situacao) {
-                    $subQuery->select(DB::raw(1))
-                            ->from('tjs')
-                            ->whereColumn('tjs.person_id', 'persons.id')
-                            ->where('tjs.situacao', $situacao);
-                });
+                return $query->where('situacao', $situacao);
             });
 
         return $query->limit(50)->get();
