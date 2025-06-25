@@ -437,6 +437,70 @@
                         <span class="info-value">{{ $person->observation }}</span>
                     </div>
                     @endif
+
+                    @if($person->situacao)
+                    <div class="info-row">
+                        <span class="info-label">SITUAÇÃO:</span>
+                        <span class="info-value">{{ strtoupper($person->situacao) }}</span>
+                    </div>
+                    @endif
+
+                    @if($person->data_cautelar)
+                    <div class="info-row">
+                        <span class="info-label">DATA DA CAUTELAR:</span>
+                        <span class="info-value">
+                            @php
+                                try {
+                                    if(is_string($person->data_cautelar) && strpos($person->data_cautelar, '/') !== false) {
+                                        echo \Carbon\Carbon::createFromFormat('d/m/Y', $person->data_cautelar)->format('d/m/Y');
+                                    } else {
+                                        echo \Carbon\Carbon::parse($person->data_cautelar)->format('d/m/Y');
+                                    }
+                                } catch(\Exception $e) {
+                                    echo $person->data_cautelar;
+                                }
+                            @endphp
+                        </span>
+                    </div>
+                    @endif
+
+                    @if($person->data_denuncia)
+                    <div class="info-row">
+                        <span class="info-label">DATA DA DENÚNCIA:</span>
+                        <span class="info-value">
+                            @php
+                                try {
+                                    if(is_string($person->data_denuncia) && strpos($person->data_denuncia, '/') !== false) {
+                                        echo \Carbon\Carbon::createFromFormat('d/m/Y', $person->data_denuncia)->format('d/m/Y');
+                                    } else {
+                                        echo \Carbon\Carbon::parse($person->data_denuncia)->format('d/m/Y');
+                                    }
+                                } catch(\Exception $e) {
+                                    echo $person->data_denuncia;
+                                }
+                            @endphp
+                        </span>
+                    </div>
+                    @endif
+
+                    @if($person->data_condenacao)
+                    <div class="info-row">
+                        <span class="info-label">DATA DA CONDENAÇÃO:</span>
+                        <span class="info-value">
+                            @php
+                                try {
+                                    if(is_string($person->data_condenacao) && strpos($person->data_condenacao, '/') !== false) {
+                                        echo \Carbon\Carbon::createFromFormat('d/m/Y', $person->data_condenacao)->format('d/m/Y');
+                                    } else {
+                                        echo \Carbon\Carbon::parse($person->data_condenacao)->format('d/m/Y');
+                                    }
+                                } catch(\Exception $e) {
+                                    echo $person->data_condenacao;
+                                }
+                            @endphp
+                        </span>
+                    </div>
+                    @endif
                 </div>
                 
                 <div class="person-photo">

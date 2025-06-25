@@ -48,6 +48,48 @@
                             disabled>
                         </x-adminlte-input-switch>
                     </div>
+                    <div class="form-group col-md-2">
+                        <x-adminlte-input
+                            name="situacao"
+                            id="situacao"
+                            label="Situação"
+                            value="{{ $person->situacao ?? '' }}"
+                            disabled
+                        />
+                    </div>
+                    @if($person->data_cautelar)
+                    <div class="form-group col-md-3">
+                        <x-adminlte-input
+                            name="data_cautelar"
+                            id="data_cautelar"
+                            label="Data da Cautelar"
+                            value="{{ $person->data_cautelar ?? '' }}"
+                            disabled
+                        />
+                    </div>
+                    @endif
+                    @if($person->data_denuncia)
+                    <div class="form-group col-md-3">
+                        <x-adminlte-input
+                            name="data_denuncia"
+                            id="data_denuncia"
+                            label="Data da Denúncia"
+                            value="{{ $person->data_denuncia ?? '' }}"
+                            disabled
+                        />
+                    </div>
+                    @endif
+                    @if($person->data_condenacao)
+                    <div class="form-group col-md-3">
+                        <x-adminlte-input
+                            name="data_condenacao"
+                            id="data_condenacao"
+                            label="Data da Condenação"
+                            value="{{ $person->data_condenacao ?? '' }}"
+                            disabled
+                        />
+                    </div>
+                    @endif
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-3">

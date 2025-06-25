@@ -75,19 +75,20 @@
                                         <select class="form-control" id="field-selector">
                                             <option value="">Escolha um campo...</option>
                                             
-                                            <!-- Dados Pessoais -->
-                                            <optgroup label="📄 Dados Pessoais">
-                                                <option value="name">👤 Nome ou Alcunha</option>
-                                                <option value="cpf">🆔 CPF</option>
-                                                <option value="rg">🎫 RG</option>
-                                                <option value="mother">👩 Nome da Mãe</option>
-                                                <option value="father">👨 Nome do Pai</option>
-                                                <option value="birth_date">📅 Data de Nascimento</option>
-                                                <option value="birth_city">🏙️ Município de Nascimento</option>
-                                                <option value="tattoo">👁️ Tatuagem</option>
-                                                <option value="orcrim">👥 Orcrim</option>
-                                                <option value="area_atuacao">🗺️ Área de Atuação</option>
-                                            </optgroup>
+                                                                        <!-- Dados Pessoais -->
+                            <optgroup label="📄 Dados Pessoais">
+                                <option value="situacao">⚖️ Situação</option>
+                                <option value="name">👤 Nome ou Alcunha</option>
+                                <option value="cpf">🆔 CPF</option>
+                                <option value="rg">🎫 RG</option>
+                                <option value="mother">👩 Nome da Mãe</option>
+                                <option value="father">👨 Nome do Pai</option>
+                                <option value="birth_date">📅 Data de Nascimento</option>
+                                <option value="birth_city">🏙️ Município de Nascimento</option>
+                                <option value="tattoo">👁️ Tatuagem</option>
+                                <option value="orcrim">👥 Orcrim</option>
+                                <option value="area_atuacao">🗺️ Área de Atuação</option>
+                            </optgroup>
                                             
                                             <!-- Endereços -->
                                             <optgroup label="🏠 Endereços">
@@ -120,11 +121,10 @@
                                                 <option value="natureza">⚖️ Natureza</option>
                                             </optgroup>
                                             
-                                            <!-- Processos -->
-                                            <optgroup label="⚖️ Processos">
-                                                <option value="processo">🏛️ Processo</option>
-                                                <option value="situacao">⚖️ Situação</option>
-                                            </optgroup>
+                                                                        <!-- Processos -->
+                            <optgroup label="⚖️ Processos">
+                                <option value="processo">🏛️ Processo</option>
+                            </optgroup>
                                         </select>
                                     </div>
                                     

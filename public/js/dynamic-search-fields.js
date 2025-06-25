@@ -129,20 +129,6 @@ class DynamicSearchFields {
                 placeholder: 'Número do Processo',
                 label: 'Processo',
                 icon: 'fas fa-gavel'
-            },
-            situacao: {
-                name: 'situacao',
-                placeholder: 'Situação do Processo',
-                label: 'Situação',
-                type: 'select',
-                options: [
-                    { value: '', text: 'Selecione...' },
-                    { value: 'Suspeito', text: 'Suspeito' },
-                    { value: 'Cautelar', text: 'Cautelar' },
-                    { value: 'Denunciado', text: 'Denunciado' },
-                    { value: 'Condenado', text: 'Condenado' }
-                ],
-                icon: 'fas fa-user-shield'
             }
         };
         

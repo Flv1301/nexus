@@ -61,6 +61,72 @@
                     <option value="1" {{ (old('dead') ?? $person->dead ?? false) == '1' || (old('dead') ?? $person->dead ?? false) === true ? 'selected' : '' }}>SIM</option>
                 </x-adminlte-select>
             </div>
+            <div class="form-group col-md-2">
+                <x-adminlte-select
+                    name="situacao"
+                    id="situacao"
+                    label="Situação"
+                    onchange="toggleSituacaoDateFields()"
+                    :disabled="$isDisabled"
+                >
+                    <option value="">Selecione...</option>
+                    <option value="Suspeito" {{ (old('situacao') ?? $person->situacao ?? '') == 'Suspeito' ? 'selected' : '' }}>Suspeito</option>
+                    <option value="Cautelar" {{ (old('situacao') ?? $person->situacao ?? '') == 'Cautelar' ? 'selected' : '' }}>Cautelar</option>
+                    <option value="Denunciado" {{ (old('situacao') ?? $person->situacao ?? '') == 'Denunciado' ? 'selected' : '' }}>Denunciado</option>
+                    <option value="Condenado" {{ (old('situacao') ?? $person->situacao ?? '') == 'Condenado' ? 'selected' : '' }}>Condenado</option>
+                </x-adminlte-select>
+            </div>
+            <div class="form-group col-md-3" id="data_cautelar_group" style="display: none;">
+                @php $config = ['format' => 'DD/MM/YYYY']; @endphp
+                <x-adminlte-input-date 
+                    name="data_cautelar"
+                    id="data_cautelar"
+                    :config="$config"
+                    placeholder="Data da Cautelar"
+                    label="Data da Cautelar"
+                    value="{{ old('data_cautelar') ?? $person->data_cautelar ?? '' }}"
+                    :disabled="$isDisabled">
+                    <x-slot name="appendSlot">
+                        <div class="input-group-text bg-gradient-warning">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </x-slot>
+                </x-adminlte-input-date>
+            </div>
+            <div class="form-group col-md-3" id="data_denuncia_group" style="display: none;">
+                @php $config = ['format' => 'DD/MM/YYYY']; @endphp
+                <x-adminlte-input-date 
+                    name="data_denuncia"
+                    id="data_denuncia"
+                    :config="$config"
+                    placeholder="Data da Denúncia"
+                    label="Data da Denúncia"
+                    value="{{ old('data_denuncia') ?? $person->data_denuncia ?? '' }}"
+                    :disabled="$isDisabled">
+                    <x-slot name="appendSlot">
+                        <div class="input-group-text bg-gradient-warning">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </x-slot>
+                </x-adminlte-input-date>
+            </div>
+            <div class="form-group col-md-3" id="data_condenacao_group" style="display: none;">
+                @php $config = ['format' => 'DD/MM/YYYY']; @endphp
+                <x-adminlte-input-date 
+                    name="data_condenacao"
+                    id="data_condenacao"
+                    :config="$config"
+                    placeholder="Data da Condenação"
+                    label="Data da Condenação"
+                    value="{{ old('data_condenacao') ?? $person->data_condenacao ?? '' }}"
+                    :disabled="$isDisabled">
+                    <x-slot name="appendSlot">
+                        <div class="input-group-text bg-gradient-warning">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </x-slot>
+                </x-adminlte-input-date>
+            </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-3">
@@ -263,6 +329,33 @@
 </div>
 @push('js')
     <script>
+        // Função para controlar campos condicionais da situação
+        function toggleSituacaoDateFields() {
+            const situacao = document.getElementById('situacao').value;
+            const dataCautelarGroup = document.getElementById('data_cautelar_group');
+            const dataDenunciaGroup = document.getElementById('data_denuncia_group');
+            const dataCondenacaoGroup = document.getElementById('data_condenacao_group');
+            
+            // Esconde todos os campos de data primeiro
+            dataCautelarGroup.style.display = 'none';
+            dataDenunciaGroup.style.display = 'none';
+            dataCondenacaoGroup.style.display = 'none';
+            
+            // Mostra campo baseado na situação
+            if (situacao === 'Cautelar') {
+                dataCautelarGroup.style.display = 'block';
+            } else if (situacao === 'Denunciado') {
+                dataDenunciaGroup.style.display = 'block';
+            } else if (situacao === 'Condenado') {
+                dataCondenacaoGroup.style.display = 'block';
+            }
+        }
+        
+        // Executa quando a página carrega para mostrar campos já preenchidos
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleSituacaoDateFields();
+        });
+        
         // Função para remover acentos
         function removeAccents(str) {
             if (!str) return str;

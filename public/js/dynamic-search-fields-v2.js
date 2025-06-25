@@ -3,6 +3,20 @@ class DynamicSearchFields {
         this.addedFields = []; // Iniciar sem nenhum campo - todos opcionais
         this.fieldConfigurations = {
             // Aba Dados
+            situacao: {
+                name: 'situacao',
+                placeholder: 'Situação',
+                label: 'Situação',
+                type: 'select',
+                options: [
+                    { value: '', text: 'Selecione...' },
+                    { value: 'Suspeito', text: 'Suspeito' },
+                    { value: 'Cautelar', text: 'Cautelar' },
+                    { value: 'Denunciado', text: 'Denunciado' },
+                    { value: 'Condenado', text: 'Condenado' }
+                ],
+                icon: 'fas fa-user-shield'
+            },
             name: {
                 name: 'name',
                 placeholder: 'Nome ou Alcunha',
@@ -130,20 +144,6 @@ class DynamicSearchFields {
                 label: 'Processo',
                 icon: 'fas fa-gavel'
             },
-            situacao: {
-                name: 'situacao',
-                placeholder: 'Situação do Processo',
-                label: 'Situação',
-                type: 'select',
-                options: [
-                    { value: '', text: 'Selecione...' },
-                    { value: 'Suspeito', text: 'Suspeito' },
-                    { value: 'Cautelar', text: 'Cautelar' },
-                    { value: 'Denunciado', text: 'Denunciado' },
-                    { value: 'Condenado', text: 'Condenado' }
-                ],
-                icon: 'fas fa-user-shield'
-            }
         };
         
         this.init();
@@ -362,7 +362,7 @@ class DynamicSearchFields {
         const selector = document.getElementById('field-selector');
         if (!selector) return;
 
-        const options = selector.querySelectorAll('option[value!=""]');
+        const options = selector.querySelectorAll('option:not([value=""])');
         
         options.forEach(option => {
             option.style.display = this.addedFields.includes(option.value) ? 'none' : 'block';
