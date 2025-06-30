@@ -135,21 +135,21 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <x-adminlte-input
-                            name="birth_city"
-                            id="birth_city"
-                            label="Município Nascimento"
-                            value="{{$person->birth_city}}"
-                            disabled
-                        />
-                    </div>
                     <div class="form-group col-md-1">
                         <x-adminlte-input
                             name="uf_birth_city"
                             id="uf_birth_city"
                             label="UF"
                             value="{{$person->uf_birth_city}}"
+                            disabled
+                        />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <x-adminlte-input
+                            name="birth_city"
+                            id="birth_city"
+                            label="Município Nascimento"
+                            value="{{$person->birth_city}}"
                             disabled
                         />
                     </div>
