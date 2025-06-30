@@ -197,22 +197,6 @@
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-3">
-                <x-adminlte-select
-                    name="birth_city"
-                    id="birth_city"
-                    label="Município Nascimento"
-                    placeholder="Selecione primeiro a UF"
-                    :disabled="$isDisabled"
-                >
-                    <option value="">Selecione primeiro a UF</option>
-                    @if(old('birth_city') || $person->birth_city)
-                        <option value="{{ old('birth_city') ?? $person->birth_city ?? '' }}" selected>
-                            {{ old('birth_city') ?? $person->birth_city ?? '' }}
-                        </option>
-                    @endif
-                </x-adminlte-select>
-            </div>
             <div class="form-group col-md-1">
                 <x-adminlte-select
                     name="uf_birth_city"
@@ -230,6 +214,22 @@
                             {{ $uf->name }}
                         </option>
                     @endforeach
+                </x-adminlte-select>
+            </div>
+            <div class="form-group col-md-3">
+                <x-adminlte-select
+                    name="birth_city"
+                    id="birth_city"
+                    label="Município Nascimento"
+                    placeholder="Selecione primeiro a UF"
+                    :disabled="$isDisabled"
+                >
+                    <option value="">Selecione primeiro a UF</option>
+                    @if(old('birth_city') || $person->birth_city)
+                        <option value="{{ old('birth_city') ?? $person->birth_city ?? '' }}" selected>
+                            {{ old('birth_city') ?? $person->birth_city ?? '' }}
+                        </option>
+                    @endif
                 </x-adminlte-select>
             </div>
             <div class="form-group col-md-4">

@@ -53,21 +53,6 @@
                 value="{{ old('district') ?? $address->district ?? ''}}"
             />
         </div>
-        <div class="form-group col-md-5">
-            <x-adminlte-select
-                name="city"
-                id="city"
-                label="Cidade"
-                placeholder="Selecione primeiro a UF"
-            >
-                <option value="">Selecione primeiro a UF</option>
-                @if(old('city') || $address->city)
-                    <option value="{{ old('city') ?? $address->city ?? '' }}" selected>
-                        {{ old('city') ?? $address->city ?? '' }}
-                    </option>
-                @endif
-            </x-adminlte-select>
-        </div>
         <div class="form-group col-md-3">
             <x-adminlte-select
                 name="uf"
@@ -83,6 +68,21 @@
                         {{ $uf->name }}
                     </option>
                 @endforeach
+            </x-adminlte-select>
+        </div>
+        <div class="form-group col-md-5">
+            <x-adminlte-select
+                name="city"
+                id="city"
+                label="Cidade"
+                placeholder="Selecione primeiro a UF"
+            >
+                <option value="">Selecione primeiro a UF</option>
+                @if(old('city') || $address->city)
+                    <option value="{{ old('city') ?? $address->city ?? '' }}" selected>
+                        {{ old('city') ?? $address->city ?? '' }}
+                    </option>
+                @endif
             </x-adminlte-select>
         </div>
     </div>

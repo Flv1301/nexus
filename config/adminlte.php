@@ -440,11 +440,7 @@ return [
                     'url' => '/usuarios',
                     'can' => 'usuario'
                 ],
-                [
-                    'text' => 'WhatsApp Analysis',
-                    'icon' => 'fab fa-whatsapp',
-                    'url' => '/whatsapp-analysis'
-                ],
+
             ],
         ],
 
@@ -461,11 +457,7 @@ return [
             'icon' => 'fas fa-user'
         ],
 
-        [
-            'text' => 'WHATSAPP ANALYSIS',
-            'url' => '/whatsapp-analysis',
-            'icon' => 'fab fa-whatsapp'
-        ],
+
     ],
 
     /*
