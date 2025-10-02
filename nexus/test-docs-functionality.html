@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Funcionalidade DOCS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Teste - Funcionalidade da Aba DOCS</h2>
+        <p class="text-info">Este teste simula o comportamento da aba DOCS. Documentos existentes devem permanecer na tabela quando novos são adicionados.</p>
+
+        <!-- Formulário de Adição de Documentos -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="doc_nome_doc">Nome do DOC</label>
+                        <input type="text" class="form-control" id="doc_nome_doc" placeholder="Nome do documento">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="doc_data">Data</label>
+                        <input type="date" class="form-control" id="doc_data">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="doc_upload">Upload</label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="doc_upload" accept=".pdf">
+                            <span class="input-group-text">
+                                <i class="fas fa-file-pdf"></i>
+                            </span>
+                        </div>
+                        <small class="form-text text-muted">Apenas arquivos PDF são aceitos.</small>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-secondary" onclick="addDoc()">
+                    <i class="fas fa-plus"></i> Adicionar
+                </button>
+            </div>
+        </div>
+
+        <!-- Lista de Documentos -->
+        <div class="card">
+            <div class="card-header">
+                <h5>Documentos (Simulação com dados existentes)</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Nome do DOC</th>
+                            <th>Data</th>
+                            <th>Upload</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableDocs">
+                        <!-- Documentos Existentes Simulados -->
+                        <tr style="background-color: #f8f9fa;">
+                            <td>RG - Documento de Identidade</td>
+                            <td>15/05/2024</td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-file-pdf"></i> Ver PDF
+                                </a>
+                            </td>
+                            <td>
+                                <i class="fa fa-md fa-fw fa-trash text-danger" style="cursor: pointer;" 
+                                   onclick="removeExistingDoc(this, 1)" title="Remover"></i>
+                            </td>
+                            <input type="hidden" name="existing_docs[0]" value='{"id":1,"nome_doc":"RG - Documento de Identidade","data":"2024-05-15","upload":"uploads/docs/rg.pdf"}'>
+                        </tr>
+                        <tr style="background-color: #f8f9fa;">
+                            <td>CPF - Cadastro de Pessoa Física</td>
+                            <td>10/03/2024</td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-file-pdf"></i> Ver PDF
+                                </a>
+                            </td>
+                            <td>
+                                <i class="fa fa-md fa-fw fa-trash text-danger" style="cursor: pointer;" 
+                                   onclick="removeExistingDoc(this, 2)" title="Remover"></i>
+                            </td>
+                            <input type="hidden" name="existing_docs[1]" value='{"id":2,"nome_doc":"CPF - Cadastro de Pessoa Física","data":"2024-03-10","upload":"uploads/docs/cpf.pdf"}'>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <h6>Status:</h6>
+            <div id="status" class="alert alert-info">
+                ✅ Documentos existentes carregados (fundo cinza). Novos documentos serão adicionados abaixo sem remover os existentes.
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <h6>Debug:</h6>
+            <button type="button" class="btn btn-warning" onclick="debugFormData()">
+                <i class="fas fa-bug"></i> Debug Form Data
+            </button>
+            <div id="debug" class="alert alert-secondary mt-2" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Inicializa o índice baseado nos documentos já existentes (simulando o Laravel)
+        let docIndex = 2; // Simula: {{ isset($person) && $person->docs ? $person->docs->count() : 0 }}
+        
+        // Array para rastrear documentos removidos
+        let removedDocs = [];
+
+        // Função para remover documento existente
+        function removeExistingDoc(element, docId) {
+            // Adiciona o ID do documento ao array de removidos
+            if (docId && !removedDocs.includes(docId)) {
+                removedDocs.push(docId);
+            }
+            
+            // Remove a linha visualmente
+            $(element).parent().parent().remove();
+            
+            // Atualiza o status
+            updateStatus();
+            
+            console.log('Documento removido:', docId, 'Array de removidos:', removedDocs);
+        }
+
+        function updateStatus() {
+            let statusHtml = '✅ Documentos existentes preservados (fundo cinza)<br>';
+            
+            if (removedDocs.length > 0) {
+                statusHtml += `🗑️ Documentos marcados para remoção: ${removedDocs.join(', ')}<br>`;
+                statusHtml += `📝 Campo: removed_docs = ${JSON.stringify(removedDocs)}<br>`;
+            }
+            
+            const totalDocs = document.querySelectorAll('#tableDocs tr').length;
+            statusHtml += `📊 Total de documentos na tabela: ${totalDocs}`;
+            
+            document.getElementById('status').innerHTML = statusHtml;
+        }
+
+        function addDoc() {
+            const nomeDoc = document.getElementById('doc_nome_doc').value;
+            const data = document.getElementById('doc_data').value;
+            const uploadInput = document.getElementById('doc_upload');
+            const file = uploadInput.files[0];
+
+            if (nomeDoc.trim() === '') {
+                alert('O campo Nome do DOC é obrigatório.');
+                return;
+            }
+
+            // Função para converter data do formato YYYY-MM-DD para DD/MM/YYYY
+            function convertDate(dateStr) {
+                if (!dateStr || dateStr.trim() === '') return '';
+                
+                // Se está no formato YYYY-MM-DD, converte para DD/MM/YYYY
+                const dateParts = dateStr.split('-');
+                if (dateParts.length === 3) {
+                    const [year, month, day] = dateParts;
+                    return `${day}/${month}/${year}`;
+                }
+                return dateStr;
+            }
+
+            // Cria o objeto do Doc
+            const docData = {
+                nome_doc: nomeDoc,
+                data: data,
+                file_index: docIndex
+            };
+
+            // Cria input hidden para enviar os dados - usa nome único para novos documentos
+            let input = document.createElement('input');
+            input.setAttribute('type', 'hidden');
+            input.setAttribute('name', `new_docs[${docIndex}]`);
+            input.setAttribute('value', JSON.stringify(docData));
+
+            // Se há arquivo, simula o nome do arquivo
+            let fileName = 'Sem arquivo';
+            if (file) {
+                fileName = `<a href="#" class="btn btn-sm btn-primary"><i class="fas fa-file-pdf"></i> ${file.name}</a>`;
+            }
+
+            // Cria a linha na tabela
+            let table = document.querySelector('#tableDocs');
+            let tr = document.createElement('tr');
+            
+            // Marca novos documentos com fundo verde claro
+            tr.style.backgroundColor = '#d4edda';
+            
+            tr.innerHTML = `
+                <td>${nomeDoc}</td>
+                <td>${convertDate(data)}</td>
+                <td>${fileName}</td>
+                <td><i class="fa fa-md fa-fw fa-trash text-danger" style="cursor: pointer;" onclick="$(this).parent().parent().remove()" title="Remover"></i></td>
+            `;
+            
+            tr.appendChild(input);
+            table.appendChild(tr);
+
+            // Limpa os campos
+            document.getElementById('doc_nome_doc').value = '';
+            document.getElementById('doc_data').value = '';
+            document.getElementById('doc_upload').value = '';
+
+            // Atualiza status
+            document.getElementById('status').innerHTML = `
+                ✅ Documentos existentes preservados (fundo cinza)<br>
+                ✅ Novo documento adicionado (fundo verde) - Índice: ${docIndex}<br>
+                📝 Campo: new_docs[${docIndex}]
+            `;
+
+            // Incrementa o índice
+            docIndex++;
+        }
+
+        // Simula mudança no input file
+        document.getElementById('doc_upload').addEventListener('change', function() {
+            const fileName = this.files[0]?.name || 'Nenhum arquivo selecionado';
+            console.log('Arquivo selecionado:', fileName);
+        });
+        
+        // Inicializa o status
+        updateStatus();
+        
+        // Função de debug para verificar dados do formulário
+        function debugFormData() {
+            const formData = new FormData();
+            
+            // Simula os campos que seriam enviados
+            if (removedDocs.length > 0) {
+                formData.append('removed_docs', JSON.stringify(removedDocs));
+            }
+            
+            // Coleta novos documentos
+            const newDocsInputs = document.querySelectorAll('input[name^="new_docs"]');
+            newDocsInputs.forEach(input => {
+                formData.append(input.name, input.value);
+            });
+            
+            // Coleta documentos existentes
+            const existingDocsInputs = document.querySelectorAll('input[name^="existing_docs"]');
+            existingDocsInputs.forEach(input => {
+                formData.append(input.name, input.value);
+            });
+            
+            // Mostra resultado
+            let debugInfo = '<h6>Dados que seriam enviados:</h6>';
+            debugInfo += `<strong>removed_docs:</strong> ${JSON.stringify(removedDocs)}<br>`;
+            debugInfo += `<strong>Quantidade de novos docs:</strong> ${newDocsInputs.length}<br>`;
+            debugInfo += `<strong>Quantidade de docs existentes:</strong> ${existingDocsInputs.length}<br>`;
+            
+            // Lista todos os campos
+            debugInfo += '<br><strong>Todos os campos:</strong><br>';
+            for (let [key, value] of formData.entries()) {
+                debugInfo += `${key}: ${value}<br>`;
+            }
+            
+            document.getElementById('debug').innerHTML = debugInfo;
+            document.getElementById('debug').style.display = 'block';
+        }
+    </script>
+</body>
+</html> 

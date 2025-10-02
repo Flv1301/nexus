@@ -171,3 +171,32 @@
     </div>
 @endsection
 
+
+@push('js')
+<script>
+    $(document).ready(function() {
+        // Confirmação de exclusão para pessoa
+        $('.delete-alert').on('click', function(e) {
+            e.preventDefault();
+            var form = $(this).closest('form');
+            
+            Swal.fire({
+                title: 'Excluir Pessoa',
+                text: "Tem certeza que deseja excluir esta pessoa? Esta ação não pode ser desfeita e todos os dados relacionados serão removidos!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sim, excluir!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
+@endpush
+

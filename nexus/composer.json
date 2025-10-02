@@ -1,0 +1,120 @@
+{
+    "name": "mppa/nexus",
+    "type": "project",
+    "description": "Nexus",
+    "keywords": [
+        "Ministerio Publico PA"
+    ],
+    "license": "EULA",
+    "require": {
+        "php": "^8.1",
+        "ext-simplexml": "*",
+        "ext-soap": "*",
+        "anhskohbo/no-captcha": "^3.5",
+        "barryvdh/laravel-dompdf": "^2.0",
+        "barryvdh/laravel-ide-helper": "^2.13",
+        "canducci/zipcode": "^3.0",
+        "elasticsearch/elasticsearch": "*",
+        "fruitcake/laravel-cors": "^2.0",
+        "guzzlehttp/guzzle": "*",
+        "ipinfo/ipinfolaravel": "^2.4",
+        "jenssegers/agent": "^2.6",
+        "jeroendesloovere/vcard": "^1.7",
+        "jeroennoten/laravel-adminlte": "^3.8",
+        "laravel/framework": "^8.75",
+        "laravel/sanctum": "^2.11",
+        "laravel/tinker": "^2.5",
+        "league/csv": "9.0",
+        "phayes/geophp": "*",
+        "phpoffice/phpword": "*",
+        "realrashid/sweet-alert": "^5.1",
+        "smalot/pdfparser": "^2.9",
+        "spatie/laravel-activitylog": "^4.7",
+        "spatie/laravel-image-optimizer": "^1.7",
+        "spatie/laravel-permission": "^5.8",
+        "symfony/dom-crawler": "^6.2.0",
+        "symfony/http-client": "*",
+        "symfony/mailgun-mailer": "*"
+    },
+    "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.7",
+        "facade/ignition": "^2.5",
+        "fakerphp/faker": "^1.9.1",
+        "laravel/sail": "^1.0.1",
+        "lucascudo/laravel-pt-br-localization": "^2.0",
+        "mockery/mockery": "^1.4.4",
+        "nunomaduro/collision": "^5.10",
+        "phpunit/phpunit": "^9.5.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        },
+        "files": [
+            "app/Helpers/StateFlagHelper.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@php artisan adminlte:install",
+            "@php artisan adminlte:plugins install --plugin=bsCustomFileInput",
+            "@php artisan adminlte:plugins install --plugin=inputmask",
+            "@php artisan adminlte:plugins install --plugin=inputmask",
+            "@php artisan adminlte:plugins install --plugin=summernote",
+            "@php artisan adminlte:plugins install --plugin=sweetalert2",
+            "@php artisan adminlte:plugins install --plugin=tempusdominusBootstrap4",
+            "@php artisan adminlte:plugins install --plugin=daterangepicker",
+            "@php artisan adminlte:plugins install --plugin=datatables",
+            "@php artisan adminlte:plugins install --plugin=datatablesPlugins",
+            "@php artisan adminlte:plugins install --plugin=bootstrapSwitch",
+            "@php artisan sweetalert:publish",
+            "@php artisan vendor:publish --provider=\"Spatie\\Permission\\PermissionServiceProvider\"",
+            "@php artisan vendor:publish --tag=laravel-pt-br-localization",
+            "@php artisan vendor:publish --provider=\"Anhskohbo\\NoCaptcha\\NoCaptchaServiceProvider\"",
+            "@php artisan vendor:publish --provider=\"Barryvdh\\DomPDF\\ServiceProvider\""
+        ],
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+            "@php artisan migrate",
+            "npm run prod"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": false,
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/prairiewest/PHPconvertDMSToDecimal.git"
+        }
+    ]
+}

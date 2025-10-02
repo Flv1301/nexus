@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste de Correção de Placas</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        input { margin: 10px; padding: 8px; font-size: 16px; }
+        .demo { border: 1px solid #ccc; padding: 15px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>🚗 Teste de Correção da Máscara de Placas</h1>
+    
+    <div class="demo">
+        <h3>Demonstração da Nova Máscara:</h3>
+        <p>Digite uma placa no campo abaixo e veja como funciona:</p>
+        <input type="text" id="placaTest" placeholder="Digite uma placa (ex: JUM0680)" 
+               style="text-transform:uppercase;" maxlength="8">
+        <p id="result"></p>
+    </div>
+    
+    <div id="testResults"></div>
+
+    <script>
+        // Testes automáticos
+        function testPlacaNormalization() {
+            const testCases = [
+                { input: 'JUM0680', expected: 'JUM0680' },
+                { input: 'JUM-0680', expected: 'JUM0680' },
+                { input: 'jum0680', expected: 'JUM0680' },
+                { input: 'ABC1234', expected: 'ABC1234' },
+                { input: 'ABC-1234', expected: 'ABC1234' },
+                { input: 'ABC1D23', expected: 'ABC1D23' },
+                { input: 'ABC-1D23', expected: 'ABC1D23' }
+            ];
+            
+            let results = '<h2>Resultados dos Testes Automáticos:</h2>';
+            
+            testCases.forEach(testCase => {
+                const normalized = testCase.input.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+                const isSuccess = normalized === testCase.expected;
+                const status = isSuccess ? '✅' : '❌';
+                const cssClass = isSuccess ? 'success' : 'error';
+                
+                results += `<div class="test-result ${cssClass}">
+                    ${status} ${testCase.input} → ${normalized}
+                </div>`;
+            });
+            
+            // Teste específico do caso real
+            results += '<h3>Teste do Caso Real (JUM0680):</h3>';
+            const placaInput = 'JUM-0680'; // Como vem da busca com máscara
+            const placaBanco = 'JUM0680'; // Como está salvo no banco
+            
+            const inputNormalizado = placaInput.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+            const bancoNormalizado = placaBanco.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+            
+            const match = inputNormalizado === bancoNormalizado;
+            
+            results += `<div class="test-result ${match ? 'success' : 'error'}">
+                Busca: "${placaInput}" → normalizado: "${inputNormalizado}"<br>
+                Banco: "${placaBanco}" → normalizado: "${bancoNormalizado}"<br>
+                Match: ${match ? '✅ SIM' : '❌ NÃO'}<br>
+                <strong>Resultado: ${match ? 'BUSCA FUNCIONARÁ!' : 'BUSCA FALHARÁ!'}</strong>
+            </div>`;
+            
+            document.getElementById('testResults').innerHTML = results;
+        }
+        
+        // Simulação da nova máscara
+        function setupPlaceMask(input) {
+            let rawValue = '';
+            
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+                rawValue = value;
+                
+                if (value.length <= 7) {
+                    if (value.length >= 4) {
+                        const formatted = value.replace(/([A-Z]{3})([A-Z0-9]{1,4})/, '$1-$2');
+                        e.target.value = formatted;
+                    } else {
+                        e.target.value = value;
+                    }
+                }
+                
+                document.getElementById('result').innerHTML = 
+                    `Valor formatado: <strong>${e.target.value}</strong><br>
+                     Valor que será enviado: <strong>${rawValue}</strong>`;
+            });
+            
+            input.addEventListener('blur', function(e) {
+                e.target.value = rawValue;
+                document.getElementById('result').innerHTML = 
+                    `Valor final (sem hífen): <strong>${rawValue}</strong>`;
+            });
+            
+            input.addEventListener('focus', function(e) {
+                if (rawValue && rawValue.length >= 4) {
+                    const formatted = rawValue.replace(/([A-Z]{3})([A-Z0-9]{1,4})/, '$1-$2');
+                    e.target.value = formatted;
+                }
+            });
+        }
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            testPlacaNormalization();
+            setupPlaceMask(document.getElementById('placaTest'));
+        });
+    </script>
+</body>
+</html> 

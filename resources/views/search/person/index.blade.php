@@ -55,12 +55,37 @@
                                             <label for="cortex-checked" class="custom-control-label">Cortex</label>
                                         </div>
                                     @endcan
+                                    {{-- PGE sources: DETRAN / SEMAS / ADEPARA --}}
+                                    <div class="custom-control custom-checkbox ml-1">
+                                        <input class="custom-control-input" type="checkbox" id="pge-detran-checked"
+                                               value="pge_detran" name="options[]"
+                                               @if(in_array('pge_detran', $request->options)) checked @endif />
+                                        <label for="pge-detran-checked" class="custom-control-label">PGE - DETRAN</label>
+                                    </div>
+                                    <div class="custom-control custom-checkbox ml-1">
+                                        <input class="custom-control-input" type="checkbox" id="pge-semas-checked"
+                                               value="pge_semas" name="options[]"
+                                               @if(in_array('pge_semas', $request->options)) checked @endif />
+                                        <label for="pge-semas-checked" class="custom-control-label">PGE - SEMAS</label>
+                                    </div>
+                                    <div class="custom-control custom-checkbox ml-1">
+                                        <input class="custom-control-input" type="checkbox" id="pge-adepara-checked"
+                                               value="pge_adepara" name="options[]"
+                                               @if(in_array('pge_adepara', $request->options)) checked @endif />
+                                        <label for="pge-adepara-checked" class="custom-control-label">PGE - ADEPARA</label>
+                                    </div>
+                                    <div class="custom-control custom-checkbox ml-1">
+                                        <input class="custom-control-input" type="checkbox" id="pge-jucepa-checked"
+                                               value="pge_jucepa" name="options[]"
+                                               @if(in_array('pge_jucepa', $request->options)) checked @endif />
+                                        <label for="pge-jucepa-checked" class="custom-control-label">PGE - JUCEPA</label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="d-flex justify-content-end">
                                 <label id="checkbox-mark" class="text-info">Desmarcar Todos</label>
                             </div>
-                            
+
                             <!-- Área de Campos Dinâmicos -->
                             <div class="card">
                                 <div class="card-body">
@@ -68,66 +93,21 @@
                                     <div id="selected-fields">
                                         <!-- Os campos serão adicionados dinamicamente aqui -->
                                     </div>
-                                    
+
                                     <!-- Seletor de Campo -->
                                     <div class="form-group">
                                         <label><i class="fas fa-plus-circle text-primary"></i> Selecionar Campo</label>
                                         <select class="form-control" id="field-selector">
                                             <option value="">Escolha um campo...</option>
-                                            
-                                                                        <!-- Dados Pessoais -->
-                            <optgroup label="📄 Dados Pessoais">
-                                <option value="situacao">⚖️ Situação</option>
-                                <option value="name">👤 Nome ou Alcunha</option>
-                                <option value="cpf">🆔 CPF</option>
-                                <option value="rg">🎫 RG</option>
-                                <option value="mother">👩 Nome da Mãe</option>
-                                <option value="father">👨 Nome do Pai</option>
-                                <option value="birth_date">📅 Data de Nascimento</option>
-                                <option value="birth_city">🏙️ Município de Nascimento</option>
-                                <option value="tattoo">👁️ Tatuagem</option>
-                                <option value="orcrim">👥 Orcrim</option>
-                                <option value="area_atuacao">🗺️ Área de Atuação</option>
-                            </optgroup>
-                                            
-                                            <!-- Endereços -->
-                                            <optgroup label="🏠 Endereços">
-                                                <option value="city">🏢 Cidade</option>
+
+                                            <!-- Campos Simplificados para Pesquisa Completa -->
+                                            <optgroup label="📄 Documento">
+                                                <option value="cpf">🆔 CPF</option>
+                                                <option value="cnpj">🏢 CNPJ</option>
                                             </optgroup>
-                                            
-                                            <!-- Contatos -->
-                                            <optgroup label="📞 Contatos">
-                                                <option value="phone">📱 Telefone</option>
-                                            </optgroup>
-                                            
-                                            <!-- Redes Sociais -->
-                                            <optgroup label="📧 Social">
-                                                <option value="email">✉️ E-mail</option>
-                                            </optgroup>
-                                            
-                                            <!-- Infopen -->
-                                            <optgroup label="🏛️ Infopen">
-                                                <option value="matricula">🎟️ Matrícula</option>
-                                            </optgroup>
-                                            
-                                            <!-- Veículos -->
-                                            <optgroup label="🚗 Veículos">
-                                                <option value="placa">🚙 Placa</option>
-                                            </optgroup>
-                                            
-                                            <!-- Antecedentes -->
-                                            <optgroup label="📋 Antecedentes">
-                                                <option value="bo">📄 BO</option>
-                                                <option value="natureza">⚖️ Natureza</option>
-                                            </optgroup>
-                                            
-                                                                        <!-- Processos -->
-                            <optgroup label="⚖️ Processos">
-                                <option value="processo">🏛️ Processo</option>
-                            </optgroup>
                                         </select>
                                     </div>
-                                    
+
                                     <div class="col-md-12 d-flex justify-content-center">
                                         <button type="button" id="remove-all-fields" class="btn btn-link text-danger p-0" style="text-decoration: none;">
                                             <i class="fas fa-trash"></i> Remover Todos os Campos
@@ -148,6 +128,9 @@
             </form>
         </div>
         <div id="content-result" class="col-md-8">
+            {{-- Área de Resultados --}}
+            {{-- Prioriza injetar o conteúdo na div principal de resultados (#content-result) --}}
+            {{-- Caso não exista (uso do componente isolado), usa o container local. --}}
             @isset($base)
                 @include('search.person.' . $base)
             @endisset
@@ -159,8 +142,8 @@
 @endsection
 
 @push('js')
-    <script src="{{ asset('js/cpf-mask.js') }}"></script>
-    <script src="{{ asset('js/dynamic-search-fields-v2.js') }}"></script>
+    <!--<script src="{{ asset('js/cpf-mask.js') }}"></script>-->
+    <script src="{{ asset('js/dynamic-search-fields-v2.js?v=' . filemtime(public_path('js/dynamic-search-fields-v2.js'))) }}"></script>
     <script>
         // Configuração básica da interface (não relacionada aos campos dinâmicos)
         document.addEventListener('DOMContentLoaded', function() {
@@ -206,6 +189,9 @@
                         @endif
                         @if(old('cpf') || (isset($request->cpf) && $request->cpf))
                             cpf: '{{ old("cpf") ?? $request->cpf ?? "" }}',
+                        @endif
+                        @if(old('cnpj') || (isset($request->cnpj) && $request->cnpj))
+                            cnpj: '{{ old("cnpj") ?? $request->cnpj ?? "" }}',
                         @endif
                         @if(old('rg') || (isset($request->rg) && $request->rg))
                             rg: '{{ old("rg") ?? $request->rg ?? "" }}',
@@ -256,13 +242,30 @@
                             situacao: '{{ old("situacao") ?? $request->situacao ?? "" }}',
                         @endif
                     };
-                    
+
                     if (window.dynamicFields && Object.keys(existingData).length > 0) {
                         window.dynamicFields.loadExistingFields(existingData);
                         console.log('Campos existentes carregados:', existingData);
                     }
                 @endif
             }, 100); // Aguarda 100ms para garantir que o DynamicSearchFields foi inicializado
+        });
+    </script>
+    <script>
+        // Debug: interceptar submit do formulário de pesquisa e logar dados enviados
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('form-search');
+            if (!form) return;
+            form.addEventListener('submit', function (ev) {
+                try {
+                    const formData = new FormData(form);
+                    const options = formData.getAll('options[]');
+                    const cpf = formData.get('cpf');
+                    console.debug('form-search submit:', { options: options, cpf: cpf });
+                } catch (e) {
+                    console.debug('form-search submit debug failed', e);
+                }
+            });
         });
     </script>
 @endpush

@@ -78,7 +78,7 @@
             </div>
             <div class="form-group col-md-3" id="data_cautelar_group" style="display: none;">
                 @php $config = ['format' => 'DD/MM/YYYY']; @endphp
-                <x-adminlte-input-date 
+                <x-adminlte-input-date
                     name="data_cautelar"
                     id="data_cautelar"
                     :config="$config"
@@ -95,7 +95,7 @@
             </div>
             <div class="form-group col-md-3" id="data_denuncia_group" style="display: none;">
                 @php $config = ['format' => 'DD/MM/YYYY']; @endphp
-                <x-adminlte-input-date 
+                <x-adminlte-input-date
                     name="data_denuncia"
                     id="data_denuncia"
                     :config="$config"
@@ -112,7 +112,7 @@
             </div>
             <div class="form-group col-md-3" id="data_condenacao_group" style="display: none;">
                 @php $config = ['format' => 'DD/MM/YYYY']; @endphp
-                <x-adminlte-input-date 
+                <x-adminlte-input-date
                     name="data_condenacao"
                     id="data_condenacao"
                     :config="$config"
@@ -335,12 +335,10 @@
             const dataCautelarGroup = document.getElementById('data_cautelar_group');
             const dataDenunciaGroup = document.getElementById('data_denuncia_group');
             const dataCondenacaoGroup = document.getElementById('data_condenacao_group');
-            
             // Esconde todos os campos de data primeiro
             dataCautelarGroup.style.display = 'none';
             dataDenunciaGroup.style.display = 'none';
             dataCondenacaoGroup.style.display = 'none';
-            
             // Mostra campo baseado na situação
             if (situacao === 'CAUTELAR') {
                 dataCautelarGroup.style.display = 'block';
@@ -350,16 +348,15 @@
                 dataCondenacaoGroup.style.display = 'block';
             }
         }
-        
         // Executa quando a página carrega para mostrar campos já preenchidos
         document.addEventListener('DOMContentLoaded', function() {
             toggleSituacaoDateFields();
         });
-        
+
         // Função para remover acentos
         function removeAccents(str) {
             if (!str) return str;
-            
+
             const accentsMap = {
                 'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A',
                 'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a',
@@ -374,28 +371,25 @@
                 'Ç': 'C', 'ç': 'c',
                 'Ñ': 'N', 'ñ': 'n'
             };
-            
             return str.replace(/[ÀÁÂÃÄÅàáâãäåÈÉÊËèéêëÌÍÎÏìíîïÒÓÔÕÖòóôõöÙÚÛÜùúûüÇçÑñ]/g, function(match) {
                 return accentsMap[match] || match;
             });
         }
-        
+
         // Função para aplicar máscara anti-acentos
         function applyNoAccentMask(element) {
             if (!element) return;
-            
+
             element.addEventListener('input', function(event) {
                 const cursorPosition = element.selectionStart;
                 const originalValue = element.value;
                 const cleanValue = removeAccents(originalValue);
-                
                 if (originalValue !== cleanValue) {
                     element.value = cleanValue;
                     // Mantém a posição do cursor
                     element.setSelectionRange(cursorPosition, cursorPosition);
                 }
             });
-            
             element.addEventListener('paste', function(event) {
                 setTimeout(() => {
                     const originalValue = element.value;
@@ -406,10 +400,10 @@
                 }, 10);
             });
         }
-        
+
         // Lista de campos que devem ter a máscara anti-acentos
         const fieldsNoAccent = ['name', 'nickname', 'father', 'mother', 'spouse_name', 'tatto'];
-        
+
         // Aplicar máscara quando o documento carregar
         document.addEventListener('DOMContentLoaded', function() {
             fieldsNoAccent.forEach(fieldName => {
@@ -420,7 +414,6 @@
                 }
             });
         });
-        
         async function searchCPF() {
             let loading = document.getElementById('loading');
             loading.classList.remove('d-none');

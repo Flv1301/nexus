@@ -64,7 +64,7 @@ return [
     */
 
     'logo' => '',
-    'logo_img' => '/images/logo_mppa_transparente.png',
+    'logo_img' => '/images/logo-mppa-letras-brancas-old.png',
     'logo_img_class' => 'brand-image',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
@@ -84,13 +84,11 @@ return [
     */
 
     'auth_logo' => [
-        'enabled' => false,
+        'enabled' => true,
         'img' => [
-            'path' => '/images/logo_mppa_transparente.png',
+            'path' => '/images/logo-mppa-letras-brancas.png',
             'alt' => 'Logo do Ministário Público do Estado do Pará',
             'class' => '',
-            'width' => 80,
-            'height' => 80,
         ],
     ],
 
@@ -340,6 +338,13 @@ return [
                             'icon' => 'fas fa-fw fa-search',
                             'can' => 'pesquisa_pessoa_completa'
                         ],
+                        [
+                            'text' => 'Avançada',
+                            'url' => '/pesquisa/pessoa/avancada',
+                            'icon' => 'fas fa-fw fa-cog',
+                            'can' => 'pesquisa_pessoa_completa'
+                        ],
+
                     ],
                 ],
                 [

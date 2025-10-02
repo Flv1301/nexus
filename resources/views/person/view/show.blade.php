@@ -1,5 +1,7 @@
 @extends('adminlte::page')
+<!--define titulo da pagina-->
 @section('title','Cadastro de Pessoa')
+<!--define o conteudo do header-->
 @section('content_header')
     <div class="card card-dark">
         <div class="card-header">
@@ -22,6 +24,21 @@
         </div>
     </div>
 @endsection
+<!--define o conteudo da pagina-->
 @section('content')
+    {{-- Incluir partials adicionais que não contenham layout (ex: person.partials.detran, person.partials.adepara).
+         A inclusão ocorre se a variável view_base for igual a 'detran'/'adepara' ou se as variáveis
+         'detran'/'adepara' estiverem definidas para compatibilidade antiga. --}}
+    @if((isset($view_base) && $view_base === 'adepara') || isset($adepara))
+        @include('person.partials.adepara')
+    @elseif((isset($view_base) && $view_base === 'detran') || isset($detran))
+        @include('person.partials.detran')
+    @elseif((isset($view_base) && $view_base === 'dadoscadastrais') || isset($dadosCadastrais))
+        @include('person.partials.dadoscadastrais')
+    @elseif((isset($view_base) && $view_base === 'quadro_societario') || isset($quadroSocietario))
+        @include('person.partials.quadro_societario')
+    @elseif((isset($view_base) && $view_base === 'semas') || isset($semas))
+        @include('person.partials.semas')
+    @endif
     @include('person.view.content')
 @endsection

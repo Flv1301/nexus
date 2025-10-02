@@ -35,7 +35,7 @@
                     label="Telefone"
                     placeholder="Telefone"
                     class="mask-phone"
-                    maxlength="11"
+                    maxlength="13"
                 />
             </div>
              <div class="form-group col-md-2">
@@ -116,6 +116,16 @@
                     @foreach(\App\Enums\UFBrEnum::cases() as $uf)
                         <option value="{{$uf->name}}">{{$uf->name}}</option>
                     @endforeach
+                </x-adminlte-select>
+            </div>
+            <div class="form-group col-md-2">
+                <x-adminlte-select
+                    name="new_city"
+                    id="new_city"
+                    label="Cidade"
+                    placeholder="Selecione primeiro a UF"
+                >
+                    <option value="">Selecione primeiro a UF</option>
                 </x-adminlte-select>
             </div>
             <div class="form-group col-md-2">

@@ -85,3 +85,14 @@
         />
     </div>
 </div>
+<div class="form-row">
+    <div class="form-group col-md-12">
+        <x-adminlte-textarea
+            name="observacao"
+            label="Observação"
+            placeholder="Observação"
+            rows="3"
+            disabled
+        >{{ $address->observacao ?? '' }}</x-adminlte-textarea>
+    </div>
+</div>

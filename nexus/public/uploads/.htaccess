@@ -1,0 +1,5 @@
+Options -Indexes
+<FilesMatch "\.(pdf)$">
+    Header set Content-Type application/pdf
+    Header set Content-Disposition inline
+</FilesMatch> 

@@ -1,6 +1,9 @@
 @section('title', 'Login')
 
 @extends('adminlte::auth.auth-page', ['auth_type' => 'login'])
+@push('css')
+<link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+@endpush
 @section('plugins.Sweetalert2', true)
 @section('adminlte_css_pre')
     <link rel="stylesheet" href="{{ asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css') }}">
@@ -22,8 +25,51 @@
 
 @section('auth_header', __('adminlte::adminlte.login_message'))
 
+@section('adminlte_css_pre')
+    <link rel="stylesheet" href="{{ asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+    <style>
+        /* Página: fundo suave e mais quente */
+        body.login-page {
+            background: linear-gradient(135deg, #f7fbff 0%, #eaf5ff 100%);
+            min-height: 100vh;
+        }
+        /* Ajustes do card de login: largura, borda primária e sombra */
+        .login-box .card {
+            max-width: 420px;
+            margin: 2.5rem auto;
+            border-radius: .85rem;
+            box-shadow: 0 10px 30px rgba(20, 40, 80, 0.12);
+            border-top: 3px solid rgba(0,123,255,0.9);
+        }
+        /* Espaçamento interno maior para respirar */
+        .login-box .card-body {
+            padding: 1.75rem;
+        }
+        /* Estados de foco mais visíveis */
+        .login-box .form-control:focus {
+            border-color: #66afe9;
+            box-shadow: 0 0 0 .12rem rgba(102,175,233,0.25);
+        }
+        /* Botão mais chamativo */
+        .auth-btn { font-weight: 600; }
+        /* Aumenta a área clicável do label "Lembrar-me" e mantém cursor */
+        .remember-label { cursor: pointer; padding-left: .35rem; display: inline-block; }
+        /* Toggle de senha dentro do input-group-text para alinhar corretamente */
+        .password-toggle { cursor: pointer; padding: .375rem .65rem; color: #6c757d; }
+        .password-toggle:focus { outline: none; box-shadow: none; }
+        .login-spinner { margin-left: .5rem; }
+    </style>
+@stop
+
 @section('auth_body')
     <x-page-messages/>
+    {{-- Mensagem genérica para erros de autenticação --}}
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            Credenciais inválidas. Verifique seus dados e tente novamente.
+        </div>
+    @endif
     @if(session('info'))
         <div class="alert alert-info alert-dismissible">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -34,43 +80,49 @@
         @csrf
 
         {{-- Email field --}}
-        <div class="input-group mb-3">
-            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-                   value="{{ old('email') }}" placeholder="{{ __('adminlte::adminlte.email') }}" autofocus>
+        <div class="form-group" id="email_login">
+            <label for="email_input" class="form-label">{{ __('adminlte::adminlte.email') }}</label>
+            <div class="input-group mb-3">
+                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                    value="{{ old('email') }}" placeholder="{{ __('adminlte::adminlte.email') }}" autofocus>
 
-            <div class="input-group-append">
-                <div class="input-group-text">
-                    <span class="fas fa-envelope {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-envelope {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                    </div>
                 </div>
-            </div>
 
-            @error('email')
-            <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
-        </div>
+                @error('email')
+                <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+        </div>    
 
         {{-- Password field --}}
-        <div class="input-group mb-3">
-            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
-                   placeholder="{{ __('adminlte::adminlte.password') }}">
+        <div class="form-group" id="senha_login">
+            <label for="password_input" class="form-label">{{ __('adminlte::adminlte.password') }}</label>
+            <div class="input-group mb-3">
+                <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
+                    placeholder="{{ __('adminlte::adminlte.password') }}">
 
-            <div class="input-group-append">
-                <div class="input-group-text">
-                    <span class="fas fa-lock {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                    </div>
                 </div>
-            </div>
 
-            @error('password')
-            <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
+                @error('password')
+                <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
         </div>
 
         {{-- Login field --}}
-        <div class="row">
+        <div class="row" id="linha_botao">
             <div class="col-7">
                 <div class="icheck-primary" title="{{ __('adminlte::adminlte.remember_me_hint') }}">
                     <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
@@ -133,7 +185,26 @@
                 }, function (error) {
                     // Localização negada ou erro - continuar sem bloquear o login
                     console.log('Localização não disponível ou negada pelo usuário');
+                })
+            }
+
+            // Lógica para ajustar a altura da caixa de login
+            var loginBox = $('.login-box');
+            var card = loginBox.find('.card');
+
+            var errorMessages = card.find('.invalid-feedback, .alert-info');
+            var extraHeight = 0;
+
+            if (errorMessages.length > 0) {
+                errorMessages.each(function () {
+                    extraHeight += $(this).outerHeight(true);
                 });
+            }
+
+            var currentHeight = card.outerHeight();
+
+            if (extraHeight > 0) {
+                card.css('min-height', (currentHeight + extraHeight) + 'px');
             }
         });
     </script>

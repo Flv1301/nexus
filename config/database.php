@@ -37,7 +37,7 @@ return [
 
         'sqlite' => [
             'driver' => 'sqlite',
-            'url' => env('DATABASE_URL'),
+            'url' => ($__db_url = env('DATABASE_URL')) ? $__db_url : null,
             'database' => env('DB_DATABASE', database_path('database.sqlite')),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
@@ -45,7 +45,7 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'url' => env('DATABASE_URL'),
+            'url' => ($__db_url = env('DATABASE_URL')) ? $__db_url : null,
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'forge'),
@@ -65,9 +65,10 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => env('DATABASE_URL'),
+            'url' => ($__db_url = env('DATABASE_URL')) ? $__db_url : null,
             'host' => env('DB_HOST', ''),
-            'port' => env('DB_PORT', ''),
+            'port' => ($p = env('DB_PORT', '')) ? explode('?', $p)[0] : '',
+
             'database' => env('DB_DATABASE', ''),
             'username' => env('DB_USERNAME', ''),
             'password' => env('DB_PASSWORD', ''),
@@ -75,12 +76,13 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
             'schema' => 'public',
-            'sslmode' => 'prefer',
+            'sslmode' => env('DB_SSLMODE', null),
+
         ],
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
-            'url' => env('DATABASE_URL'),
+            'url' => ($__db_url = env('DATABASE_URL')) ? $__db_url : null,
             'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', '1433'),
             'database' => env('DB_DATABASE', 'forge'),

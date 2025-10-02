@@ -1,0 +1,93 @@
+/* resources/css/sidebar.css */
+.sidebar-dark-primary {
+    background-color: #1E325C !important;
+    background-image: linear-gradient(180deg, #1E325C 10%, #1E325C 100%) !important;
+}
+
+.sidebar-dark-primary .nav-sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.sidebar-dark-primary .nav-sidebar .nav-link:hover {
+    color: #fff !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.sidebar-dark-primary .nav-sidebar .nav-link.active {
+    color: #fff !important;
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.sidebar-dark-primary .brand-link {
+    background-color: #1E325C !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.sidebar-dark-primary .brand-link:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/*.brand-link {*/
+    /*margin-left: -10px !important; /* Ajuste este valor para mover a logo para a direita */
+/*}*/
+
+.brand-image {
+    height: 50px !important; /* Exemplo: ajuste a altura para 40px */
+    width: 50px !important;  /* Exemplo: ajuste a largura para 40px */
+    margin-left: 3px !important;
+}
+
+.login-page {
+    background-color: #1E325C !important;
+}
+
+.user-header.bg-primary {
+    background-color: #1E325C !important; /* Exemplo: vermelho */
+    background-image: none !important; /* Remove o gradiente de cor padrÃ£o, se houver */
+}
+
+.fas fa-bars{
+    color: #1E325C !important;
+}
+
+/*altera a cor do menu sanduÃ­che*/
+/*.main-header .nav-link .fas.fa-bars {
+    color: #ff0000 !important;
+
+}*/
+
+.login-logo {
+    text-align: center !important; /* Centraliza o texto dentro do contÃªiner */
+    display: flex !important;
+    justify-content: center !important; /* Centraliza horizontalmente */
+    margin-top: -200px;
+    margin-bottom: 60px;
+}
+
+.login-logo img {
+    width: 600px;
+    height: 60px;
+}
+
+.login-box{
+    width: 600px;
+}
+
+.login-card-body{
+    height: auto !important;
+    min-height: 350px !important;
+    border-bottom-left-radius: 10px; /* Arredonda o canto inferior esquerdo */
+    border-bottom-right-radius: 10px; /* Arredonda o canto inferior direito */
+}
+
+#email_login{
+    margin-top: 20px !important;
+}
+
+#senha_login{
+    margin-top: 40px !important;
+}
+
+#linha_botao{
+    margin-top: 40px !important;
+}

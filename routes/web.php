@@ -69,7 +69,9 @@ Route::middleware('auth')->controller(PerfilController::class)->group(function (
 });
 
 /** DOWNLOADS */
-Route::middleware('auth')->get('/download/{path}', fn($path) => response()->download(Storage::path(decrypt($path)))
+Route::middleware('auth')->get(
+    '/download/{path}',
+    fn($path) => response()->download(Storage::path(decrypt($path)))
 )->name('download');
 
 /** USUARIO */
@@ -125,5 +127,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 });
 
+// Rota para o frontend chamar o serviço PGE (proxy seguro via backend)
+Route::middleware(['auth'])->post('/pge/consult', [\App\Http\Controllers\Pge\PgeController::class, 'consult'])->name('pge.consult');
 
-
+// Página de teste para o componente PGE
+Route::middleware(['auth'])->get('/pge', function () {
+    return view('pge.index');
+})->name('pge.page');

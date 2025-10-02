@@ -1,24 +1,8 @@
 @extends('adminlte::page')
-@section('title','Lista de Tramitação')
 @push('css')
-<style>
-/* CSS customizado para barra lateral azul - GLOBAL */
-.sidebar-dark-primary {
-    background-color: #1e3a8a !important;
-    background-image: linear-gradient(180deg, #1e3a8a 10%, #1e40af 100%) !important;
-}
-
-.sidebar-dark-primary .brand-link {
-    /*background-color: rgba(255, 255, 255, 0.1) !important;*/
-    background-color: #1e3a8a !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-.sidebar-dark-primary .brand-link:hover {
-    background-color: rgba(255, 255, 255, 0.15) !important;
-}
-</style>
+<link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
 @endpush
+@section('title','Lista de Tramitação')
 @section('plugins.Datatables', true)
 @section('plugins.Summernote', true)
 @section('plugins.Sweetalert2', true)

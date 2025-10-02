@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Correção Data de Ingresso</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-case {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .code {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h2 {
+            color: #007bff;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Teste - Correção Data de Ingresso</h1>
+        
+        <h2>Problema Identificado</h2>
+        <div class="test-case error">
+            <strong>❌ Problema:</strong> Campos de data no relatório estavam mostrando 31/12/1969 ao invés da data correta:
+            <ul>
+                <li>Data de ingresso (aba facção)</li>
+                <li>Data do dado (endereços)</li>
+                <li>Data do dado (telefones)</li>
+            </ul>
+        </div>
+
+        <h2>Causa do Problema</h2>
+        <div class="test-case">
+            <strong>🔍 Causa:</strong> Nos arquivos de relatório, as datas estavam sendo tratadas incorretamente usando <code>strtotime()</code> com formato brasileiro:
+        </div>
+        
+        <div class="code">
+            // ❌ CÓDIGO PROBLEMÁTICO (ANTES)
+            @if($person->data_ingresso) <strong>DATA INGRESSO:</strong> {{ date('d/m/Y', strtotime($person->data_ingresso)) }} @endif
+            @if($address->data_do_dado) <strong>DATA DO DADO:</strong> {{ date('d/m/Y', strtotime($address->data_do_dado)) }}, @endif
+            @if($phone->data_do_dado) <strong>DATA DO DADO:</strong> {{ date('d/m/Y', strtotime($phone->data_do_dado)) }}, @endif
+        </div>
+
+        <div class="test-case">
+            <strong>💡 Explicação:</strong> O <code>DateCast</code> converte a data para o formato brasileiro (d/m/Y), mas o <code>strtotime()</code> não consegue interpretar corretamente esse formato, resultando em 31/12/1969 (timestamp 0).
+        </div>
+
+        <h2>Solução Implementada</h2>
+        <div class="test-case success">
+            <strong>✅ Solução:</strong> Substituído o tratamento das datas para usar Carbon com tratamento de erro:
+        </div>
+
+        <div class="code">
+            // ✅ CÓDIGO CORRIGIDO (DEPOIS)
+            @if($person->data_ingresso) 
+                <strong>DATA INGRESSO:</strong> 
+                @php
+                    try {
+                        if(is_string($person->data_ingresso) && strpos($person->data_ingresso, '/') !== false) {
+                            echo \Carbon\Carbon::createFromFormat('d/m/Y', $person->data_ingresso)->format('d/m/Y');
+                        } else {
+                            echo \Carbon\Carbon::parse($person->data_ingresso)->format('d/m/Y');
+                        }
+                    } catch(\Exception $e) {
+                        echo $person->data_ingresso;
+                    }
+                @endphp 
+            @endif
+        </div>
+
+        <h2>Como Funciona a Correção</h2>
+        <div class="test-case">
+            <strong>🔄 Processo:</strong>
+            <ol>
+                <li>Verifica se a data já está no formato brasileiro (contém '/')</li>
+                <li>Se sim, usa <code>Carbon::createFromFormat('d/m/Y', ...)</code></li>
+                <li>Se não, usa <code>Carbon::parse()</code> para parsing automático</li>
+                <li>Em caso de erro, exibe o valor original</li>
+            </ol>
+        </div>
+
+        <h2>Arquivos Afetados</h2>
+        <div class="test-case">
+            <strong>📁 Arquivos Modificados:</strong>
+            <ul>
+                <li><code>resources/views/search/person/report.blade.php</code> - Linha 845 (data_ingresso)</li>
+                <li><code>resources/views/search/person/report.blade.php</code> - Linha 625 (data_do_dado - endereço)</li>
+                <li><code>resources/views/search/person/report.blade.php</code> - Linha 646 (data_do_dado - telefone)</li>
+                <li><code>app/Models/Data/Address.php</code> - Adicionado cast para data_do_dado</li>
+                <li><code>app/Models/Data/Telephone.php</code> - Adicionado cast para data_do_dado</li>
+            </ul>
+        </div>
+
+        <h2>Teste de Validação</h2>
+        <div class="test-case success">
+            <strong>🧪 Para testar:</strong>
+            <ol>
+                <li>Acesse uma pessoa com dados de facção</li>
+                <li>Insira uma data de ingresso (ex: 15/11/2019)</li>
+                <li>Gere o relatório PDF</li>
+                <li>Verifique se a data aparece corretamente como 15/11/2019</li>
+            </ol>
+        </div>
+
+        <h2>Status da Correção</h2>
+        <div class="test-case success">
+            <strong>✅ Status:</strong> CORRIGIDO - A data de ingresso agora deve aparecer corretamente no relatório PDF.
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding: 20px; background: #e7f3ff; border-radius: 8px;">
+            <strong>🎯 Resultado Esperado:</strong><br>
+            Data inserida: 15/11/2019 → Relatório mostra: 15/11/2019 ✅
+        </div>
+    </div>
+</body>
+</html> 

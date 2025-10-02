@@ -14,24 +14,20 @@
             padding: 20px;
             color: #333;
         }
-        
         .header {
             text-align: center;
             margin-bottom: 15px;
         }
-        
         .header img {
             max-height: 60px;
             margin-bottom: 5px;
         }
-        
         .header h2 {
             margin: 5px 0;
             color: #333;
             font-size: 12px;
             font-weight: bold;
         }
-        
         .section-title {
             background-color: #f0f0f0;
             padding: 6px;
@@ -40,7 +36,6 @@
             font-size: 10px;
             text-align: center;
         }
-        
         .section-title-table {
             background-color: #f0f0f0;
             padding: 6px;
@@ -49,26 +44,25 @@
             font-size: 10px;
             text-align: center;
         }
-        
         .section-content {
             padding: 8px;
             margin-bottom: 10px;
             background-color: #fafafa;
         }
-        
+
         .identification-section {
             margin-bottom: 10px;
         }
-        
+
         .person-info {
             display: flex;
             gap: 15px;
         }
-        
+
         .person-details {
             flex: 1;
         }
-        
+
         .person-photo {
             width: 100px;
             height: 120px;
@@ -80,34 +74,32 @@
             text-align: center;
             background-color: #f9f9f9;
         }
-        
         .info-row {
             margin-bottom: 3px;
             font-size: 10px;
         }
-        
         .info-label {
             font-weight: bold;
             font-size: 10px;
         }
-        
+
         .info-value {
             font-size: 10px;
         }
-        
+
         .two-column {
             display: flex;
             gap: 20px;
         }
-        
+
         .column {
             flex: 1;
         }
-        
+
         .data-section {
             margin-bottom: 8px;
         }
-        
+
         .data-section h4 {
             background-color: #f0f0f0;
             padding: 6px;
@@ -115,18 +107,89 @@
             font-size: 10px;
             font-weight: bold;
         }
-        
         .data-section-content {
             padding: 8px;
             background-color: #fafafa;
         }
-        
+
         .address-item, .contact-item {
-            margin-bottom: 4px;
+            margin-bottom: 8px;
+            padding: 6px;
+            background-color: #f9f9f9;
+            border-left: 3px solid #6c757d;
             font-size: 10px;
-            line-height: 1.3;
+            line-height: 1.4;
         }
-        
+
+        .address-item:nth-child(even), .contact-item:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        .processo-item {
+            margin-bottom: 8px;
+            padding: 6px;
+            background-color: #f9f9f9;
+            border-left: 3px solid #007bff;
+            font-size: 10px;
+            line-height: 1.4;
+        }
+
+        .processo-item:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        .company-item {
+            margin-bottom: 8px;
+            padding: 6px;
+            background-color: #f9f9f9;
+            border-left: 3px solid #28a745;
+            font-size: 10px;
+            line-height: 1.4;
+        }
+
+        .company-item:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        .vehicle-item {
+            margin-bottom: 8px;
+            padding: 6px;
+            background-color: #f9f9f9;
+            border-left: 3px solid #ffc107;
+            font-size: 10px;
+            line-height: 1.4;
+        }
+
+        .vehicle-item:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        .visitante-item {
+            margin-bottom: 8px;
+            padding: 6px;
+            background-color: #f9f9f9;
+            border-left: 3px solid #dc3545;
+            font-size: 10px;
+            line-height: 1.4;
+        }
+
+        .visitante-item:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        .orcrim-item {
+            margin-bottom: 8px;
+            padding: 6px;
+            background-color: #f9f9f9;
+            border-left: 3px solid #6f42c1;
+            font-size: 10px;
+            line-height: 1.4;
+        }
+
+        .orcrim-item:nth-child(even) {
+            background-color: #ffffff;
+        }
+
         .table-section {
             width: 100%;
             border-collapse: collapse;
@@ -134,7 +197,6 @@
             font-size: 10px;
             margin-top: 0;
         }
-        
         .table-section th,
         .table-section td {
             border: 1px solid #ddd;
@@ -143,16 +205,15 @@
             font-size: 10px;
             line-height: 1.2;
         }
-        
         .table-section th {
             background-color: #f0f0f0;
             font-weight: bold;
         }
-        
+
         .table-section tbody tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-        
+
         .footer {
             margin-top: 20px;
             text-align: center;
@@ -161,44 +222,42 @@
             border-top: 1px solid #ddd;
             padding-top: 10px;
         }
-        
+
         .page-break {
             page-break-before: always;
         }
-        
+
         @media print {
             body {
                 margin: 0;
                 padding: 15px;
             }
-            
+
             .page-break {
                 page-break-before: always;
             }
-            
+
             .section-title, .section-title-table {
                 page-break-after: avoid;
             }
-            
+
             .table-section {
                 page-break-inside: avoid;
             }
-            
+
             .data-section {
                 page-break-inside: avoid;
             }
-            
+
             /* Estilos para PDFs incorporados */
             .pdf-container {
                 page-break-inside: avoid;
                 margin: 10px 0;
             }
-            
             object[type="application/pdf"] {
                 page-break-inside: avoid;
                 min-height: 800px;
             }
-            
             .pdf-placeholder {
                 page-break-inside: avoid;
                 border: 2px solid #ccc;
@@ -206,7 +265,6 @@
                 padding: 20px;
                 text-align: center;
             }
-            
             /* Estilos para imagens de PDF convertidas */
             .pdf-page-image {
                 page-break-inside: avoid;
@@ -220,7 +278,6 @@
                 image-rendering: crisp-edges;
                 image-rendering: -webkit-optimize-contrast;
             }
-            
             .pdf-info-box {
                 border: 2px solid #007bff;
                 background-color: #f8f9fa;
@@ -228,18 +285,15 @@
                 margin: 10px 0;
                 page-break-inside: avoid;
             }
-            
             iframe {
                 page-break-inside: avoid;
                 max-width: 734px !important; /* Largura máxima para A4 com margens */
                 width: 100% !important;
             }
-            
             .pdf-render-container {
                 page-break-inside: avoid;
                 margin: 20px 0;
             }
-            
             .pdf-loading {
                 text-align: center;
                 padding: 40px;
@@ -247,7 +301,6 @@
                 border: 1px solid #dee2e6;
                 border-radius: 4px;
             }
-            
             /* Controle específico para canvas de PDF */
             .pdf-page-canvas {
                 display: block;
@@ -259,14 +312,12 @@
                 height: auto !important;
                 width: auto !important;
             }
-            
             /* Container das páginas PDF */
             .pdf-page-container {
                 page-break-inside: avoid;
                 margin: 15px 0;
                 text-align: center;
             }
-            
             /* Informações de redimensionamento */
             .pdf-resize-info {
                 font-size: 7px !important;
@@ -274,7 +325,6 @@
                 margin-bottom: 5px;
                 font-style: italic;
             }
-            
             .pdf-summary-info {
                 margin-top: 10px !important;
                 padding: 8px !important;
@@ -283,7 +333,6 @@
                 font-size: 8px !important;
                 page-break-inside: avoid;
             }
-            
             /* Esconde elementos desnecessários na impressão */
             .pdf-loading {
                 display: none !important;
@@ -317,7 +366,6 @@
                         <span class="info-value">{{ strtoupper($person->nickname) }}</span>
                     </div>
                     @endif
-                    
                     <div class="two-column">
                         <div class="column">
                             @if($person->cpf)
@@ -431,10 +479,17 @@
                     </div>
                     @endif
 
+                    @if($person->dead !== null)
+                    <div class="info-row">
+                        <span class="info-label">ÓBITO:</span>
+                        <span class="info-value">{{ $person->dead ? 'SIM' : 'NÃO' }}</span>
+                    </div>
+                    @endif
+
                     @if($person->observation)
                     <div class="info-row">
                         <span class="info-label">OBSERVAÇÃO:</span>
-                        <span class="info-value">{{ $person->observation }}</span>
+                        <span class="info-value">{!! $person->observation !!}</span>
                     </div>
                     @endif
 
@@ -502,7 +557,6 @@
                     </div>
                     @endif
                 </div>
-                
                 <div class="person-photo">
                     @if($person->images && $person->images->count() > 0)
                         @php
@@ -542,7 +596,22 @@
                 @if($address->state) <strong>ESTADO:</strong> {{ strtoupper($address->state) }}, @endif
                 @if($address->uf) <strong>UF:</strong> {{ strtoupper($address->uf) }}, @endif
                 @if($address->complement) <strong>COMPLEMENTO:</strong> {{ strtoupper($address->complement) }}, @endif
-                @if($address->data_do_dado) <strong>DATA DO DADO:</strong> {{ date('d/m/Y', strtotime($address->data_do_dado)) }}, @endif
+                @if($address->reference_point) <strong>PONTO DE REFERÊNCIA:</strong> {{ strtoupper($address->reference_point) }}, @endif
+                @if($address->observacao) <strong>OBSERVAÇÃO:</strong> {!! strtoupper($address->observacao) !!}, @endif
+                @if($address->data_do_dado)
+                    <strong>DATA DO DADO:</strong>
+                    @php
+                        try {
+                            if(is_string($address->data_do_dado) && strpos($address->data_do_dado, '/') !== false) {
+                                echo \Carbon\Carbon::createFromFormat('d/m/Y', $address->data_do_dado)->format('d/m/Y');
+                            } else {
+                                echo \Carbon\Carbon::parse($address->data_do_dado)->format('d/m/Y');
+                            }
+                        } catch(\Exception $e) {
+                            echo $address->data_do_dado;
+                        }
+                    @endphp,
+                @endif
                 @if($address->fonte_do_dado) <strong>FONTE DO DADO:</strong> {{ strtoupper($address->fonte_do_dado) }} @endif
             </div>
             @endforeach
@@ -563,12 +632,24 @@
                     @if($phone->operator) <strong>OPERADORA:</strong> {{ strtoupper($phone->operator) }}, @endif
                     @if($phone->owner) <strong>TITULAR:</strong> {{ strtoupper($phone->owner) }}, @endif
                     @if($phone->status) <strong>STATUS:</strong> {{ strtoupper($phone->status) }}, @endif
-                    @if($phone->data_do_dado) <strong>DATA DO DADO:</strong> {{ date('d/m/Y', strtotime($phone->data_do_dado)) }}, @endif
+                    @if($phone->data_do_dado)
+                        <strong>DATA DO DADO:</strong>
+                        @php
+                            try {
+                                if(is_string($phone->data_do_dado) && strpos($phone->data_do_dado, '/') !== false) {
+                                    echo \Carbon\Carbon::createFromFormat('d/m/Y', $phone->data_do_dado)->format('d/m/Y');
+                                } else {
+                                    echo \Carbon\Carbon::parse($phone->data_do_dado)->format('d/m/Y');
+                                }
+                            } catch(\Exception $e) {
+                                echo $phone->data_do_dado;
+                            }
+                        @endphp,
+                    @endif
                     @if($phone->fonte_do_dado) <strong>FONTE DO DADO:</strong> {{ strtoupper($phone->fonte_do_dado) }} @endif
                 </div>
                 @endforeach
             @endif
-            
             @if($person->emails && $person->emails->count() > 0)
                 @foreach($person->emails as $index => $email)
                 <div class="contact-item">
@@ -599,7 +680,7 @@
     @endif
 
     <!-- INFOPEN - Dados Prisionais -->
-    @if($person->stuck !== null || $person->evadido !== null || $person->detainee_registration || $person->detainee_date || $person->detainee_uf || $person->detainee_city || $person->cela)
+    @if($person->stuck !== null || $person->evadido !== null || $person->detainee_registration || $person->detainee_date || $person->detainee_uf || $person->detainee_city || $person->cela || $person->situacao_infopen)
     <div class="data-section">
         <h4>INFOPEN - DADOS PRISIONAIS</h4>
         <div class="data-section-content">
@@ -607,8 +688,8 @@
                 @if($person->stuck !== null) <strong>PRESO:</strong> {{ $person->stuck ? 'SIM' : 'NÃO' }}, @endif
                 @if($person->evadido !== null) <strong>EVADIDO:</strong> {{ $person->evadido ? 'SIM' : 'NÃO' }}, @endif
                 @if($person->detainee_registration) <strong>MATRÍCULA:</strong> {{ $person->detainee_registration }}, @endif
-                @if($person->detainee_date) 
-                    <strong>DATA DA PRISÃO:</strong> 
+                @if($person->detainee_date)
+                    <strong>DATA DA PRISÃO:</strong>
                     @php
                         try {
                             if(is_string($person->detainee_date) && strpos($person->detainee_date, '/') !== false) {
@@ -619,12 +700,30 @@
                         } catch(\Exception $e) {
                             echo $person->detainee_date;
                         }
-                    @endphp, 
+                    @endphp,
                 @endif
                 @if($person->detainee_uf) <strong>UF PRISÃO:</strong> {{ $person->detainee_uf }}, @endif
                 @if($person->detainee_city) <strong>CIDADE PRISÃO:</strong> {{ strtoupper($person->detainee_city) }}, @endif
-                @if($person->cela) <strong>ESTABELECIMENTO/CELA:</strong> {{ strtoupper($person->cela) }} @endif
+                @if($person->cela) <strong>ESTABELECIMENTO/CELA:</strong> {{ strtoupper($person->cela) }}, @endif
+                @if($person->situacao_infopen) <strong>SITUAÇÃO:</strong> {{ strtoupper($person->situacao_infopen) }} @endif
             </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Visitantes -->
+    @if($person->visitantes && $person->visitantes->count() > 0)
+    <div class="data-section">
+        <h4>VISITANTES</h4>
+        <div class="data-section-content">
+            @foreach($person->visitantes as $index => $visitante)
+            <div class="visitante-item">
+                <strong>{{ $index + 1 }}.</strong>
+                @if($visitante->nome) <strong>NOME:</strong> {{ strtoupper($visitante->nome) }}, @endif
+                @if($visitante->cpf) <strong>CPF:</strong> {{ $visitante->cpf }}, @endif
+                @if($visitante->tipo_vinculo) <strong>TIPO DE VÍNCULO:</strong> {{ strtoupper($visitante->tipo_vinculo) }} @endif
+            </div>
+            @endforeach
         </div>
     </div>
     @endif
@@ -649,62 +748,53 @@
 
     <!-- Empresas -->
     @if($person->companies && $person->companies->count() > 0)
-    <div class="section-title-table">EMPRESAS VINCULADAS</div>
-    <table class="table-section">
-        <thead>
-            <tr>
-                <th>EMPRESA</th>
-                <th>CNPJ</th>
-                <th>ENDEREÇO</th>
-                <th>SITUAÇÃO</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($person->companies as $company)
-            <tr>
-                <td>{{ strtoupper($company->company_name ?? '') }}</td>
-                <td>{{ $company->cnpj ?? '' }}</td>
-                <td>
-                    {{ strtoupper($company->address ?? '') }}
-                    @if($company->district), {{ strtoupper($company->district) }}@endif
-                    @if($company->city), {{ strtoupper($company->city) }}@endif
-                </td>
-                <td>{{ strtoupper($company->status ?? '') }}</td>
-            </tr>
+    <div class="data-section">
+        <h4>EMPRESAS VINCULADAS</h4>
+        <div class="data-section-content">
+            @foreach($person->companies as $index => $company)
+            <div class="company-item">
+                <strong>{{ $index + 1 }}.</strong>
+                @if($company->company_name) <strong>EMPRESA:</strong> {{ strtoupper($company->company_name) }}, @endif
+                @if($company->fantasy_name) <strong>NOME FANTASIA:</strong> {{ strtoupper($company->fantasy_name) }}, @endif
+                @if($company->cnpj) <strong>CNPJ:</strong> {{ $company->cnpj }}, @endif
+                @if($company->phone) <strong>TELEFONE:</strong> {{ $company->phone }}, @endif
+                @if($company->social_capital) <strong>CAPITAL SOCIAL:</strong> R$ {{ number_format($company->social_capital, 2, ',', '.') }}, @endif
+                @if($company->status) <strong>SITUAÇÃO:</strong> {{ strtoupper($company->status) }}, @endif
+                @if($company->cep) <strong>CEP:</strong> {{ $company->cep }}, @endif
+                @if($company->address) <strong>ENDEREÇO:</strong> {{ strtoupper($company->address) }}, @endif
+                @if($company->number) <strong>NÚMERO:</strong> {{ $company->number }}, @endif
+                @if($company->district) <strong>BAIRRO:</strong> {{ strtoupper($company->district) }}, @endif
+                @if($company->city) <strong>CIDADE:</strong> {{ strtoupper($company->city) }}, @endif
+                @if($company->uf) <strong>UF:</strong> {{ strtoupper($company->uf) }}, @endif
+                @if($company->cnae) <strong>CNAE:</strong> {{ $company->cnae }}, @endif
+                @if($company->accountant) <strong>CONTADOR:</strong> {{ strtoupper($company->accountant) }} @endif
+            </div>
             @endforeach
-        </tbody>
-    </table>
+        </div>
+    </div>
     @endif
 
     <!-- Veículos -->
     @if($person->vehicles && $person->vehicles->count() > 0)
-    <div class="section-title-table">VEÍCULOS</div>
-    <table class="table-section">
-        <thead>
-            <tr>
-                <th>MARCA</th>
-                <th>MODELO</th>
-                <th>ANO</th>
-                <th>COR</th>
-                <th>PLACA</th>
-                <th>JURISDIÇÃO</th>
-                <th>SITUAÇÃO</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($person->vehicles as $vehicle)
-            <tr>
-                <td>{{ strtoupper($vehicle->brand ?? '') }}</td>
-                <td>{{ strtoupper($vehicle->model ?? '') }}</td>
-                <td>{{ $vehicle->year ?? '' }}</td>
-                <td>{{ strtoupper($vehicle->color ?? '') }}</td>
-                <td>{{ strtoupper($vehicle->plate ?? '') }}</td>
-                <td>{{ strtoupper($vehicle->jurisdiction ?? '') }}</td>
-                <td>{{ strtoupper($vehicle->status ?? '') }}</td>
-            </tr>
+    <div class="data-section">
+        <h4>VEÍCULOS</h4>
+        <div class="data-section-content">
+            @foreach($person->vehicles as $index => $vehicle)
+            <div class="vehicle-item">
+                <strong>{{ $index + 1 }}.</strong>
+                @if($vehicle->brand) <strong>MARCA:</strong> {{ strtoupper($vehicle->brand) }}, @endif
+                @if($vehicle->model) <strong>MODELO:</strong> {{ strtoupper($vehicle->model) }}, @endif
+                @if($vehicle->year) <strong>ANO:</strong> {{ $vehicle->year }}, @endif
+                @if($vehicle->color) <strong>COR:</strong> {{ strtoupper($vehicle->color) }}, @endif
+                @if($vehicle->plate) <strong>PLACA:</strong> {{ strtoupper($vehicle->plate) }}, @endif
+                @if($vehicle->jurisdiction) <strong>JURISDIÇÃO:</strong> {{ strtoupper($vehicle->jurisdiction) }}, @endif
+                @if($vehicle->status) <strong>SITUAÇÃO:</strong> {{ strtoupper($vehicle->status) }}, @endif
+                @if($vehicle->renavam) <strong>RENAVAM:</strong> {{ $vehicle->renavam }}, @endif
+                @if($vehicle->chassi) <strong>CHASSI:</strong> {{ strtoupper($vehicle->chassi) }} @endif
+            </div>
             @endforeach
-        </tbody>
-    </table>
+        </div>
+    </div>
     @endif
 
     <!-- Vínculos ORCRIM -->
@@ -741,32 +831,35 @@
     @endif
 
     <!-- Dados ORCRIM da própria pessoa -->
-    @if($person->orcrim || $person->orcrim_office || $person->orcrim_occupation_area || $person->orcrim_matricula || $person->orcrim_padrinho || $person->vulgo_padrinho || $person->data_ingresso)
-    <div class="section-title-table">DADOS ORCRIM PESSOAIS</div>
-    <table class="table-section">
-        <thead>
-            <tr>
-                <th>ORCRIM</th>
-                <th>CARGO</th>
-                <th>ÁREA DE ATUAÇÃO</th>
-                <th>MATRÍCULA</th>
-                <th>PADRINHO</th>
-                <th>VULGO PADRINHO</th>
-                <th>DATA INGRESSO</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>{{ strtoupper($person->orcrim ?? '') }}</td>
-                <td>{{ strtoupper($person->orcrim_office ?? '') }}</td>
-                <td>{{ strtoupper($person->orcrim_occupation_area ?? '') }}</td>
-                <td>{{ strtoupper($person->orcrim_matricula ?? '') }}</td>
-                <td>{{ strtoupper($person->orcrim_padrinho ?? '') }}</td>
-                <td>{{ strtoupper($person->vulgo_padrinho ?? '') }}</td>
-                <td>{{ $person->data_ingresso ? date('d/m/Y', strtotime($person->data_ingresso)) : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    @if($person->active_orcrim !== null || $person->orcrim || $person->orcrim_office || $person->orcrim_occupation_area || $person->orcrim_matricula || $person->orcrim_padrinho || $person->vulgo_padrinho || $person->data_ingresso)
+    <div class="data-section">
+        <h4>DADOS ORCRIM PESSOAIS</h4>
+        <div class="data-section-content">
+            <div class="orcrim-item">
+                @if($person->active_orcrim !== null) <strong>ATIVO NA ORCRIM:</strong> {{ $person->active_orcrim ? 'SIM' : 'NÃO' }}, @endif
+                @if($person->orcrim) <strong>ORCRIM:</strong> {{ strtoupper($person->orcrim) }}, @endif
+                @if($person->orcrim_office) <strong>CARGO:</strong> {{ strtoupper($person->orcrim_office) }}, @endif
+                @if($person->orcrim_occupation_area) <strong>ÁREA DE ATUAÇÃO:</strong> {{ strtoupper($person->orcrim_occupation_area) }}, @endif
+                @if($person->orcrim_matricula) <strong>MATRÍCULA:</strong> {{ strtoupper($person->orcrim_matricula) }}, @endif
+                @if($person->orcrim_padrinho) <strong>PADRINHO:</strong> {{ strtoupper($person->orcrim_padrinho) }}, @endif
+                @if($person->vulgo_padrinho) <strong>VULGO PADRINHO:</strong> {{ strtoupper($person->vulgo_padrinho) }}, @endif
+                @if($person->data_ingresso)
+                    <strong>DATA INGRESSO:</strong>
+                    @php
+                        try {
+                            if(is_string($person->data_ingresso) && strpos($person->data_ingresso, '/') !== false) {
+                                echo \Carbon\Carbon::createFromFormat('d/m/Y', $person->data_ingresso)->format('d/m/Y');
+                            } else {
+                                echo \Carbon\Carbon::parse($person->data_ingresso)->format('d/m/Y');
+                            }
+                        } catch(\Exception $e) {
+                            echo $person->data_ingresso;
+                        }
+                    @endphp
+                @endif
+            </div>
+        </div>
+    </div>
     @endif
 
     <!-- Antecedentes -->
@@ -812,28 +905,19 @@
 
     <!-- TJ -->
     @if($person->tjs && $person->tjs->count() > 0)
-    <div class="section-title-table">PROCESSOS</div>
-    <table class="table-section">
-        <thead>
-            <tr>
-                <th>SITUAÇÃO</th>
-                <th>PROCESSO</th>
-                <th>NATUREZA</th>
-                <th>DATA</th>
-                <th>UF</th>
-                <th>COMARCA</th>
-                <th>DATA DENÚNCIA</th>
-                <th>DATA CONDENAÇÃO</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($person->tjs as $tj)
-            <tr>
-                <td>{{ strtoupper($tj->situacao ?? '') }}</td>
-                <td>{{ $tj->processo ?? '' }}</td>
-                <td>{{ strtoupper($tj->natureza ?? '') }}</td>
-                <td>
+    <div class="data-section">
+        <h4>PROCESSOS</h4>
+        <div class="data-section-content">
+            @foreach($person->tjs as $index => $tj)
+            <div class="processo-item">
+                <strong>{{ $index + 1 }}.</strong>
+                @if($tj->processo) <strong>PROCESSO:</strong> {{ $tj->processo }}, @endif
+                @if($tj->comarca) <strong>INSTÂNCIA:</strong> {{ strtoupper($tj->comarca) }}, @endif
+                @if($tj->classe) <strong>CLASSE:</strong> {{ strtoupper($tj->classe) }}, @endif
+                @if($tj->natureza) <strong>ASSUNTO:</strong> {{ strtoupper($tj->natureza) }}, @endif
+                @if($tj->autor) <strong>AUTOR:</strong> {{ strtoupper($tj->autor) }}, @endif
                     @if($tj->data)
+                    <strong>RECEBIDO EM:</strong>
                         @php
                             try {
                                 if(is_string($tj->data) && strpos($tj->data, '/') !== false) {
@@ -844,45 +928,25 @@
                             } catch(\Exception $e) {
                                 echo $tj->data;
                             }
-                        @endphp
+                    @endphp,
                     @endif
-                </td>
-                <td>{{ $tj->uf ?? '' }}</td>
-                <td>{{ strtoupper($tj->comarca ?? '') }}</td>
-                <td>
-                    @if($tj->data_denuncia)
-                        @php
-                            try {
-                                if(is_string($tj->data_denuncia) && strpos($tj->data_denuncia, '/') !== false) {
-                                    echo \Carbon\Carbon::createFromFormat('d/m/Y', $tj->data_denuncia)->format('d/m/Y');
-                                } else {
-                                    echo \Carbon\Carbon::parse($tj->data_denuncia)->format('d/m/Y');
-                                }
-                            } catch(\Exception $e) {
-                                echo $tj->data_denuncia;
-                            }
-                        @endphp
-                    @endif
-                </td>
-                <td>
-                    @if($tj->data_condenacao)
-                        @php
-                            try {
-                                if(is_string($tj->data_condenacao) && strpos($tj->data_condenacao, '/') !== false) {
-                                    echo \Carbon\Carbon::createFromFormat('d/m/Y', $tj->data_condenacao)->format('d/m/Y');
-                                } else {
-                                    echo \Carbon\Carbon::parse($tj->data_condenacao)->format('d/m/Y');
-                                }
-                            } catch(\Exception $e) {
-                                echo $tj->data_condenacao;
-                            }
-                        @endphp
-                    @endif
-                </td>
-            </tr>
+                @if($tj->uf) <strong>UF:</strong> {{ $tj->uf }}, @endif
+                @if($tj->jurisdicao) <strong>JURISDIÇÃO:</strong> {{ strtoupper($tj->jurisdicao) }}, @endif
+                @if($tj->processo_prevento) <strong>PROCESSO PREVENTO:</strong> {{ $tj->processo_prevento }}, @endif
+                @if($tj->situacao_processo) <strong>SITUAÇÃO:</strong> {{ strtoupper($tj->situacao_processo) }}, @endif
+                @if($tj->distribuicao) <strong>DISTRIBUIÇÃO:</strong> {{ strtoupper($tj->distribuicao) }}, @endif
+                @if($tj->orgao_julgador) <strong>ÓRGÃO JULGADOR:</strong> {{ strtoupper($tj->orgao_julgador) }}, @endif
+                @if($tj->orgao_julgador_colegiado) <strong>ÓRGÃO JULGADOR COLEGIADO:</strong> {{ strtoupper($tj->orgao_julgador_colegiado) }}, @endif
+                @if($tj->competencia) <strong>COMPETÊNCIA:</strong> {{ strtoupper($tj->competencia) }}, @endif
+                @if($tj->numero_inquerito_policial) <strong>Nº INQUÉRITO POLICIAL:</strong> {{ $tj->numero_inquerito_policial }}, @endif
+                @if($tj->valor_causa) <strong>VALOR DA CAUSA:</strong> R$ {{ number_format($tj->valor_causa, 2, ',', '.') }}, @endif
+                @if($tj->advogado) <strong>ADVOGADO:</strong> {{ strtoupper($tj->advogado) }}, @endif
+                @if($tj->prioridade !== null) <strong>PRIORIDADE:</strong> {{ $tj->prioridade ? 'Sim' : 'Não' }}, @endif
+                @if($tj->gratuidade !== null) <strong>GRATUIDADE:</strong> {{ $tj->gratuidade ? 'Sim' : 'Não' }} @endif
+            </div>
             @endforeach
-        </tbody>
-    </table>
+        </div>
+    </div>
     @endif
 
     <!-- Armas -->
@@ -895,6 +959,7 @@
                 <th>MARCA</th>
                 <th>MODELO</th>
                 <th>CALIBRE</th>
+                <th>SINARM</th>
             </tr>
         </thead>
         <tbody>
@@ -904,6 +969,7 @@
                 <td>{{ strtoupper($arma->marca ?? '') }}</td>
                 <td>{{ strtoupper($arma->modelo ?? '') }}</td>
                 <td>{{ strtoupper($arma->calibre ?? '') }}</td>
+                <td>{{ $arma->sinarm ?? '' }}</td>
             </tr>
             @endforeach
         </tbody>
@@ -945,6 +1011,27 @@
                     @endif
                 </td>
                 <td>{{ strtoupper($rais->situacao ?? '') }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    @endif
+
+    <!-- BNMP -->
+    @if($person->bnmps && $person->bnmps->count() > 0)
+    <div class="section-title-table">BNMP</div>
+    <table class="table-section">
+        <thead>
+            <tr>
+                <th>N. MANDADO</th>
+                <th>ÓRGÃO EXPEDIDOR</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($person->bnmps as $bnmp)
+            <tr>
+                <td>{{ $bnmp->numero_mandado ?? '' }}</td>
+                <td>{{ strtoupper($bnmp->orgao_expedidor ?? '') }}</td>
             </tr>
             @endforeach
         </tbody>
@@ -1010,7 +1097,6 @@
     <!-- Anexo - Documentos -->
     @if($person->docs && $person->docs->count() > 0)
     <div class="section-title-table">ANEXO</div>
-    
     <div class="section-content">
         <p style="font-weight: bold; margin-bottom: 10px; font-size: 10px;">
             DOCUMENTOS ANEXADOS AO PROCESSO
@@ -1019,21 +1105,22 @@
             Relacionamos abaixo os documentos que constam anexados ao presente relatório:
         </p>
     </div>
-    
     <table class="table-section">
         <thead>
             <tr>
                 <th style="width: 8%; text-align: center;">ANEXO Nº</th>
-                <th style="width: 52%;">NOME DO DOCUMENTO</th>
+                <th style="width: 37%;">NOME DO DOCUMENTO</th>
+                <th style="width: 20%;">FONTE</th>
                 <th style="width: 15%; text-align: center;">DATA</th>
-                <th style="width: 25%; text-align: center;">STATUS</th>
+                <th style="width: 20%; text-align: center;">STATUS</th>
             </tr>
         </thead>
         <tbody>
             @foreach($person->docs as $index => $doc)
             <tr>
                 <td style="text-align: center; font-weight: bold;">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</td>
-                <td>{{ strtoupper($doc->nome_doc ?? 'DOCUMENTO SEM NOME') }}</td>
+                <td>{!! strtoupper($doc->nome_doc ?? 'DOCUMENTO SEM NOME') !!}</td>
+                <td>{{ strtoupper($doc->fonte ?? '') }}</td>
                 <td style="text-align: center;">
                     @if($doc->data)
                         @php
@@ -1058,7 +1145,6 @@
             @endforeach
         </tbody>
     </table>
-    
     <div style="margin-top: 15px; font-size: 9px; color: #666;">
         <p><strong>Total de anexos:</strong> {{ $person->docs->count() }} documento(s)</p>
         <p><strong>Arquivos anexados:</strong> {{ $person->docs->where('upload', '!=', null)->count() }} documento(s)</p>
@@ -1078,12 +1164,10 @@
         <div class="section-title-table">
             ANEXO {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }} - {{ strtoupper($doc->nome_doc ?? 'DOCUMENTO') }}
         </div>
-        
         <div class="pdf-container">
             @php
                 $filePath = public_path($doc->upload);
             @endphp
-            
             @if(file_exists($filePath))
                 <!-- Container para renderização do PDF via JavaScript -->
                 <div id="pdf-container-{{ $index }}" class="pdf-render-container" data-pdf-url="{{ route('person.serve.document', ['personId' => $person->id, 'docId' => $doc->id]) }}">
@@ -1095,7 +1179,6 @@
                         </p>
                     </div>
                 </div>
-                
                 <!-- Fallback para quando JavaScript não está disponível -->
                 <noscript>
                     <div class="pdf-info-box">
@@ -1105,10 +1188,10 @@
                             <em>Localização: {{ $doc->upload }}</em>
                         </p>
                     </div>
-                    
-                    <iframe src="{{ route('person.serve.document', ['personId' => $person->id, 'docId' => $doc->id]) }}" 
-                            width="100%" 
-                            height="800px" 
+
+                    <iframe src="{{ route('person.serve.document', ['personId' => $person->id, 'docId' => $doc->id]) }}"
+                            width="100%"
+                            height="800px"
                             style="border: 1px solid #ccc;">
                         <div class="pdf-placeholder">
                             <p style="font-size: 12px; color: #666; margin: 0;">
@@ -1171,7 +1254,6 @@
 
         function processPDFs() {
             const containers = document.querySelectorAll('.pdf-render-container');
-            
             containers.forEach((container, index) => {
                 const pdfUrl = container.getAttribute('data-pdf-url');
                 if (pdfUrl) {
@@ -1182,7 +1264,6 @@
 
         function renderPDF(url, container, index) {
             const loadingDiv = container.querySelector('.pdf-loading');
-            
             // Configurar headers para autenticação
             const loadingTask = pdfjsLib.getDocument({
                 url: url,
@@ -1192,27 +1273,26 @@
                 },
                 withCredentials: true
             });
-            
+
             loadingTask.promise.then(function(pdf) {
                 loadingDiv.innerHTML = '<p style="text-align: center; padding: 20px; font-size: 12px;">Analisando e redimensionando ' + pdf.numPages + ' página(s)...</p>';
-                
+
                 const renderPromises = [];
-                
+
                 for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
                     renderPromises.push(renderPage(pdf, pageNum, container, index));
                 }
-                
+
                 Promise.all(renderPromises).then(() => {
                     // Remove loading div após todas as páginas serem renderizadas
                     loadingDiv.remove();
-                    
+
                     // Adiciona informações de redimensionamento se necessário
                     addResizeInfo(container, pdf.numPages);
                 }).catch(error => {
                     console.error('Erro ao renderizar páginas:', error);
                     showError(container, 'Erro ao renderizar páginas do PDF');
                 });
-                
             }).catch(error => {
                 console.error('Erro ao carregar PDF:', error);
                 // Se falhar, tenta usar iframe como fallback
@@ -1225,13 +1305,13 @@
                 <div class="pdf-info-box" style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; margin-bottom: 10px;">
                     <p style="font-size: 11px; color: #856404; margin: 0;">
                         <strong>📄 DOCUMENTO PDF (MODO COMPATIBILIDADE)</strong><br>
-                        Carregando via iframe devido a limitações de acesso. Se o documento não aparecer, 
+                        Carregando via iframe devido a limitações de acesso. Se o documento não aparecer,
                         pode ser necessário abrir em nova aba.
                     </p>
                 </div>
-                <iframe src="${url}" 
-                        width="100%" 
-                        height="800px" 
+                <iframe src="${url}"
+                        width="100%"
+                        height="800px"
                         style="border: 1px solid #ccc; max-width: ${MAX_PDF_WIDTH}px;">
                     <div class="pdf-placeholder">
                         <p style="font-size: 12px; color: #666; margin: 20px;">
@@ -1250,53 +1330,49 @@
                     const pageBreak = document.createElement('div');
                     pageBreak.className = 'page-break';
                     container.appendChild(pageBreak);
-                    
                     const pageTitle = document.createElement('div');
                     pageTitle.className = 'section-title-table';
                     pageTitle.innerHTML = 'ANEXO ' + String(docIndex + 1).padStart(2, '0') + ' - PÁGINA ' + pageNum;
                     container.appendChild(pageTitle);
                 }
-                
+
                 // Calcula a escala ideal para caber na página A4
                 const originalViewport = page.getViewport({ scale: 1.0 });
                 const optimalScale = calculateOptimalScale(originalViewport.width, originalViewport.height);
-                
+
                 // Usa escala otimizada
                 const viewport = page.getViewport({ scale: optimalScale });
-                
+
                 const canvas = document.createElement('canvas');
                 canvas.className = 'pdf-page-canvas';
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
-                
+
                 // Define tamanho de exibição para garantir que caiba na página
                 const displayWidth = Math.min(viewport.width, MAX_PDF_WIDTH);
                 const displayHeight = Math.min(viewport.height, MAX_PDF_HEIGHT);
-                
+
                 canvas.style.width = displayWidth + 'px';
                 canvas.style.height = displayHeight + 'px';
                 canvas.style.maxWidth = '100%';
                 canvas.style.height = 'auto';
-                
                 // Adiciona atributos para controle de impressão
                 canvas.setAttribute('data-original-width', originalViewport.width);
                 canvas.setAttribute('data-original-height', originalViewport.height);
                 canvas.setAttribute('data-scale-used', optimalScale);
-                
+
                 const context = canvas.getContext('2d');
-                
+
                 const renderContext = {
                     canvasContext: context,
                     viewport: viewport
                 };
-                
                 // Cria container para a página com informações de redimensionamento
                 const pageContainer = document.createElement('div');
                 pageContainer.className = 'pdf-page-container';
                 pageContainer.style.marginBottom = '10px';
                 pageContainer.style.textAlign = 'center';
                 pageContainer.style.pageBreakInside = 'avoid';
-                
                 // Adiciona informação de redimensionamento se necessário
                 if (optimalScale < 1.0) {
                     const resizeInfo = document.createElement('div');
@@ -1308,10 +1384,10 @@
                     resizeInfo.innerHTML = `📏 Documento redimensionado para ${Math.round(optimalScale * 100)}% para ajustar à página A4`;
                     pageContainer.appendChild(resizeInfo);
                 }
-                
+
                 pageContainer.appendChild(canvas);
                 container.appendChild(pageContainer);
-                
+
                 return page.render(renderContext).promise;
             });
         }
@@ -1320,10 +1396,10 @@
             // Calcula as escalas necessárias para largura e altura
             const scaleByWidth = MAX_PDF_WIDTH / originalWidth;
             const scaleByHeight = MAX_PDF_HEIGHT / originalHeight;
-            
+
             // Usa a menor escala para garantir que caiba em ambas as dimensões
             const optimalScale = Math.min(scaleByWidth, scaleByHeight, 2.0); // Máximo 2x para manter qualidade
-            
+
             // Se o documento já é pequeno, usa escala mínima de 0.8 para manter legibilidade
             return Math.max(optimalScale, 0.5);
         }
@@ -1331,10 +1407,10 @@
         function addResizeInfo(container, numPages) {
             // Coleta informações sobre redimensionamento
             const canvases = container.querySelectorAll('canvas[data-scale-used]');
-            const resizedPages = Array.from(canvases).filter(canvas => 
+            const resizedPages = Array.from(canvases).filter(canvas =>
                 parseFloat(canvas.getAttribute('data-scale-used')) < 1.0
             );
-            
+
             if (resizedPages.length > 0) {
                 const infoDiv = document.createElement('div');
                 infoDiv.className = 'pdf-summary-info';
@@ -1345,11 +1421,11 @@
                 infoDiv.style.borderRadius = '4px';
                 infoDiv.style.fontSize = '9px';
                 infoDiv.style.color = '#666';
-                
-                const avgScale = resizedPages.reduce((sum, canvas) => 
+
+                const avgScale = resizedPages.reduce((sum, canvas) =>
                     sum + parseFloat(canvas.getAttribute('data-scale-used')), 0
                 ) / resizedPages.length;
-                
+
                 infoDiv.innerHTML = `
                     <p style="margin: 0; font-weight: bold;">ℹ️ Informações de Redimensionamento:</p>
                     <p style="margin: 5px 0 0 0;">
@@ -1358,7 +1434,6 @@
                         • Todas as páginas foram otimizadas para formato A4 com margens de segurança
                     </p>
                 `;
-                
                 container.appendChild(infoDiv);
             }
         }
@@ -1371,9 +1446,9 @@
                         <em>Utilizando visualização padrão do navegador como fallback</em>
                     </p>
                 </div>
-                <iframe src="${container.getAttribute('data-pdf-url')}" 
-                        width="100%" 
-                        height="600px" 
+                <iframe src="${container.getAttribute('data-pdf-url')}"
+                        width="100%"
+                        height="600px"
                         style="border: 1px solid #ccc; margin-top: 10px; max-width: ${MAX_PDF_WIDTH}px;">
                 </iframe>
             `;
@@ -1391,9 +1466,9 @@
                             PDF.js não disponível, usando visualização padrão com limites de tamanho.<br>
                         </p>
                     </div>
-                    <iframe src="${pdfUrl}" 
-                            width="100%" 
-                            height="800px" 
+                    <iframe src="${pdfUrl}"
+                            width="100%"
+                            height="800px"
                             style="border: 1px solid #ccc; max-width: ${MAX_PDF_WIDTH}px;">
                     </iframe>
                 `;
@@ -1401,4 +1476,4 @@
         }
     </script>
 </body>
-</html> 
+</html>

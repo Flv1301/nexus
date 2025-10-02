@@ -1,0 +1,20 @@
+# Disable caching for documentation files
+<IfModule mod_headers.c>
+    # Disable caching for all files in docs folder
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+</IfModule>
+
+# Prevent caching with meta directives
+<IfModule mod_expires.c>
+    ExpiresActive Off
+</IfModule>
+
+# Force browsers to check for newer versions
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Add timestamp to prevent caching
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^(.*)$ $1?v=%{TIME_STAMP} [QSA,L]
+</IfModule> 

@@ -30,6 +30,13 @@ class DynamicSearchFields {
                 class: 'mask-cpf-number',
                 icon: 'fas fa-id-card'
             },
+            cnpj: {
+                name: 'cnpj',
+                placeholder: 'CNPJ (Somente números)',
+                label: 'CNPJ',
+                class: 'mask-cnpj-number',
+                icon: 'fas fa-building'
+            },
             rg: {
                 name: 'rg',
                 placeholder: 'RG',
@@ -305,7 +312,9 @@ class DynamicSearchFields {
             `;
         } else {
             let maxLength = '';
-            if (config.name === 'cpf') maxLength = 'maxlength="11"';
+            // Aumenta o maxlength para permitir os caracteres de máscara
+            if (config.name === 'cpf') maxLength = 'maxlength="14"';
+            else if (config.name === 'cnpj') maxLength = 'maxlength="18"';
             else if (config.name === 'phone') maxLength = 'maxlength="15"';
             else if (config.name === 'placa') maxLength = 'maxlength="8"';
             
@@ -390,6 +399,9 @@ class DynamicSearchFields {
             case 'mask-cpf-number':
                 this.applyCpfMask(input);
                 break;
+            case 'mask-cnpj-number':
+                this.applyCnpjMask(input);
+                break;
             case 'mask-date':
                 this.applyDateMask(input);
                 break;
@@ -403,24 +415,61 @@ class DynamicSearchFields {
     }
 
     applyCpfMask(input) {
-        // Usa a função global do sistema se estiver disponível
-        if (window.applyCPFMaskToField) {
-            window.applyCPFMaskToField(input);
-        } else {
-            // Fallback para máscara básica
-            input.addEventListener('input', (e) => {
-                let value = e.target.value.replace(/\D/g, '');
-                if (value.length <= 11) {
-                    e.target.value = value;
-                }
-            });
+        input.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não for dígito
+            let originalCursorPosition = e.target.selectionStart;
+
+            if (value.length > 11) {
+                value = value.substring(0, 11);
+            }
+
+            let formattedValue = '';
+            if (value.length > 9) {
+                formattedValue = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2}).*/, '$1.$2.$3-$4');
+            } else if (value.length > 6) {
+                formattedValue = value.replace(/^(\d{3})(\d{3})(\d{3}).*/, '$1.$2.$3');
+            } else if (value.length > 3) {
+                formattedValue = value.replace(/^(\d{3})(\d{3}).*/, '$1.$2');
+            } else {
+                formattedValue = value;
+            }
+
+            e.target.value = formattedValue;
             
-            input.addEventListener('keypress', (e) => {
-                if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'Enter'].includes(e.key)) {
-                    e.preventDefault();
-                }
-            });
-        }
+            // Restaura a posição do cursor
+            let newCursorPosition = originalCursorPosition + (formattedValue.length - (e.target.value.length));
+            e.target.setSelectionRange(newCursorPosition, newCursorPosition);
+        });
+    }
+
+    applyCnpjMask(input) {
+        input.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não for dígito
+            let originalCursorPosition = e.target.selectionStart;
+
+            if (value.length > 14) {
+                value = value.substring(0, 14);
+            }
+
+            let formattedValue = '';
+            if (value.length > 12) {
+                formattedValue = value.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2}).*/, '$1.$2.$3/$4-$5');
+            } else if (value.length > 8) {
+                formattedValue = value.replace(/^(\d{2})(\d{3})(\d{3})(\d{4}).*/, '$1.$2.$3/$4');
+            } else if (value.length > 5) {
+                formattedValue = value.replace(/^(\d{2})(\d{3})(\d{3}).*/, '$1.$2.$3');
+            } else if (value.length > 2) {
+                formattedValue = value.replace(/^(\d{2})(\d{3}).*/, '$1.$2');
+            } else {
+                formattedValue = value;
+            }
+
+            e.target.value = formattedValue;
+            
+            // Restaura a posição do cursor
+            let newCursorPosition = originalCursorPosition + (formattedValue.length - (e.target.value.length));
+            e.target.setSelectionRange(newCursorPosition, newCursorPosition);
+        });
     }
 
     applyPhoneMask(input) {
@@ -608,6 +657,11 @@ class DynamicSearchFields {
                             errors.push('CPF deve conter 11 dígitos');
                         }
                         break;
+                    case 'cnpj':
+                        if (input.value.replace(/\D/g, '').length !== 14) {
+                            errors.push('CNPJ deve conter 14 dígitos');
+                        }
+                        break;
                     case 'birth_date':
                         if (!this.isValidDate(input.value)) {
                             errors.push('Data de nascimento inválida');
@@ -695,4 +749,4 @@ document.addEventListener('DOMContentLoaded', function() {
     window.dynamicFields = dynamicFields;
     
     console.log('DynamicSearchFields inicializado com sucesso!');
-}); /* Cache bust Tue Jun 17 02:38:49 PM UTC 2025 */
+});

@@ -26,14 +26,14 @@
                             <td>{{ $person->mother ?? '' }}</td>
                             <td>{{ $person->birth_date ?? '' }}</td>
                             <td>
-                                <a href="{{ route('person.show', $person->id) }}" 
-                                   class="btn btn-sm btn-primary" 
+                                <a href="{{ route('person.show', $person->id) }}"
+                                   class="btn btn-sm btn-primary"
                                    title="Visualizar">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="{{ route('person.search.report', $person->id) }}" 
+                                <a href="{{ route('person.search.report', $person->id) }}"
                                    target="_blank"
-                                   class="btn btn-sm btn-danger" 
+                                   class="btn btn-sm btn-danger"
                                    title="Relatório PDF">
                                     <i class="fas fa-file-pdf"></i>
                                 </a>
@@ -56,7 +56,6 @@
             </div>
         @endif
     </div>
-    
     <div class="card-footer">
         <small class="text-muted">
             <i class="fas fa-info-circle"></i>
@@ -66,4 +65,4 @@
             @endif
         </small>
     </div>
-</div> 
+</div>

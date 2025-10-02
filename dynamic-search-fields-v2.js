@@ -16,6 +16,13 @@ class DynamicSearchFields {
                 class: 'mask-cpf-number',
                 icon: 'fas fa-id-card'
             },
+            cnpj: {
+                name: 'cnpj',
+                placeholder: 'CNPJ (Somente números)',
+                label: 'CNPJ',
+                class: 'mask-cnpj-number',
+                icon: 'fas fa-building'
+            },
             rg: {
                 name: 'rg',
                 placeholder: 'RG',
@@ -164,7 +171,12 @@ class DynamicSearchFields {
         const fieldSelector = document.getElementById('field-selector');
         if (fieldSelector) {
             fieldSelector.addEventListener('change', (e) => {
-                this.handleFieldSelection(e.target.value);
+                const selectedValue = e.target.value;
+                console.log('Valor do seletor capturado:', selectedValue); // <-- Adicione esta linha
+                
+                if (selectedValue) {
+                    this.handleFieldSelection(selectedValue);
+                }
                 e.target.value = '';
             });
         }
@@ -217,11 +229,15 @@ class DynamicSearchFields {
     handleFieldSelection(fieldType) {
         if (fieldType && !this.addedFields.includes(fieldType)) {
             this.addField(fieldType);
+            this.updateFieldSelector(); // Garante que a opção seja removida do seletor
+            document.getElementById('field-selector').value = ''; // Redefine o seletor
         }
     }
 
     addField(fieldType, value = '') {
         const config = this.fieldConfigurations[fieldType];
+        // Adiciona uma linha de log para verificar se a configuração está correta
+        console.log('Tentando adicionar campo:', fieldType, 'Config:', config);
         if (!config) return;
 
         const selectedFields = document.getElementById('selected-fields');
@@ -267,58 +283,53 @@ class DynamicSearchFields {
     }
 
     generateFieldHtml(config, value) {
-        const iconHtml = config.icon ? `<i class="${config.icon}"></i> ` : '';
-        
-        if (config.type === 'date') {
-            return `
-                <label for="${config.name}">${iconHtml}${config.label}</label>
-                <div class="input-group">
-                    <input type="text" name="${config.name}" id="${config.name}" 
-                           class="form-control ${config.class || ''}" 
-                           placeholder="${config.placeholder}"
-                           value="${value}"
-                           maxlength="10"
-                           data-field-type="${config.name}">
-                    <div class="input-group-append">
-                        <div class="input-group-text bg-gradient-warning">
-                            <i class="fas fa-calendar-alt"></i>
-                        </div>
-                    </div>
-                </div>
-            `;
-        } else if (config.type === 'select') {
-            let optionsHtml = '';
-            if (config.options) {
-                config.options.forEach(option => {
-                    const selected = option.value === value ? 'selected' : '';
-                    optionsHtml += `<option value="${option.value}" ${selected}>${option.text}</option>`;
-                });
-            }
-            
-            return `
-                <label for="${config.name}">${iconHtml}${config.label}</label>
-                <select name="${config.name}" id="${config.name}" 
-                        class="form-control ${config.class || ''}" 
-                        data-field-type="${config.name}">
-                    ${optionsHtml}
-                </select>
-            `;
-        } else {
-            let maxLength = '';
-            if (config.name === 'cpf') maxLength = 'maxlength="11"';
-            else if (config.name === 'phone') maxLength = 'maxlength="15"';
-            else if (config.name === 'placa') maxLength = 'maxlength="8"';
-            
-            return `
-                <label for="${config.name}">${iconHtml}${config.label}</label>
-                <input type="text" name="${config.name}" id="${config.name}" 
-                       class="form-control ${config.class || ''}" 
-                       placeholder="${config.placeholder}"
-                       value="${value}" ${maxLength}
-                       data-field-type="${config.name}">
-            `;
-        }
-    }
+        const iconHtml = config.icon ? `<i class="${config.icon}"></i> ` : '';
+        let maxLength = '';
+        let inputType = 'text';
+
+        switch (config.name) {
+            case 'cpf':
+                maxLength = 'maxlength="14"';
+                break;
+            case 'cnpj':
+                maxLength = 'maxlength="18"';
+                break;
+            case 'phone':
+                maxLength = 'maxlength="15"';
+                break;
+            case 'placa':
+                maxLength = 'maxlength="8"';
+                break;
+        }
+
+        if (config.type === 'select') {
+            let optionsHtml = '';
+            if (config.options) {
+                config.options.forEach(option => {
+                    const selected = option.value === value ? 'selected' : '';
+                    optionsHtml += `<option value="${option.value}" ${selected}>${option.text}</option>`;
+                });
+            }
+            
+            return `
+                <label for="${config.name}">${iconHtml}${config.label}</label>
+                <select name="${config.name}" id="${config.name}" 
+                        class="form-control ${config.class || ''}" 
+                        data-field-type="${config.name}">
+                    ${optionsHtml}
+                </select>
+            `;
+        } else {
+            return `
+                <label for="${config.name}">${iconHtml}${config.label}</label>
+                <input type="${inputType}" name="${config.name}" id="${config.name}" 
+                       class="form-control ${config.class || ''}" 
+                       placeholder="${config.placeholder}"
+                       value="${value}" ${maxLength}
+                       data-field-type="${config.name}">
+            `;
+        }
+    }
 
     removeAllFields() {
         if (this.addedFields.length === 0) {
@@ -383,24 +394,27 @@ class DynamicSearchFields {
     }
 
     applyMasks(fieldContainer, config) {
-        const input = fieldContainer.querySelector('input');
-        if (!input) return;
+        const input = fieldContainer.querySelector('input');
+        if (!input) return;
 
-        switch (config.class) {
-            case 'mask-cpf-number':
-                this.applyCpfMask(input);
-                break;
-            case 'mask-date':
-                this.applyDateMask(input);
-                break;
-            case 'mask-phone':
-                this.applyPhoneMask(input);
-                break;
-            case 'mask-placa':
-                this.applyPlacaMask(input);
-                break;
-        }
-    }
+        switch (config.name) {
+            case 'cpf':
+                this.applyCpfMask(input);
+                break;
+            case 'cnpj':
+                this.applyCnpjMask(input);
+                break;
+            case 'birth_date':
+                this.applyDateMask(input);
+                break;
+            case 'phone':
+                this.applyPhoneMask(input);
+                break;
+            case 'placa':
+                this.applyPlacaMask(input);
+                break;
+        }
+    }
 
     applyCpfMask(input) {
         // Usa a função global do sistema se estiver disponível
@@ -421,6 +435,16 @@ class DynamicSearchFields {
                 }
             });
         }
+    }
+
+    applyCnpjMask(input) {
+        input.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 14) {
+                value = value.substring(0, 14);
+            }
+            e.target.value = value.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2}).*/, '$1.$2.$3/$4-$5');
+        });
     }
 
     applyPhoneMask(input) {

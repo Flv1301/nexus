@@ -21,7 +21,8 @@ $('.delete-alert').click(event => {
 
 /** ### MASCARAS DE CAMPOS ### */
 $(document).ready(function () {
-    $('.mask-phone').mask('99999-9999');
+
+    $('.mask-phone').mask('99999-9999999');
     $('.mask-number-phone').mask('999999999');
     $('.mask-ddd').mask('99');
     $('.mask-date').mask('99/99/9999');
@@ -30,6 +31,54 @@ $(document).ready(function () {
     $('.mask-cpf-number').mask('99999999999');
     $('.mask-year').mask('9999');
     
+
+    // Máscara de dinheiro
+    $('.mask-money').each(function() {
+        const input = this;
+        
+        // Função para formatar o valor
+        function formatMoney(value) {
+            // Remove tudo exceto números
+            value = value.replace(/\D/g, '');
+            
+            if (value === '') return '';
+            
+            // Converte para centavos
+            value = parseInt(value);
+            
+            // Converte para formato decimal
+            value = (value / 100).toFixed(2);
+            
+            // Adiciona pontos como separadores de milhares e vírgula como separador decimal
+            value = value.replace('.', ',');
+            value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+            
+            return 'R$ ' + value;
+        }
+        
+        $(input).on('input keyup', function(e) {
+            const cursorPosition = e.target.selectionStart;
+            const oldLength = e.target.value.length;
+            
+            e.target.value = formatMoney(e.target.value);
+            
+            // Ajusta a posição do cursor
+            const newLength = e.target.value.length;
+            const lengthDiff = newLength - oldLength;
+            const newCursorPosition = cursorPosition + lengthDiff;
+            
+            setTimeout(() => {
+                e.target.setSelectionRange(newCursorPosition, newCursorPosition);
+            }, 0);
+        });
+        
+        // Formatar valor inicial se existir
+        if ($(input).val()) {
+            $(input).val(formatMoney($(input).val()));
+        }
+    });
+    
+
     // Máscara de placa que normaliza o valor
     $('.mask-plate').each(function() {
         const input = this;

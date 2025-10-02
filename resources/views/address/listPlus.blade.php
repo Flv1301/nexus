@@ -11,6 +11,7 @@
                 <th>UF</th>
                 <th>Complemento</th>
                 <th>Ponto de Referencia</th>
+                <th>Observação</th>
                 <th>Data do dado</th>
                 <th>Fonte do dado</th>
                 <th>Ações</th>
@@ -27,6 +28,7 @@
                     <td>{{$address->uf}}</td>
                     <td>{{$address->complement}}</td>
                     <td>{{$address->reference_point}}</td>
+                    <td>{{$address->observacao}}</td>
                     <td>{{$address->data_do_dado ? date('d/m/Y', strtotime($address->data_do_dado)) : ''}}</td>
                     <td>{{$address->fonte_do_dado}}</td>
                     <td>
@@ -35,6 +37,20 @@
                         <x-adminlte-button size="sm" theme="danger" icon="fas fa-trash"
                                            onclick="if(confirm('Deseja realmente excluir?')) window.location.href='{{ route('address.destroy', $address) }}'"/>
                     </td>
+                    <input type="hidden" id="addresses_existing_{{ $loop->index }}" name="addresses[]" value="{{ json_encode([
+                        'code' => $address->code,
+                        'address' => $address->address,
+                        'number' => $address->number,
+                        'district' => $address->district,
+                        'city' => $address->city,
+                        'state' => $address->state,
+                        'uf' => $address->uf,
+                        'complement' => $address->complement,
+                        'reference_point' => $address->reference_point,
+                        'observacao' => $address->observacao,
+                        'data_do_dado' => $address->data_do_dado,
+                        'fonte_do_dado' => $address->fonte_do_dado
+                    ]) }}">
                 </tr>
             @endforeach
             </tbody>
@@ -56,6 +72,7 @@
             let uf = document.getElementById('uf').value;
             let complement = document.getElementById('complement').value;
             let reference_point = document.getElementById('reference_point').value;
+            let observacao = document.getElementById('observacao').value;
             let data_do_dado = document.getElementById('data_do_dado').value;
             let fonte_do_dado = document.getElementById('fonte_do_dado').value;
             
@@ -82,12 +99,13 @@
                 uf: uf,
                 complement: complement,
                 reference_point: reference_point,
+                observacao: observacao,
                 data_do_dado: convertedDate,
                 fonte_do_dado: fonte_do_dado
             }
             let input = document.createElement('input');
             input.setAttribute('type', 'hidden');
-            input.setAttribute('id', 'addresses');
+            input.setAttribute('id', 'addresses_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9));
             input.setAttribute('name', 'addresses[]');
             input.setAttribute('value', JSON.stringify(addresses));
             let table = document.getElementById('tableAddress');
@@ -117,6 +135,9 @@
             td.append(reference_point);
             tr.append(td);
             td = document.createElement('td');
+            td.append(observacao);
+            tr.append(td);
+            td = document.createElement('td');
             td.append(data_do_dado);
             tr.append(td);
             td = document.createElement('td');
@@ -138,6 +159,7 @@
             document.getElementById('uf').value = '';
             document.getElementById('complement').value = '';
             document.getElementById('reference_point').value = '';
+            document.getElementById('observacao').value = '';
             document.getElementById('data_do_dado').value = '';
             document.getElementById('fonte_do_dado').value = '';
         }

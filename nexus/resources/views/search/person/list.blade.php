@@ -1,0 +1,2 @@
+<x-show-bases-persons :bases="$bases" :route="'person.show'" />
+
